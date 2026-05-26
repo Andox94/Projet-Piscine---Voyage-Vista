@@ -10,215 +10,120 @@
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
 <body class="page-top">
- 
+
 <div id="navbar-placeholder"></div>
- 
+
 <!-- PAGE HEADER -->
-<div style="background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%); padding: 56px 0 48px; position: relative; overflow: hidden;">
-  <div style="position: absolute; inset: 0; opacity: 0.07; background: url('https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=1200&auto=format') center/cover;"></div>
-  <div class="container" style="position: relative; z-index: 2; color: var(--white);">
+<div style="background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%); padding: 56px 0 48px;">
+  <div class="container">
     <p style="font-size: 0.8rem; color: rgba(255,255,255,.5); margin-bottom: 10px;"><a href="index.html" style="color: rgba(255,255,255,.5);">Accueil</a> / Destinations</p>
     <h1 class="heading-1" style="color: var(--white); margin-bottom: 8px;">Explorer les destinations</h1>
-    <p style="color: rgba(255,255,255,.65);">120+ destinations sélectionnées par nos experts pour vos prochains séjours.</p>
+    <p style="color: rgba(255,255,255,.65);">120+ destinations sélectionnées par nos experts.</p>
   </div>
 </div>
- 
-<!-- REACT APP -->
+
 <div id="destinations-app" style="background: var(--sand); padding: 40px 0;"></div>
- 
+
 <div id="footer-placeholder"></div>
- 
+
 <script src="js/components.js"></script>
 <script src="js/main.js"></script>
 <script type="text/babel">
-const { useState, useEffect, useMemo } = React;
- 
-const MOCK_DESTINATIONS = [
-  { id: 1, name: "Paris", country: "France", tag: "City Break", category: "city-break", price: 299, rating: 4.9, reviews: 1240, badge: "Tendance", img: "https://images.unsplash.com/photo-1511739001486-6bfe10ce785f?w=600&auto=format", desc: "La ville lumière et son patrimoine exceptionnel." },
-  { id: 2, name: "Bali", country: "Indonésie", tag: "Île tropicale", category: "plage", price: 649, rating: 4.8, reviews: 876, badge: null, img: "https://images.unsplash.com/photo-1537953773345-d172ccf13cf1?w=600&auto=format", desc: "Rizières en terrasse, temples et surf inoubliable." },
-  { id: 3, name: "Kyoto", country: "Japon", tag: "Culture", category: "culture", price: 890, rating: 4.9, reviews: 654, badge: "-15%", img: "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=600&auto=format", desc: "Temples zen et jardins de cerisiers millénaires." },
-  { id: 4, name: "Rio de Janeiro", country: "Brésil", tag: "Aventure", category: "aventure", price: 780, rating: 4.6, reviews: 432, badge: null, img: "https://images.unsplash.com/photo-1483729558449-99ef09a8c325?w=600&auto=format", desc: "Carnival, Christ Rédempteur et plages légendaires." },
-  { id: 5, name: "Santorini", country: "Grèce", tag: "Plage", category: "plage", price: 520, rating: 4.7, reviews: 980, badge: "Populaire", img: "https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=600&auto=format", desc: "Maisons blanches, caldeira bleue et couchers de soleil épiques." },
-  { id: 6, name: "Marrakech", country: "Maroc", tag: "Culture", category: "culture", price: 340, rating: 4.5, reviews: 723, badge: null, img: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?w=600&auto=format", desc: "Souks envoûtants, palais et riads traditionnels." },
-  { id: 7, name: "New York", country: "USA", tag: "City Break", category: "city-break", price: 750, rating: 4.7, reviews: 1540, badge: null, img: "https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=600&auto=format", desc: "La ville qui ne dort jamais, Broadway et Central Park." },
-  { id: 8, name: "Banff", country: "Canada", tag: "Nature", category: "nature", price: 920, rating: 4.8, reviews: 310, badge: "Nouveau", img: "https://images.unsplash.com/photo-1503614472-8c93d56e92ce?w=600&auto=format", desc: "Lacs turquoise et montagnes enneigées des Rocheuses." },
-  { id: 9, name: "Dubai", country: "Émirats Arabes", tag: "Luxe", category: "city-break", price: 860, rating: 4.6, reviews: 890, badge: null, img: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=600&auto=format", desc: "Architecture futuriste, désert et shopping de luxe." },
-];
- 
-const CATEGORIES = [
-  { key: 'all', label: 'Toutes' },
-  { key: 'plage', label: '🏖️ Plage' },
-  { key: 'montagne', label: '⛰️ Montagne' },
-  { key: 'culture', label: '🏛️ Culture' },
-  { key: 'aventure', label: '🧗 Aventure' },
-  { key: 'city-break', label: '🏙️ City Break' },
-  { key: 'nature', label: '🌿 Nature' },
-];
- 
-function StarRating({ rating }) {
-  const stars = Math.round(rating);
-  return (
-    <span style={{color: 'var(--gold)'}}>
-      {'★'.repeat(stars)}{'☆'.repeat(5 - stars)}
-    </span>
-  );
-}
- 
-function DestCard({ dest, onAddToCart, cartDestId }) {
-  const [wished, setWished] = React.useState(false);
-  const selected = cartDestId === dest.id;
- 
-  return (
-    <div className="card" style={{animationFillMode:'both'}}>
-      <div className="card-img card-img-tall" style={{height: '220px', position:'relative'}}>
-        <img src={dest.img} alt={dest.name} style={{height:'100%', objectFit:'cover'}} loading="lazy" />
-        {dest.badge && <span className={`card-badge ${dest.badge === 'Nouveau' ? 'badge-new' : dest.badge === '-15%' ? 'badge-promo' : ''}`}>{dest.badge}</span>}
-        <button
-          className={`card-wishlist ${wished ? 'active' : ''}`}
-          onClick={(e) => { e.preventDefault(); setWished(!wished); }}
-        >{wished ? '❤️' : '🤍'}</button>
-      </div>
-      <div className="card-body">
-        <span className="card-tag">{dest.tag}</span>
-        <h3 className="card-title">{dest.name}, {dest.country}</h3>
-        <p className="card-desc">{dest.desc}</p>
-      </div>
-      <div className="card-footer">
-        <div>
-          <div className="card-price">Dès {dest.price} € <span>/ pers.</span></div>
-          <div className="card-rating" style={{marginTop: '4px'}}>
-            <StarRating rating={dest.rating} />
-            <span style={{color:'var(--text-light)', marginLeft: '4px'}}>{dest.rating} · {dest.reviews} avis</span>
-          </div>
-        </div>
-        <div style={{display:'flex', flexDirection:'column', gap:'8px', alignItems:'flex-end'}}>
-          <a href={`destination-detail.html?id=${dest.id}`} className="btn btn-ghost btn-sm">Détails</a>
-          <button
-            className={`btn btn-sm ${selected ? 'btn-gold' : 'btn-secondary'}`}
-            onClick={() => onAddToCart(dest)}
-          >
-            {selected ? '✓ Sélectionné' : 'Choisir'}
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
- 
+const { useState, useEffect } = React;
+
 function DestinationsApp() {
+  const [destinations, setDestinations] = useState([]);
+  const [cartDestId, setCartDestId] = useState(null);
   const [activeCategory, setActiveCategory] = useState('all');
-  const [sortBy, setSortBy] = useState('popular');
   const [searchQuery, setSearchQuery] = useState('');
   const [maxPrice, setMaxPrice] = useState(2000);
-  const [cartDestId, setCartDestId] = useState(null);
- 
+
+  // Chargement des destinations depuis PHP
   useEffect(() => {
-    const cart = JSON.parse(localStorage.getItem('vv_cart') || '{}');
-    if (cart.destination) setCartDestId(cart.destination.id);
- 
-    const params = new URLSearchParams(window.location.search);
-    const cat = params.get('cat');
-    if (cat) setActiveCategory(cat);
+    fetch('destinations.php')
+      .then(res => res.json())
+      .then(data => setDestinations(data))
+      .catch(err => console.error('Erreur chargement destinations:', err));
+
+    const cart = Cart.get();
+    setCartDestId(cart.destination?.id);
   }, []);
- 
-  const filtered = useMemo(() => {
-    let res = MOCK_DESTINATIONS;
-    if (activeCategory !== 'all') res = res.filter(d => d.category === activeCategory);
-    if (searchQuery) res = res.filter(d =>
-      d.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      d.country.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-    res = res.filter(d => d.price <= maxPrice);
-    if (sortBy === 'price-asc') res = [...res].sort((a,b) => a.price - b.price);
-    if (sortBy === 'price-desc') res = [...res].sort((a,b) => b.price - a.price);
-    if (sortBy === 'rating') res = [...res].sort((a,b) => b.rating - a.rating);
-    if (sortBy === 'popular') res = [...res].sort((a,b) => b.reviews - a.reviews);
-    return res;
-  }, [activeCategory, sortBy, searchQuery, maxPrice]);
- 
+
   function handleAddToCart(dest) {
-    const cart = JSON.parse(localStorage.getItem('vv_cart') || '{}');
-    cart.destination = { id: dest.id, name: dest.name, country: dest.country, price: dest.price, img: dest.img };
-    cart.transport = null; cart.accommodation = null; cart.activities = [];
-    localStorage.setItem('vv_cart', JSON.stringify(cart));
+    Cart.setDestination(dest);
     setCartDestId(dest.id);
- 
-    // Update badge
-    document.querySelector('.cart-badge') && (document.querySelector('.cart-badge').textContent = '1');
- 
-    // Toast
-    const container = document.querySelector('.toast-container') || (() => {
-      const d = document.createElement('div'); d.className = 'toast-container'; document.body.appendChild(d); return d;
-    })();
-    const t = document.createElement('div');
-    t.className = 'toast success';
-    t.innerHTML = `<span class="toast-icon">✅</span><span class="toast-text">${dest.name} ajouté à votre voyage !</span><span class="toast-close" onclick="this.parentElement.remove()">×</span>`;
-    container.appendChild(t);
-    setTimeout(() => { t.style.opacity='0'; t.style.transition='opacity 0.4s'; setTimeout(()=>t.remove(), 400); }, 3000);
+    Toast.show(`${dest.name} ajouté à votre voyage`, 'success');
   }
- 
+
+  const filtered = destinations.filter(d => {
+    if (activeCategory !== 'all' && d.category !== activeCategory) return false;
+    if (searchQuery && !d.name.toLowerCase().includes(searchQuery.toLowerCase()) && !d.country.toLowerCase().includes(searchQuery.toLowerCase())) return false;
+    if (d.price > maxPrice) return false;
+    return true;
+  });
+
   return (
     <div className="container">
-      {/* FILTER BAR */}
-      <div className="filter-bar" style={{marginBottom: '28px'}}>
-        <div style={{flex:'1', minWidth:'200px'}}>
-          <input
-            type="text" placeholder="🔍 Rechercher une destination..."
-            value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
-            className="form-input" style={{margin:0}}
-          />
-        </div>
+      <div className="filter-bar" style={{marginBottom:'28px', flexWrap:'wrap'}}>
+        <input type="text" placeholder="🔍 Rechercher une destination..." className="form-input" style={{flex:1, minWidth:'200px'}} value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
         <div className="filter-chips">
-          {CATEGORIES.map(cat => (
-            <button key={cat.key} className={`chip ${activeCategory === cat.key ? 'active' : ''}`}
-              onClick={() => setActiveCategory(cat.key)}>
+          {[
+            {key:'all', label:'Toutes'},
+            {key:'plage', label:'🏖️ Plage'},
+            {key:'culture', label:'🏛️ Culture'},
+            {key:'city-break', label:'🏙️ City Break'},
+            {key:'nature', label:'🌿 Nature'}
+          ].map(cat => (
+            <button key={cat.key} className={`chip ${activeCategory === cat.key ? 'active' : ''}`} onClick={() => setActiveCategory(cat.key)}>
               {cat.label}
             </button>
           ))}
         </div>
-        <select className="filter-select" value={sortBy} onChange={e => setSortBy(e.target.value)}>
-          <option value="popular">Plus populaires</option>
-          <option value="rating">Mieux notées</option>
-          <option value="price-asc">Prix croissant</option>
-          <option value="price-desc">Prix décroissant</option>
-        </select>
-        <div style={{display:'flex', flexDirection:'column', gap:'4px', minWidth:'160px'}}>
-          <label style={{fontSize:'0.75rem', color:'var(--text-light)', fontWeight:600}}>Budget max : {maxPrice} €</label>
-          <input type="range" min="200" max="2000" step="50" value={maxPrice} onChange={e => setMaxPrice(+e.target.value)}
-            style={{accentColor:'var(--terra)'}} />
+        <div style={{display:'flex', alignItems:'center', gap:'12px'}}>
+          <span>Prix max: {maxPrice} €</span>
+          <input type="range" min="200" max="2000" step="50" value={maxPrice} onChange={e => setMaxPrice(parseInt(e.target.value))} style={{accentColor:'var(--terra)'}} />
         </div>
       </div>
- 
-      {/* RESULTS COUNT */}
-      <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'20px'}}>
-        <p style={{color:'var(--text-mid)', fontSize:'0.9rem'}}>
-          <strong>{filtered.length}</strong> destination{filtered.length !== 1 ? 's' : ''} trouvée{filtered.length !== 1 ? 's' : ''}
-        </p>
-        {cartDestId && (
-          <a href="transports.html" className="btn btn-primary btn-sm">
-            Étape suivante : Transport →
-          </a>
-        )}
+
+      <div style={{marginBottom:'20px'}}>
+        <strong>{filtered.length}</strong> destination{filtered.length !== 1 ? 's' : ''} trouvée{filtered.length !== 1 ? 's' : ''}
       </div>
- 
-      {/* GRID */}
-      {filtered.length > 0 ? (
+
+      {filtered.length === 0 ? (
+        <div className="empty-state"><div className="empty-state-icon">🔍</div><h3>Aucune destination trouvée</h3><p>Modifiez vos filtres.</p></div>
+      ) : (
         <div className="dest-grid">
           {filtered.map(dest => (
-            <DestCard key={dest.id} dest={dest} onAddToCart={handleAddToCart} cartDestId={cartDestId} />
+            <div className="card" key={dest.id}>
+              <div className="card-img card-img-tall">
+                <img src={dest.image_url} alt={dest.name} loading="lazy" />
+                <button className="card-wishlist">🤍</button>
+              </div>
+              <div className="card-body">
+                <span className="card-tag">{dest.tag || 'Destination'}</span>
+                <h3 className="card-title">{dest.name}, {dest.country || 'Pays'}</h3>
+                <p className="card-desc">{dest.description}</p>
+              </div>
+              <div className="card-footer">
+                <div>
+                  <div className="card-price">Dès {dest.price} € <span>/ pers.</span></div>
+                  <div className="card-rating">⭐ {dest.rating || '4.5'} · {dest.reviews || 0} avis</div>
+                </div>
+                <div style={{display:'flex', gap:'8px'}}>
+                  <a href={`destination-detail.html?id=${dest.id}`} className="btn btn-ghost btn-sm">Détails</a>
+                  <button className={`btn btn-sm ${cartDestId === dest.id ? 'btn-gold' : 'btn-secondary'}`} onClick={() => handleAddToCart(dest)}>
+                    {cartDestId === dest.id ? '✓ Sélectionné' : 'Choisir'}
+                  </button>
+                </div>
+              </div>
+            </div>
           ))}
-        </div>
-      ) : (
-        <div className="empty-state">
-          <div className="empty-state-icon">🔍</div>
-          <h3 className="empty-state-title">Aucune destination trouvée</h3>
-          <p>Essayez de modifier vos filtres ou votre recherche.</p>
         </div>
       )}
     </div>
   );
 }
- 
+
 ReactDOM.render(<DestinationsApp />, document.getElementById('destinations-app'));
 </script>
 </body>
