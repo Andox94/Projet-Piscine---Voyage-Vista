@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VoyageVista - Planification de Voyages</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex flex-col">
+
+    <div id="root" class="flex flex-col flex-grow"></div>
+
+    <script type="text/babel">
+        const { useState, createContext, useContext } = React;
+
+        // 1. CONTEXTE GLOBAL (Gestion de l'état du panier, des rôles et des notifications)
+        const VoyageContext = createContext();
+
+        function VoyageProvider({ children }) {
+            const [role, setRole] = useState('client'); // client, prestataire, admin
+            const [cart, setCart] = useState({ destination: null, transport: null, accommodation: null, activities: [] });
+            const [notifications, setNotifications] = useState([
+                { id: 1, text: "Bienvenue sur VoyageVista ! Choisissez votre destination pour commencer.", type: "info" }
+            ]);
+
+            const notify = (text, type = "info") => {
+                setNotifications(prev => [{ id: Date.now(), text, type }, ...prev]);
+            };
+
+            const selectDestination = (dest) => {
+                setCart(prev => ({ ...prev, destination: dest, transport: null, accommodation: null, activities: [] }));
+                notify(`Destination modifiée : ${dest.name}`, "success");
+            };
+
+            return (
+                <VoyageContext.Provider value={{ role, setRole, cart, setCart, notifications, notify, selectDestination }}>
+                    {children}
+                </VoyageContext.Provider>
+            );
+        }
+
+        const useVoyage = () => useContext(VoyageContext);
+
+        // 2. DONNÉES FICTIVES (Mock Data pour simuler la BDD MySQL)
+        const DESTINATIONS = [
+            { id: 1, name: "Kyoto, Japon", desc: "Temples ancestraux, traditions et sérénité.", tag: "Culture", price: 1200, img: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=500" },
+            { id: 2, name: "Santorin, Grèce", desc: "Villages blancs perchés et couchers de soleil uniques.", tag: "Romantique", price: 600, img: "https://images.unsplash.com/photo-1613395877344-13d4a8e0d49e?w=500" },
+            { id: 3, name: "Chamonix, France", desc: "Aventure et haute montagne au pied du Mont-Blanc.", tag: "Sport", price: 450, img: "https://images.unsplash.com/photo-1482862549707-f63cb32c5fd9?w=500" }
+        ];
+
+        const TRANSPORTS = [
+            { id: 101, type: "Train TGV InOui", time: "08h15 - 12h30", seats: 12, price: 89 },
+            { id: 102, type: "Vol Air France", time: "14h20 - 16h05", seats: 4, price: 195 },
+            { id: 103, type: "Bus Éco", time: "22h00 - 06h30", seats: 31, price: 35 }
+        ];
+
+        const ACCOMMODATIONS = [
+            { id: 201, name: "Hôtel Vista Privilège", stars: "⭐⭐⭐⭐", type: "Hôtel", price: 130 },
+            { id: 202, name: "Eco-Lodge des Cimes", stars: "⭐⭐⭐", type: "Insolite", price: 90 },
+            { id: 203, name: "Appartement Central Design", stars: "⭐⭐⭐⭐", type: "Appartement", price: 110 }
+        ];
+
+        const ACTIVITIES = [
+            { id: 301, title: "Visite guidée et secrets locaux", duration: "3h", price: 40 },
+            { id: 302, title: "Cours de cuisine traditionnelle", duration: "4h", price: 65 },
+            { id: 303, title: "Randonnée ou circuit Exploration", duration: "5h", price: 25 }
+        ];
+
+        // 3. COMPOSANTS DES VUES INTERFACES
+        function CatalogView({ setTab }) {
+            const { selectDestination, cart } = useVoyage();
+            return (
+                <div>
+                    <div class="mb-8">
+                        <h2 class="text-3xl font-black text-gray-900">Explorez nos destinations exclusives</h2>
+                        <p class="text-gray-500">Sélectionnez le point de départ de votre séjour personnalisé.</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        {DESTINATIONS.map(d => (
+                            <div key={d.id} class={`bg-white rounded-2xl overflow-hidden shadow-sm border-2 transition ${cart.destination?.id === d.id ? 'border-blue-600 ring-4 ring-blue-50' : 'border-transparent hover:shadow-md'}`}>
+                                <img src={d.img} class="h-48 w-full object-cover" alt={d.name}/>
+                                <div class="p-5">
+                                    <span class="bg-blue-100 text-blue-800 text-xs px-2.5 py-1 rounded-full font-bold uppercase">{d.tag}</span>
+                                    <h3 class="text-xl font-bold mt-2">{d.name}</h3>
+                                    <p class="text-gray-600 text-sm mt-1">{d.desc}</p>
+                                    <div class="flex justify-between items-center mt-6">
+                                        <span class="text-lg font-black text-blue-600">Dès {d.price} €</span>
+                                        <button onClick={() => selectDestination(d)} class={`px-4 py-2 rounded-xl text-sm font-bold transition ${cart.destination?.id === d.id ? 'bg-green-600 text-white' : 'bg-gray-900 text-white hover:bg-gray-800'}`}>
+                                            {cart.destination?.id === d.id ? '✓ Sélectionné' : 'Choisir'}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                    {cart.destination && (
+                        <div class="text-right mt-8"><button onClick={() => setTab('transport')} class="bg-blue-600 text-white px-6 py-3 rounded-xl font-bold shadow-md hover:bg-blue-700">Étape suivante : Transports →</button></div>
+                    )}
+                </div>
+            );
+        }
+
+        function TransportView({ setTab }) {
+            const { cart, setCart, notify } = useVoyage();
+            if (!cart.destination) return <div class="p-8 bg-yellow-50 text-yellow-800 rounded-xl border border-yellow-200">⚠️ Sélectionnez d'abord une destination dans le premier onglet.</div>;
+
+            return (
+                <div>
+                    <h2 class="text-2xl font-black mb-2">Planification des trajets vers {cart.destination.name}</h2>
+                    <p class="text-gray-500 mb-6">Gestion des disponibilités et des contraintes horaires en temps réel.</p>
+                    <div class="space-y-4">
+                        {TRANSPORTS.map(t => (
+                            <div key={t.id} class={`bg-white p-5 rounded-xl border-2 flex justify-between items-center transition ${cart.transport?.id === t.id ? 'border-blue-600 bg-blue-50/20' : 'border-gray-100'}`}>
+                                <div>
+                                    <h4 class="font-bold text-lg">{t.type}</h4>
+                                    <p class="text-sm text-gray-500">Horaires de voyage : {t.time}</p>
+                                    <span class="text-xs text-red-500 font-medium">{t.seats} places restantes</span>
+                                </div>
+                                <div class="text-right flex items-center gap-4">
+                                    <span class="text-xl font-black text-gray-900">{t.price} €</span>
+                                    <button onClick={() => { setCart(p => ({...p, transport: t})); notify(`Transport ajouté : ${t.type}`, "success"); }} class={`px-4 py-2 rounded-xl text-sm font-bold ${cart.transport?.id === t.id ? 'bg-green-600 text-white' : 'bg-gray-100 text-gray-800 hover:bg-gray-200'}`}>
+                                        {cart.transport?.id === t.id ? '✓ Sélectionné' : 'Réserver'}
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                    <div class="text-right mt-8"><button onClick={() => setTab('accommodation')} class="bg-blue-600 text-white px-6 py-3 rounded-xl font-bold shadow-md hover:bg-blue-700">Étape suivante : Hébergements →</button></div>
+                </div>
+            );
+        }
+
+        function AccommodationView({ setTab }) {
+            const { cart, setCart, notify } = useVoyage();
+            if (!cart.destination) return <div class="p-8 bg-yellow-50 text-yellow-800 rounded-xl border border-yellow-200">⚠️ Destination requise.</div>;
+
+            return (
+                <div>
+                    <h2 class="text-2xl font-black mb-2">Hébergements disponibles à {cart.destination.name}</h2>
+                    <p class="text-gray-500 mb-6">Contrôle des accès concurrents et blocage des chambres.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        {ACCOMMODATIONS.map(h => (
+                            <div key={h.id} class={`bg-white p-6 rounded-xl border-2 flex flex-col justify-between ${cart.accommodation?.id === h.id ? 'border-blue-600 ring-2 ring-blue-100' : 'border-gray-100'}`}>
+                                <div>
+                                    <div class="flex justify-between text-xs text-gray-400 font-bold"><span>{h.type}</span><span>{h.stars}</span></div>
+                                    <h3 class="text-lg font-bold mt-2">{h.name}</h3>
+                                    <p class="text-2xl font-black text-blue-600 mt-4">{h.price} € <span class="text-xs text-gray-400 font-normal">/ nuit</span></p>
+                                </div>
+                                <button onClick={() => { setCart(p => ({...p, accommodation: h})); notify(`Chambre bloquée : ${h.name}`, "success"); }} class={`w-full mt-6 py-2 rounded-xl font-bold text-sm ${cart.accommodation?.id === h.id ? 'bg-green-600 text-white' : 'bg-gray-900 text-white'}`}>
+                                    {cart.accommodation?.id === h.id ? '✓ Chambre réservée' : 'Choisir'}
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                    <div class="text-right mt-8"><button onClick={() => setTab('activities')} class="bg-blue-600 text-white px-6 py-3 rounded-xl font-bold shadow-md hover:bg-blue-700">Étape suivante : Activités →</button></div>
+                </div>
+            );
+        }
+
+        function ActivityView({ setTab }) {
+            const { cart, setCart, notify } = useVoyage();
+            if (!cart.destination) return <div class="p-8 bg-yellow-50 text-yellow-800 rounded-xl border border-yellow-200">⚠️ Destination requise.</div>;
+
+            const toggleActivity = (act) => {
+                if (cart.activities.some(a => a.id === act.id)) {
+                    setCart(p => ({ ...p, activities: p.activities.filter(a => a.id !== act.id) }));
+                    notify("Activité retirée", "info");
+                } else {
+                    setCart(p => ({ ...p, activities: [...p.activities, act] }));
+                    notify(`Activité planifiée : ${act.title}`, "success");
+                }
+            };
+
+            return (
+                <div>
+                    <h2 class="text-2xl font-black mb-2">Organisation des expériences locales</h2>
+                    <p class="text-gray-500 mb-6">Ajoutez des activités pour composer votre itinéraire personnalisé.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        {ACTIVITIES.map(a => {
+                            const isAdded = cart.activities.some(act => act.id === a.id);
+                            return (
+                                <div key={a.id} class="bg-white p-5 rounded-xl border border-gray-200 flex flex-col justify-between">
+                                    <div>
+                                        <span class="text-xs text-gray-400 font-bold">DURÉE : {a.duration}</span>
+                                        <h3 class="font-bold text-gray-900 mt-1">{a.title}</h3>
+                                    </div>
+                                    <div class="flex justify-between items-center mt-6">
+                                        <span class="font-black text-gray-900">{a.price} €</span>
+                                        <button onClick={() => toggleActivity(a)} class={`px-3 py-1.5 rounded-lg text-xs font-bold ${isAdded ? 'bg-red-100 text-red-600' : 'bg-blue-50 text-blue-600 hover:bg-blue-100'}`}>
+                                            {isAdded ? 'Retirer' : '+ Ajouter'}
+                                        </button>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                    <div class="text-right mt-8"><button onClick={() => setTab('cart')} class="bg-orange-500 text-white px-6 py-3 rounded-xl font-bold shadow-md hover:bg-orange-600">Vérifier mon panier de voyage →</button></div>
+                </div>
+            );
+        }
+
+        function CartView() {
+            const { cart, setCart, notify } = useVoyage();
+            const [success, setSuccess] = useState(false);
+
+            const total = (cart.destination?.price || 0) + 
+                          (cart.transport?.price || 0) + 
+                          ((cart.accommodation?.price || 0) * 3) + 
+                          cart.activities.reduce((s, a) => s + a.price, 0);
+
+            if (success) return (
+                <div class="max-w-md mx-auto text-center py-12 bg-white rounded-2xl shadow-sm border border-green-100 p-6">
+                    <div class="text-5xl mb-2">🎉</div>
+                    <h3 class="text-2xl font-black text-gray-900">Dossier validé !</h3>
+                    <p class="text-gray-500 text-sm mt-2">La simulation d'achat a été enregistrée. Les données sont prêtes à être envoyées vers l'API PHP.</p>
+                    <button onClick={() => setSuccess(false)} class="mt-6 bg-blue-600 text-white px-4 py-2 rounded-xl text-sm font-bold">Créer un autre voyage</button>
+                </div>
+            );
+
+            if (!cart.destination) return <div class="text-center p-12 text-gray-400 font-medium bg-white rounded-xl border border-dashed">Votre panier de voyage est vide pour le moment.</div>;
+
+            return (
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-2 space-y-4">
+                        <h2 class="text-2xl font-black">Composition de votre itinéraire</h2>
+                        <div class="bg-white p-6 rounded-xl border border-gray-100 space-y-4">
+                            <div class="flex justify-between items-center pb-2 border-b">
+                                <div><p class="font-bold">📍 Destination</p><p class="text-xs text-gray-400">{cart.destination.name}</p></div>
+                                <span class="font-bold">{cart.destination.price} €</span>
+                            </div>
+                            {cart.transport && (
+                                <div class="flex justify-between items-center pb-2 border-b">
+                                    <div><p class="font-bold">🚄 Transport Réservé</p><p class="text-xs text-gray-400">{cart.transport.type}</p></div>
+                                    <span class="font-bold">{cart.transport.price} €</span>
+                                </div>
+                            )}
+                            {cart.accommodation && (
+                                <div class="flex justify-between items-center pb-2 border-b">
+                                    <div><p class="font-bold">🏨 Logement Sécurisé</p><p class="text-xs text-gray-400">{cart.accommodation.name} (3 nuits)</p></div>
+                                    <span class="font-bold">{cart.accommodation.price * 3} €</span>
+                                </div>
+                            )}
+                            {cart.activities.length > 0 && (
+                                <div class="pt-2">
+                                    <p class="font-bold text-sm mb-1">🎯 Activités planifiées</p>
+                                    {cart.activities.map(a => (
+                                        <div key={a.id} class="flex justify-between text-xs text-gray-500 pl-4 py-1"><span>• {a.title}</span><span>{a.price} €</span></div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl border border-gray-100 h-fit shadow-sm">
+                        <h3 class="text-lg font-bold mb-4">Validation & Simulation</h3>
+                        <div class="flex justify-between font-black text-xl border-b pb-4 mb-4"><span>Total global :</span><span class="text-blue-600">{total} €</span></div>
+                        <form onSubmit={(e) => { e.preventDefault(); setSuccess(true); setCart({ destination: null, transport: null, accommodation: null, activities: [] }); notify("Commande simulée avec succès !", "success"); }} class="space-y-3">
+                            <input type="text" placeholder="Nom complet du voyageur" required class="w-full border p-2 text-sm rounded-lg focus:outline-blue-500"/>
+                            <input type="text" placeholder="Numéro de carte fictif" required maxLength="16" class="w-full border p-2 text-sm rounded-lg focus:outline-blue-500"/>
+                            <button type="submit" class="w-full bg-green-600 text-white py-2.5 rounded-xl font-bold shadow-md hover:bg-green-700 text-sm">Confirmer & Enregistrer le séjour</button>
+                        </form>
+                    </div>
+                </div>
+            );
+        }
+
+        // VUE ADMIN / PRESTATAIRE (Pour justifier la gestion des rôles requise dans le sujet)
+        function DashboardView() {
+            const { role } = useVoyage();
+            return (
+                <div class="bg-white p-6 rounded-xl border border-gray-200">
+                    <h2 class="text-2xl font-black mb-1 capitalize">Espace de Gestion — Rôle {role}</h2>
+                    <p class="text-gray-500 text-sm mb-6">Cette interface s'adapte dynamiquement selon vos droits d'accès.</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                        <div class="bg-blue-50 p-4 rounded-xl border border-blue-100">
+                            <h4 class="text-xs font-bold text-blue-700 uppercase">Offres en ligne</h4>
+                            <p class="text-3xl font-black mt-1">24</p>
+                        </div>
+                        <div class="bg-green-50 p-4 rounded-xl border border-green-100">
+                            <h4 class="text-xs font-bold text-green-700 uppercase">Réservations actives</h4>
+                            <p class="text-3xl font-black mt-1">142</p>
+                        </div>
+                        <div class="bg-red-50 p-4 rounded-xl border border-red-100">
+                            <h4 class="text-xs font-bold text-red-700 uppercase">Alertes Modération</h4>
+                            <p class="text-3xl font-black mt-1">{role === 'admin' ? '3' : '0 (Droits restreints)'}</p>
+                        </div>
+                    </div>
+
+                    <div class="border rounded-xl p-4 bg-gray-50">
+                        <h3 class="font-bold text-sm mb-3">Actions rapides disponibles :</h3>
+                        <div class="flex gap-2">
+                            <button class="bg-gray-900 text-white text-xs px-3 py-2 rounded-lg font-bold">+ Ajouter une offre au catalogue</button>
+                            {role === 'admin' && <button class="bg-red-600 text-white text-xs px-3 py-2 rounded-lg font-bold">Accéder aux logs de sécurité</button>}
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // 4. STRUCTURE DE NAVIGATION GENERALE DE L'APPLICATION (Layout global)
+        function MainApp() {
+            const [tab, setTab] = useState('catalog');
+            const [showNotifications, setShowNotifications] = useState(false);
+            const { role, setRole, cart, notifications } = useVoyage();
+
+            const cartBadgeCount = (cart.destination ? 1 : 0) + (cart.transport ? 1 : 0) + 
+                                  (cart.accommodation ? 1 : 0) + cart.activities.length;
+
+            return (
+                <div class="flex flex-col flex-grow">
+                    {/* Header */}
+                    <header class="bg-blue-600 text-white shadow-md sticky top-0 z-50">
+                        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center gap-4">
+                            <h1 onClick={() => setTab('catalog')} class="text-xl font-black tracking-wider cursor-pointer flex items-center gap-2">
+                                🌍 VoyageVista
+                            </h1>
+                            
+                            {/* Onglets de navigation principale */}
+                            <nav class="flex flex-wrap gap-1 bg-blue-700 p-1 rounded-xl text-xs font-bold">
+                                <button onClick={() => setTab('catalog')} class={`px-3 py-2 rounded-lg ${tab === 'catalog' ? 'bg-white text-blue-700' : 'hover:bg-blue-600'}`}>Destinations</button>
+                                <button onClick={() => setTab('transport')} class={`px-3 py-2 rounded-lg ${tab === 'transport' ? 'bg-white text-blue-700' : 'hover:bg-blue-600'}`}>Transports</button>
+                                <button onClick={() => setTab('accommodation')} class={`px-3 py-2 rounded-lg ${tab === 'accommodation' ? 'bg-white text-blue-700' : 'hover:bg-blue-600'}`}>Hébergements</button>
+                                <button onClick={() => setTab('activities')} class={`px-3 py-2 rounded-lg ${tab === 'activities' ? 'bg-white text-blue-700' : 'hover:bg-blue-600'}`}>Activités</button>
+                                {(role === 'admin' || role === 'prestataire') && (
+                                    <button onClick={() => setTab('dashboard')} class={`px-3 py-2 rounded-lg ${tab === 'dashboard' ? 'bg-white text-blue-700' : 'text-yellow-300 hover:bg-blue-600'}`}>🛠️ Dashboard</button>
+                                )}
+                            </nav>
+
+                            {/* Sélecteur de rôle & Outils de simulation */}
+                            <div class="flex items-center gap-3">
+                                <div class="text-xs bg-blue-800 p-1.5 rounded-lg flex items-center gap-1">
+                                    <span class="text-gray-300 font-medium">Rôle simulation :</span>
+                                    <select value={role} onChange={(e) => { setRole(e.target.value); setTab('catalog'); }} class="bg-transparent text-white font-bold focus:outline-none cursor-pointer">
+                                        <option value="client" class="text-gray-800">Client Voyageur</option>
+                                        <option value="prestataire" class="text-gray-800">Prestataire Hôtelier</option>
+                                        <option value="admin" class="text-gray-800">Administrateur Système</option>
+                                    </select>
+                                </div>
+
+                                {/* Menu cloche des notifications réelles/simulées */}
+                                <div class="relative">
+                                    <button onClick={() => setShowNotifications(!showNotifications)} class="p-2 bg-blue-700 hover:bg-blue-800 rounded-lg text-sm relative">
+                                        🔔 {notifications.length > 0 && <span class="absolute -top-1 -right-1 bg-red-500 text-[9px] px-1 rounded-full font-black">!</span>}
+                                    </button>
+                                    {showNotifications && (
+                                        <div class="absolute right-0 mt-2 w-72 bg-white text-gray-800 rounded-xl shadow-xl border text-xs overflow-hidden z-50">
+                                            <p class="p-2 bg-gray-100 border-b font-bold text-gray-500">Flux d'événements du système</p>
+                                            <div class="max-h-48 overflow-y-auto divide-y">
+                                                {notifications.map(n => <div key={n.id} class="p-2 hover:bg-gray-50">💬 {n.text}</div>)}
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Bouton Panier Global */}
+                                <button onClick={() => setTab('cart')} class="bg-orange-500 hover:bg-orange-600 px-4 py-2 rounded-xl text-xs font-black flex items-center gap-2 transition">
+                                    🛒 Panier <span class="bg-white text-orange-600 px-2 py-0.5 rounded-full text-[10px] font-black">{cartBadgeCount}</span>
+                                </button>
+                            </div>
+                        </div>
+                    </header>
+
+                    {/* Zone de Contenu Dynamique selon l'onglet actif */}
+                    <main class="max-w-7xl mx-auto w-full px-4 py-8 flex-grow">
+                        {tab === 'catalog' && <CatalogView setTab={setTab} />}
+                        {tab === 'transport' && <TransportView setTab={setTab} />}
+                        {tab === 'accommodation' && <AccommodationView setTab={setTab} />}
+                        {tab === 'activities' && <ActivityView setTab={setTab} />}
+                        {tab === 'cart' && <CartView />}
+                        {tab === 'dashboard' && <DashboardView />}
+                    </main>
+
+                    {/* Pied de page obligatoire */}
+                    <footer class="bg-gray-900 text-gray-500 text-center py-4 border-t border-gray-800 text-xs mt-auto">
+                        <p>© 2026 VoyageVista — Livrable 1 — Module Web Dynamique ING2 — Prototype Frontend Autonome</p>
+                    </footer>
+                </div>
+            );
+        }
+
+        // Rendu final de l'application dans le DOM de la page
+        ReactDOM.render(
+            <VoyageProvider>
+                <MainApp />
+            </VoyageProvider>,
+            document.getElementById('root')
+        );
+    </script>
+</body>
+</html>
