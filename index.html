@@ -1,268 +1,310 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VoyageVista - Full-Stack Client-Serveur</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VoyageVista — Planifiez vos voyages sur mesure</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
-<body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex flex-col">
+<body>
 
-    <div id="root" class="flex flex-col flex-grow"></div>
+<div id="navbar-placeholder"></div>
 
-    <script type="text/babel">
-        const { useState, useEffect, createContext, useContext } = React;
+<!-- ===================== HERO ===================== -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-image-bg"></div>
+  <div class="hero-image-overlay"></div>
 
-        const VoyageContext = createContext();
+  <div class="container" style="padding-top: 68px;">
+    <div class="hero-content" style="max-width: 660px;">
+      <div class="hero-eyebrow anim-fade-up">
+        ✦ La plateforme voyage de la nouvelle génération
+      </div>
+      <h1 class="display-1 hero-title anim-fade-up anim-delay-1">
+        Votre prochain voyage,<br><em>composé à la perfection</em>
+      </h1>
+      <p class="hero-subtitle anim-fade-up anim-delay-2">
+        Sélectionnez votre destination, votre transport, votre hébergement et vos activités. VoyageVista orchestre chaque détail de votre séjour idéal.
+      </p>
+      <div class="hero-actions anim-fade-up anim-delay-3">
+        <a href="destinations.html" class="btn btn-primary btn-lg">
+          <span>Explorez les destinations</span>
+          <span>→</span>
+        </a>
+        <a href="inscription.html" class="btn btn-ghost btn-lg" style="color: rgba(255,255,255,.85); border-color: rgba(255,255,255,.25);">
+          Créer un compte
+        </a>
+      </div>
+      <div class="hero-stats anim-fade-up anim-delay-4">
+        <div class="stat">
+          <div class="stat-value">120+</div>
+          <div class="stat-label">Destinations</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">4 800</div>
+          <div class="stat-label">Voyageurs</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">98%</div>
+          <div class="stat-label">Satisfaction</div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-        function VoyageProvider({ children }) {
-            const [role, setRole] = useState('client');
-            const [cart, setCart] = useState({ destination: null, transport: null, accommodation: null, activities: [] });
-            const [notifications, setNotifications] = useState([
-                { id: 1, text: "Système connecté au serveur PHP local.", type: "info" }
-            ]);
+  <div class="hero-scroll" onclick="document.getElementById('searchSection').scrollIntoView({behavior:'smooth'})">
+    Découvrir ↓
+  </div>
+</section>
 
-            const notify = (text, type = "info") => {
-                setNotifications(prev => [{ id: Date.now(), text, type }, ...prev]);
-            };
+<!-- ===================== SEARCH BAR ===================== -->
+<section id="searchSection" style="padding: 0; position: relative; z-index: 10; margin-top: -28px;">
+  <div class="container">
+    <div class="search-bar" style="max-width: 1000px; margin: 0 auto;">
+      <div class="search-field">
+        <label for="searchDest">Destination</label>
+        <input id="searchDest" type="text" placeholder="Paris, Bali, New York…">
+      </div>
+      <div class="search-divider"></div>
+      <div class="search-field">
+        <label for="searchDep">Départ</label>
+        <input id="searchDep" type="date">
+      </div>
+      <div class="search-divider"></div>
+      <div class="search-field">
+        <label for="searchRet">Retour</label>
+        <input id="searchRet" type="date">
+      </div>
+      <div class="search-divider"></div>
+      <div class="search-field">
+        <label for="searchVoy">Voyageurs</label>
+        <select id="searchVoy">
+          <option>1 voyageur</option>
+          <option>2 voyageurs</option>
+          <option>3–4 voyageurs</option>
+          <option>5+ voyageurs</option>
+        </select>
+      </div>
+      <button class="search-submit" onclick="window.location.href='destinations.html'">
+        🔍 Rechercher
+      </button>
+    </div>
+  </div>
+</section>
 
-            const selectDestination = (dest) => {
-                setCart({ destination: dest, transport: null, accommodation: null, activities: [] });
-                notify(`Destination validée : ${dest.name}`, "success");
-            };
+<!-- ===================== CATEGORIES ===================== -->
+<section class="section-sm" style="padding-top: 56px;">
+  <div class="container">
+    <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+      <a href="destinations.html?cat=plage" class="chip active">🏖️ Plage</a>
+      <a href="destinations.html?cat=montagne" class="chip">⛰️ Montagne</a>
+      <a href="destinations.html?cat=culture" class="chip">🏛️ Culture</a>
+      <a href="destinations.html?cat=aventure" class="chip">🧗 Aventure</a>
+      <a href="destinations.html?cat=gastronomie" class="chip">🍽️ Gastronomie</a>
+      <a href="destinations.html?cat=city-break" class="chip">🏙️ City Break</a>
+      <a href="destinations.html?cat=nature" class="chip">🌿 Nature</a>
+    </div>
+  </div>
+</section>
 
-            return (
-                <VoyageContext.Provider value={{ role, setRole, cart, setCart, notifications, notify, selectDestination }}>
-                    {children}
-                </VoyageContext.Provider>
-            );
-        }
+<!-- ===================== FEATURED DESTINATIONS ===================== -->
+<section class="section bg-sand">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag">Sélection</div>
+      <h2 class="heading-1 heading">Destinations coup de cœur</h2>
+      <p class="subheading">Nos experts ont sélectionné les plus belles destinations pour votre prochain séjour.</p>
+    </div>
 
-        const useVoyage = () => useContext(VoyageContext);
+    <div class="dest-grid dest-grid-featured" id="featuredGrid">
+      <!-- Carte 1 — Featured tall -->
+      <div class="card">
+        <div class="card-img card-img-featured" style="height: 100%; min-height: 480px; position: relative;">
+          <img src="https://images.unsplash.com/photo-1511739001486-6bfe10ce785f?w=800&auto=format" alt="Paris" style="height: 100%; object-fit: cover;">
+          <span class="card-badge badge-new">Tendance</span>
+          <button class="card-wishlist">🤍</button>
+          <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 28px; background: linear-gradient(to top, rgba(13,27,42,.85), transparent);">
+            <span class="card-tag" style="background: rgba(255,255,255,.15); color: #fff;">City Break</span>
+            <h3 class="card-title" style="color: #fff; font-size: 1.6rem; margin-top: 8px;">Paris, France</h3>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px;">
+              <span style="color: rgba(255,255,255,.75); font-size: 0.88rem;">⭐ 4.9 · 1 240 avis</span>
+              <span style="font-family: var(--font-display); color: var(--terra-light); font-size: 1.3rem; font-weight: 700;">Dès 299 €</span>
+            </div>
+            <a href="destination-detail.html?id=1" class="btn btn-primary btn-sm" style="margin-top: 14px; width: 100%; justify-content: center;">Voir le séjour</a>
+          </div>
+        </div>
+      </div>
 
-        // --- VUE CATALOGUE (FETCH DEPUIS PHP) ---
-        function CatalogView({ setTab }) {
-            const { selectDestination, cart } = useVoyage();
-            const [destinations, setDestinations] = useState([]);
+      <!-- Carte 2 -->
+      <div class="card">
+        <div class="card-img card-img-tall">
+          <img src="https://images.unsplash.com/photo-1537953773345-d172ccf13cf1?w=600&auto=format" alt="Bali">
+          <span class="card-badge">Nature</span>
+          <button class="card-wishlist">🤍</button>
+        </div>
+        <div class="card-body">
+          <span class="card-tag">Île tropicale</span>
+          <h3 class="card-title">Bali, Indonésie</h3>
+          <p class="card-desc">Rizières en terrasse, temples millénaires et surf inoubliable.</p>
+        </div>
+        <div class="card-footer">
+          <div>
+            <div class="card-price">Dès 649 € <span>/ pers.</span></div>
+            <div class="card-rating" style="margin-top:4px;"><span class="stars">★★★★★</span> <span style="color:var(--text-light)">4.8</span></div>
+          </div>
+          <a href="destination-detail.html?id=2" class="btn btn-secondary btn-sm">Découvrir</a>
+        </div>
+      </div>
 
-            useEffect(() => {
-                fetch('api/destinations.php')
-                    .then(res => res.json())
-                    .then(data => setDestinations(data))
-                    .catch(err => console.error("Erreur de chargement PHP:", err));
-            }, []);
+      <!-- Carte 3 -->
+      <div class="card">
+        <div class="card-img card-img-tall">
+          <img src="https://images.unsplash.com/photo-1534430480872-3498386e7856?w=600&auto=format" alt="Kyoto">
+          <span class="card-badge badge-promo">-15%</span>
+          <button class="card-wishlist">🤍</button>
+        </div>
+        <div class="card-body">
+          <span class="card-tag">Culture & Tradition</span>
+          <h3 class="card-title">Kyoto, Japon</h3>
+          <p class="card-desc">Temples zen, jardins de cerisiers et gastronomie raffinée.</p>
+        </div>
+        <div class="card-footer">
+          <div>
+            <div class="card-price">Dès 890 € <span>/ pers.</span></div>
+            <div class="card-rating" style="margin-top:4px;"><span class="stars">★★★★★</span> <span style="color:var(--text-light)">4.9</span></div>
+          </div>
+          <a href="destination-detail.html?id=3" class="btn btn-secondary btn-sm">Découvrir</a>
+        </div>
+      </div>
 
-            return (
-                <div>
-                    <div class="mb-8">
-                        <h2 class="text-3xl font-black text-gray-900">Explorez nos destinations (API MySQL)</h2>
-                        <p class="text-gray-500">Ces cartes proviennent directement de votre base de données via PHP.</p>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        {destinations.map(d => (
-                            <div key={d.id} class={`bg-white rounded-2xl overflow-hidden shadow-sm border-2 transition ${cart.destination?.id === d.id ? 'border-blue-600 ring-4 ring-blue-50' : 'border-transparent'}`}>
-                                <img src={d.image_url} class="h-48 w-full object-cover" alt={d.name}/>
-                                <div class="p-5">
-                                    <span class="bg-blue-100 text-blue-800 text-xs px-2.5 py-1 rounded-full font-bold uppercase">{d.tag}</span>
-                                    <h3 class="text-xl font-bold mt-2">{d.name}</h3>
-                                    <p class="text-gray-600 text-sm mt-1">{d.description}</p>
-                                    <div class="flex justify-between items-center mt-6">
-                                        <span class="text-lg font-black text-blue-600">Dès {d.price} €</span>
-                                        <button onClick={() => selectDestination(d)} class={`px-4 py-2 rounded-xl text-sm font-bold ${cart.destination?.id === d.id ? 'bg-green-600 text-white' : 'bg-gray-900 text-white'}`}>
-                                            {cart.destination?.id === d.id ? '✓ Sélectionné' : 'Choisir'}
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                    {cart.destination && (
-                        <div class="text-right mt-8"><button onClick={() => setTab('transport')} class="bg-blue-600 text-white px-6 py-3 rounded-xl font-bold shadow-md hover:bg-blue-700">Étape suivante : Transports →</button></div>
-                    )}
-                </div>
-            );
-        }
+      <!-- Carte 4 -->
+      <div class="card">
+        <div class="card-img card-img-tall">
+          <img src="https://images.unsplash.com/photo-1483729558449-99ef09a8c325?w=600&auto=format" alt="Rio">
+          <button class="card-wishlist">🤍</button>
+        </div>
+        <div class="card-body">
+          <span class="card-tag">Aventure</span>
+          <h3 class="card-title">Rio de Janeiro, Brésil</h3>
+          <p class="card-desc">Carnival, Christ Rédempteur et plages légendaires.</p>
+        </div>
+        <div class="card-footer">
+          <div>
+            <div class="card-price">Dès 780 € <span>/ pers.</span></div>
+            <div class="card-rating" style="margin-top:4px;"><span class="stars">★★★★☆</span> <span style="color:var(--text-light)">4.6</span></div>
+          </div>
+          <a href="destination-detail.html?id=4" class="btn btn-secondary btn-sm">Découvrir</a>
+        </div>
+      </div>
+    </div>
 
-        // --- VUE TRANSPORT (FETCH DEPUIS PHP FILTRÉ PAR DESTINATION) ---
-        function TransportView({ setTab }) {
-            const { cart, setCart, notify } = useVoyage();
-            const [transports, setTransports] = useState([]);
+    <div class="text-center" style="margin-top: 40px;">
+      <a href="destinations.html" class="btn btn-outline btn-lg">Voir toutes les destinations →</a>
+    </div>
+  </div>
+</section>
 
-            useEffect(() => {
-                if (cart.destination) {
-                    fetch(`api/transports.php?dest_id=${cart.destination.id}`)
-                        .then(res => res.json())
-                        .then(data => setTransports(data));
-                }
-            }, [cart.destination]);
+<!-- ===================== HOW IT WORKS ===================== -->
+<section class="section bg-white">
+  <div class="container">
+    <div class="section-header text-center" style="max-width: 560px; margin: 0 auto 56px;">
+      <div class="section-tag">Simple & Rapide</div>
+      <h2 class="heading-1 heading">Composez votre voyage en 4 étapes</h2>
+    </div>
 
-            if (!cart.destination) return <div class="p-8 bg-yellow-50 text-yellow-800 rounded-xl border border-yellow-200">⚠️ Sélectionnez d'abord une destination.</div>;
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px;">
+      <div style="text-align: center;">
+        <div style="width: 72px; height: 72px; background: rgba(201,113,74,.1); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin: 0 auto 20px;">🗺️</div>
+        <div style="font-size: 0.72rem; font-weight: 700; color: var(--terra); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 8px;">Étape 1</div>
+        <h3 class="heading-3" style="margin-bottom: 8px;">Choisissez une destination</h3>
+        <p style="font-size: 0.88rem; color: var(--text-mid); line-height: 1.7;">Parcourez notre catalogue de 120+ destinations filtrées selon vos envies.</p>
+      </div>
+      <div style="text-align: center;">
+        <div style="width: 72px; height: 72px; background: rgba(212,168,83,.1); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin: 0 auto 20px;">✈️</div>
+        <div style="font-size: 0.72rem; font-weight: 700; color: var(--gold); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 8px;">Étape 2</div>
+        <h3 class="heading-3" style="margin-bottom: 8px;">Réservez votre transport</h3>
+        <p style="font-size: 0.88rem; color: var(--text-mid); line-height: 1.7;">Vol, train ou bus — comparez les options disponibles pour votre trajet.</p>
+      </div>
+      <div style="text-align: center;">
+        <div style="width: 72px; height: 72px; background: rgba(13,27,42,.06); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin: 0 auto 20px;">🏨</div>
+        <div style="font-size: 0.72rem; font-weight: 700; color: var(--navy); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 8px;">Étape 3</div>
+        <h3 class="heading-3" style="margin-bottom: 8px;">Sélectionnez votre hôtel</h3>
+        <p style="font-size: 0.88rem; color: var(--text-mid); line-height: 1.7;">Hôtels, villas, appartements — choisissez l'hébergement qui vous correspond.</p>
+      </div>
+      <div style="text-align: center;">
+        <div style="width: 72px; height: 72px; background: rgba(45,122,79,.08); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin: 0 auto 20px;">🎭</div>
+        <div style="font-size: 0.72rem; font-weight: 700; color: var(--success); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 8px;">Étape 4</div>
+        <h3 class="heading-3" style="margin-bottom: 8px;">Ajoutez vos activités</h3>
+        <p style="font-size: 0.88rem; color: var(--text-mid); line-height: 1.7;">Composez votre programme avec des expériences locales uniques.</p>
+      </div>
+    </div>
+  </div>
+</section>
 
-            return (
-                <div>
-                    <h2 class="text-2xl font-black mb-6">Trajets disponibles vers {cart.destination.name}</h2>
-                    <div class="space-y-4">
-                        {transports.length === 0 ? <p class="text-gray-400">Aucun trajet trouvé pour cette destination.</p> : 
-                        transports.map(t => (
-                            <div key={t.id} class={`bg-white p-5 rounded-xl border-2 flex justify-between items-center ${cart.transport?.id === t.id ? 'border-blue-600 bg-blue-50/20' : 'border-gray-100'}`}>
-                                <div>
-                                    <h4 class="font-bold text-lg">{t.type}</h4>
-                                    <p class="text-sm text-gray-500">Créneau : {t.time_window}</p>
-                                    <span class="text-xs text-red-500 font-medium">{t.seats_left} places critiques</span>
-                                </div>
-                                <div class="text-right flex items-center gap-4">
-                                    <span class="text-xl font-black text-gray-900">{t.price} €</span>
-                                    <button onClick={() => { setCart(p => ({...p, transport: t})); notify(`Transport retenu`, "success"); }} class={`px-4 py-2 rounded-xl text-sm font-bold ${cart.transport?.id === t.id ? 'bg-green-600 text-white' : 'bg-gray-100'}`}>
-                                        Choisir
-                                    </button>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                    <div class="text-right mt-8"><button onClick={() => setTab('accommodation')} class="bg-blue-600 text-white px-6 py-3 rounded-xl font-bold shadow-md">Hébergements →</button></div>
-                </div>
-            );
-        }
+<!-- ===================== TESTIMONIALS ===================== -->
+<section class="section bg-sand">
+  <div class="container">
+    <div class="section-header text-center" style="max-width: 560px; margin: 0 auto 48px;">
+      <div class="section-tag">Avis voyageurs</div>
+      <h2 class="heading-1 heading">Ce que disent nos voyageurs</h2>
+    </div>
 
-        // --- VUE HÉBERGEMENT (FETCH DEPUIS PHP) ---
-        function AccommodationView({ setTab }) {
-            const { cart, setCart, notify } = useVoyage();
-            const [hotels, setHotels] = useState([]);
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;">
+      <div style="background: var(--white); border-radius: var(--radius-lg); padding: 28px; box-shadow: var(--shadow-sm);">
+        <div style="color: var(--gold); font-size: 1.1rem; margin-bottom: 14px;">★★★★★</div>
+        <p style="font-family: var(--font-display); font-size: 1rem; font-style: italic; line-height: 1.7; color: var(--text-main); margin-bottom: 20px;">"Une expérience incroyable de bout en bout. La plateforme m'a permis de composer mon voyage à Bali en moins de 20 minutes, avec exactement ce que je voulais."</p>
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, var(--terra), var(--gold)); display: flex; align-items: center; justify-content: center; color: var(--white); font-weight: 700;">S</div>
+          <div>
+            <div style="font-weight: 600; font-size: 0.9rem;">Sophie M.</div>
+            <div style="font-size: 0.78rem; color: var(--text-light);">Bali, Indonésie — Jan. 2026</div>
+          </div>
+        </div>
+      </div>
+      <div style="background: var(--white); border-radius: var(--radius-lg); padding: 28px; box-shadow: var(--shadow-sm);">
+        <div style="color: var(--gold); font-size: 1.1rem; margin-bottom: 14px;">★★★★★</div>
+        <p style="font-family: var(--font-display); font-size: 1rem; font-style: italic; line-height: 1.7; color: var(--text-main); margin-bottom: 20px;">"Le système d'itinéraire est vraiment bien pensé. J'ai pu ajouter des activités au fur et à mesure et voir le total se mettre à jour en temps réel."</p>
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, var(--navy), var(--navy-light)); display: flex; align-items: center; justify-content: center; color: var(--white); font-weight: 700;">A</div>
+          <div>
+            <div style="font-weight: 600; font-size: 0.9rem;">Antoine R.</div>
+            <div style="font-size: 0.78rem; color: var(--text-light);">Kyoto, Japon — Fév. 2026</div>
+          </div>
+        </div>
+      </div>
+      <div style="background: var(--white); border-radius: var(--radius-lg); padding: 28px; box-shadow: var(--shadow-sm);">
+        <div style="color: var(--gold); font-size: 1.1rem; margin-bottom: 14px;">★★★★☆</div>
+        <p style="font-family: var(--font-display); font-size: 1rem; font-style: italic; line-height: 1.7; color: var(--text-main); margin-bottom: 20px;">"Interface fluide, design élégant. J'apprécie particulièrement la section hébergements qui compare vraiment bien les options disponibles sur place."</p>
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, var(--gold), var(--terra-light)); display: flex; align-items: center; justify-content: center; color: var(--white); font-weight: 700;">L</div>
+          <div>
+            <div style="font-weight: 600; font-size: 0.9rem;">Léa D.</div>
+            <div style="font-size: 0.78rem; color: var(--text-light);">Paris, France — Mars 2026</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-            useEffect(() => {
-                if (cart.destination) {
-                    fetch(`api/accommodations.php?dest_id=${cart.destination.id}`)
-                        .then(res => res.json())
-                        .then(data => setHotels(data));
-                }
-            }, [cart.destination]);
+<!-- ===================== CTA BANNER ===================== -->
+<section style="background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%); padding: 80px 0; overflow: hidden; position: relative;">
+  <div style="position: absolute; inset: 0; opacity: 0.05; background: url('https://images.unsplash.com/photo-1506197603052-3cc9c3a201bd?w=1200&auto=format') center/cover;"></div>
+  <div class="container text-center" style="position: relative; z-index: 2;">
+    <div class="section-tag" style="color: var(--terra-light); justify-content: center;">Offre limitée</div>
+    <h2 class="display-2" style="color: var(--white); margin-bottom: 16px;">Prêt pour votre prochain<br><em>grand voyage ?</em></h2>
+    <p style="color: rgba(255,255,255,.65); font-size: 1.1rem; margin-bottom: 36px; max-width: 480px; margin-left: auto; margin-right: auto;">Rejoignez plus de 4 800 voyageurs qui font confiance à VoyageVista pour leurs séjours sur mesure.</p>
+    <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+      <a href="inscription.html" class="btn btn-primary btn-lg">Créer un compte gratuit</a>
+      <a href="destinations.html" class="btn btn-lg" style="background: rgba(255,255,255,.1); color: var(--white); border: 1.5px solid rgba(255,255,255,.2);">Explorer les destinations</a>
+    </div>
+  </div>
+</section>
 
-            if (!cart.destination) return <div class="p-8 bg-yellow-50 text-yellow-800 rounded-xl">⚠️ Destination requise.</div>;
+<div id="footer-placeholder"></div>
 
-            return (
-                <div>
-                    <h2 class="text-2xl font-black mb-6">Logements à {cart.destination.name}</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        {hotels.map(h => (
-                            <div key={h.id} class={`bg-white p-6 rounded-xl border-2 flex flex-col justify-between ${cart.accommodation?.id === h.id ? 'border-blue-600' : 'border-gray-100'}`}>
-                                <div>
-                                    <div class="flex justify-between text-xs text-gray-400 font-bold"><span>{h.type}</span><span>{h.stars}</span></div>
-                                    <h3 class="text-lg font-bold mt-2">{h.name}</h3>
-                                    <p class="text-2xl font-black text-blue-600 mt-4">{h.price_per_night} € <span class="text-xs text-gray-400 font-normal">/ nuit</span></p>
-                                </div>
-                                <button onClick={() => { setCart(p => ({...p, accommodation: h})); notify(`Chambre réservée`, "success"); }} class={`w-full mt-6 py-2 rounded-xl font-bold text-sm ${cart.accommodation?.id === h.id ? 'bg-green-600 text-white' : 'bg-gray-900 text-white'}`}>
-                                    Sélectionner
-                                </button>
-                            </div>
-                        ))}
-                    </div>
-                    <div class="text-right mt-8"><button onClick={() => setTab('cart')} class="bg-blue-600 text-white px-6 py-3 rounded-xl font-bold shadow-md">Mon Panier →</button></div>
-                </div>
-            );
-        }
-
-        // --- VUE PANIER & ENVOI AU BACKEND (POST TRANSACTIONNEL) ---
-        function CartView() {
-            const { cart, setCart, notify } = useVoyage();
-            const [name, setName] = useState('');
-            const [successMsg, setSuccessMsg] = useState('');
-
-            const total = (cart.destination?.price || 0) + (cart.transport?.price || 0) + ((cart.accommodation?.price_per_night || 0) * 3);
-
-            const handleSubmit = (e) => {
-                e.preventDefault();
-                
-                // Envoi des structures de données vers l'API PHP de traitement
-                fetch('api/save_trip.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        client_name: name,
-                        destination_id: cart.destination.id,
-                        total_price: total
-                    })
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if(data.status === "success") {
-                        setSuccessMsg(data.message);
-                        setCart({ destination: null, transport: null, accommodation: null, activities: [] });
-                        notify("Commande traitée en BDD !", "success");
-                    }
-                });
-            };
-
-            if (successMsg) return (
-                <div class="max-w-md mx-auto text-center py-12 bg-white rounded-2xl shadow-sm border border-green-200 p-6">
-                    <div class="text-5xl mb-2">🚀</div>
-                    <h3 class="text-xl font-black text-green-700">Succès Synchrone !</h3>
-                    <p class="text-gray-600 text-sm mt-2">{successMsg}</p>
-                </div>
-            );
-
-            if (!cart.destination) return <div class="text-center p-12 text-gray-400 bg-white rounded-xl border border-dashed">Votre panier est vide.</div>;
-
-            return (
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <div class="lg:col-span-2 space-y-4">
-                        <h2 class="text-2xl font-black">Récapitulatif de votre itinéraire dynamique</h2>
-                        <div class="bg-white p-6 rounded-xl border space-y-3">
-                            <div class="flex justify-between"><span>📍 Destination : {cart.destination.name}</span><span class="font-bold">{cart.destination.price} €</span></div>
-                            {cart.transport && <div class="flex justify-between"><span>🚄 Aller/Retour : {cart.transport.type}</span><span class="font-bold">{cart.transport.price} €</span></div>}
-                            {cart.accommodation && <div class="flex justify-between"><span>🏨 Logement : {cart.accommodation.name} (3 nuits)</span><span class="font-bold">{cart.accommodation.price_per_night * 3} €</span></div>}
-                        </div>
-                    </div>
-                    <div class="bg-white p-6 rounded-xl border shadow-sm">
-                        <h3 class="text-lg font-bold mb-4">Finaliser l'enregistrement</h3>
-                        <div class="flex justify-between font-black text-xl mb-4"><span>Total :</span><span class="text-blue-600">{total} €</span></div>
-                        <form onSubmit={handleSubmit} class="space-y-3">
-                            <input type="text" placeholder="Votre nom" value={name} onChange={e => setName(e.target.value)} required class="w-full border p-2 text-sm rounded-lg" />
-                            <button type="submit" class="w-full bg-green-600 text-white py-2.5 rounded-xl font-bold shadow-md hover:bg-green-700">Enregistrer dans MySQL</button>
-                        </form>
-                    </div>
-                </div>
-            );
-        }
-
-        // --- COMPOSANT MAIN (LAYOUT ET ROUTAGE) ---
-        function MainApp() {
-            const [tab, setTab] = useState('catalog');
-            const { role, setRole, cart, notifications } = useVoyage();
-
-            return (
-                <div class="flex flex-col flex-grow">
-                    <header class="bg-blue-800 text-white shadow-md">
-                        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-                            <h1 onClick={() => setTab('catalog')} class="text-xl font-black cursor-pointer">VoyageVista 🌍</h1>
-                            <nav class="flex gap-2 text-xs font-bold">
-                                <button onClick={() => setTab('catalog')} class={`px-3 py-2 rounded-lg ${tab === 'catalog' ? 'bg-white text-blue-800' : ''}`}>Destinations</button>
-                                <button onClick={() => setTab('transport')} class={`px-3 py-2 rounded-lg ${tab === 'transport' ? 'bg-white text-blue-800' : ''}`}>Transports</button>
-                                <button onClick={() => setTab('accommodation')} class={`px-3 py-2 rounded-lg ${tab === 'accommodation' ? 'bg-white text-blue-800' : ''}`}>Hébergements</button>
-                            </nav>
-                            <button onClick={() => setTab('cart')} class="bg-orange-500 px-4 py-2 rounded-xl text-xs font-black">
-                                🛒 Mon Panier
-                            </button>
-                        </div>
-                    </header>
-
-                    <main class="max-w-7xl mx-auto w-full px-4 py-8 flex-grow">
-                        {tab === 'catalog' && <CatalogView setTab={setTab} />}
-                        {tab === 'transport' && <TransportView setTab={setTab} />}
-                        {tab === 'accommodation' && <AccommodationView setTab={setTab} />}
-                        {tab === 'cart' && <CartView />}
-                    </main>
-
-                    <footer class="bg-gray-900 text-gray-500 text-center py-4 text-xs mt-auto">
-                        <p>© 2026 VoyageVista — Architecture Full-Stack connectée MySQL</p>
-                    </footer>
-                </div>
-            );
-        }
-
-        ReactDOM.render(<VoyageProvider><MainApp /></VoyageProvider>, document.getElementById('root'));
-    </script>
+<script src="js/components.js"></script>
+<script src="js/main.js"></script>
 </body>
 </html>
