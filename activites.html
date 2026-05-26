@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Activités — VoyageVista</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body class="page-top">
+
+<div id="navbar-placeholder"></div>
+
+<div style="background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%); padding: 40px 0 36px;">
+  <div class="container" style="color: var(--white);">
+    <p style="font-size: 0.8rem;"><a href="hebergements.html" style="color: rgba(255,255,255,.5);">← Hébergements</a></p>
+    <h1 class="heading-1">Ajoutez des activités</h1>
+  </div>
+</div>
+
+<div style="background: var(--sand); padding: 36px 0;">
+  <div class="container">
+    <div class="steps-bar" style="margin-bottom: 32px;">
+      <div class="step done"><div class="step-num">✓</div><div class="step-info"><div class="step-label">Étape 1</div><div class="step-name">Destination</div></div></div>
+      <div class="step done"><div class="step-num">✓</div><div class="step-info"><div class="step-label">Étape 2</div><div class="step-name">Transport</div></div></div>
+      <div class="step done"><div class="step-num">✓</div><div class="step-info"><div class="step-label">Étape 3</div><div class="step-name">Hébergement</div></div></div>
+      <div class="step active"><div class="step-num">4</div><div class="step-info"><div class="step-label">Étape 4</div><div class="step-name">Activités</div></div></div>
+      <div class="step"><div class="step-num">5</div><div class="step-info"><div class="step-label">Étape 5</div><div class="step-name">Panier</div></div></div>
+    </div>
+
+    <div id="activites-app"></div>
+  </div>
+</div>
+
+<div id="footer-placeholder"></div>
+
+<script src="js/components.js"></script>
+<script src="js/main.js"></script>
+<script type="text/babel">
+const { useState, useEffect } = React;
+
+function ActivitesApp() {
+  const [cart, setCart] = useState(null);
+  const [activities, setActivities] = useState([]);
+  const [selectedActivities, setSelectedActivities] = useState([]);
+
+  useEffect(() => {
+    const c = Cart.get();
+    setCart(c);
+    setSelectedActivities(c.activities || []);
+    if (c.destination) {
+      fetch(`activities.php?dest_id=${c.destination.id}`)
+        .then(res => res.json())
+        .then(data => setActivities(data))
+        .catch(err => console.error(err));
+    }
+  }, []);
+
+  function toggleActivity(act) {
+    Cart.toggleActivity(act);
+    const updated = Cart.get().activities || [];
+    setSelectedActivities(updated);
+    Toast.show(updated.find(a => a.id === act.id) ? 'Activité ajoutée' : 'Activité retirée', 'info');
+    Cart.updateBadge();
+  }
+
+  if (!cart?.destination) return <div className="empty-state">Destination manquante.</div>;
+
+  const nights = 3;
+  const totalActivities = selectedActivities.reduce((sum, a) => sum + (a.price || 0), 0);
+  const subtotal = (cart.destination.price || 0) + (cart.transport?.price || 0) + (cart.accommodation ? cart.accommodation.price_per_night * nights : 0);
+
+  return (
+    <div style={{display:'grid', gridTemplateColumns:'1fr 340px', gap:'32px', alignItems:'start'}}>
+      <div className="dest-grid">
+        {activities.map(act => {
+          const isSelected = selectedActivities.some(a => a.id === act.id);
+          return (
+            <div key={act.id} className="activity-card">
+              <div className="activity-img"><img src="https://images.unsplash.com/photo-1534430480872-3498386e7856?w=400" alt={act.name} /></div>
+              <div className="activity-body">
+                <div className="activity-meta">
+                  <span className="activity-duration">⏱️ {act.duration}</span>
+                  <span className="activity-difficulty difficulty-easy">Facile</span>
+                </div>
+                <div className="activity-name">{act.name}</div>
+                <div className="activity-desc">{act.description}</div>
+              </div>
+              <div className="activity-footer">
+                <div className="activity-price">{act.price} €</div>
+                <button className={`btn btn-sm ${isSelected ? 'btn-gold' : 'btn-secondary'}`} onClick={() => toggleActivity(act)}>
+                  {isSelected ? '✓ Retirer' : '+ Ajouter'}
+                </button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <div style={{position:'sticky', top:'88px'}}>
+        <div className="order-summary">
+          <h3 className="summary-title">Votre séjour</h3>
+          <div className="summary-line"><span>Destination</span><strong>{cart.destination.price} €</strong></div>
+          {cart.transport && <div className="summary-line"><span>Transport</span><strong>{cart.transport.price} €</strong></div>}
+          {cart.accommodation && <div className="summary-line"><span>Hébergement (3 nuits)</span><strong>{cart.accommodation.price_per_night * nights} €</strong></div>}
+          {selectedActivities.length > 0 && (
+            <div><div className="summary-divider"></div>
+            {selectedActivities.map(a => <div key={a.id} className="summary-line"><span>{a.name}</span><strong>{a.price} €</strong></div>)}
+            </div>
+          )}
+          <div className="summary-divider"></div>
+          <div className="summary-total">
+            <span>Total</span>
+            <span className="price">{subtotal + totalActivities} €</span>
+          </div>
+          <a href="panier.html" className="checkout-btn">Voir mon panier →</a>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.render(<ActivitesApp />, document.getElementById('activites-app'));
+</script>
+</body>
+</html>
