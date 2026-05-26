@@ -10,207 +10,142 @@
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
 <body class="page-top">
- 
+
 <div id="navbar-placeholder"></div>
- 
+
 <div style="background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%); padding: 40px 0 36px;">
   <div class="container" style="color: var(--white);">
     <p style="font-size: 0.8rem; color: rgba(255,255,255,.5); margin-bottom: 10px;"><a href="destinations.html" style="color: rgba(255,255,255,.5);">← Destinations</a></p>
     <h1 class="heading-1" style="color: var(--white);">Choisissez votre transport</h1>
   </div>
 </div>
- 
+
 <div style="background: var(--sand); padding: 36px 0;">
   <div class="container">
-    <!-- BOOKING STEPS -->
+    <!-- Barre d'étapes -->
     <div class="steps-bar" style="margin-bottom: 32px;">
-      <div class="step done">
-        <div class="step-num">✓</div>
-        <div class="step-info">
-          <div class="step-label">Étape 1</div>
-          <div class="step-name">Destination</div>
-        </div>
-      </div>
-      <div class="step active">
-        <div class="step-num">2</div>
-        <div class="step-info">
-          <div class="step-label">Étape 2</div>
-          <div class="step-name">Transport</div>
-        </div>
-      </div>
-      <div class="step">
-        <div class="step-num">3</div>
-        <div class="step-info">
-          <div class="step-label">Étape 3</div>
-          <div class="step-name">Hébergement</div>
-        </div>
-      </div>
-      <div class="step">
-        <div class="step-num">4</div>
-        <div class="step-info">
-          <div class="step-label">Étape 4</div>
-          <div class="step-name">Activités</div>
-        </div>
-      </div>
-      <div class="step">
-        <div class="step-num">5</div>
-        <div class="step-info">
-          <div class="step-label">Étape 5</div>
-          <div class="step-name">Panier</div>
-        </div>
-      </div>
+      <div class="step done"><div class="step-num">✓</div><div class="step-info"><div class="step-label">Étape 1</div><div class="step-name">Destination</div></div></div>
+      <div class="step active"><div class="step-num">2</div><div class="step-info"><div class="step-label">Étape 2</div><div class="step-name">Transport</div></div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-info"><div class="step-label">Étape 3</div><div class="step-name">Hébergement</div></div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-info"><div class="step-label">Étape 4</div><div class="step-name">Activités</div></div></div>
+      <div class="step"><div class="step-num">5</div><div class="step-info"><div class="step-label">Étape 5</div><div class="step-name">Panier</div></div></div>
     </div>
- 
+
     <div id="transports-app"></div>
   </div>
 </div>
- 
+
 <div id="footer-placeholder"></div>
- 
+
 <script src="js/components.js"></script>
 <script src="js/main.js"></script>
 <script type="text/babel">
 const { useState, useEffect } = React;
- 
-const MOCK_TRANSPORTS = [
-  { id: 1, type: "Vol direct", company: "Air France", dep_time: "07:30", arr_time: "09:15", duration: "1h45", price: 149, seats_left: 8, class: "Économique", icon: "✈️" },
-  { id: 2, type: "Vol direct", company: "EasyJet", dep_time: "10:45", arr_time: "12:30", duration: "1h45", price: 89, seats_left: 3, class: "Économique", icon: "✈️" },
-  { id: 3, type: "TGV Inouï", company: "SNCF", dep_time: "06:15", arr_time: "08:45", duration: "2h30", price: 65, seats_left: 22, class: "1ère classe", icon: "🚄" },
-  { id: 4, type: "TGV Inouï", company: "SNCF", dep_time: "14:00", arr_time: "16:35", duration: "2h35", price: 45, seats_left: 15, class: "2ème classe", icon: "🚄" },
-  { id: 5, type: "Bus longue distance", company: "FlixBus", dep_time: "08:00", arr_time: "13:30", duration: "5h30", price: 18, seats_left: 40, class: "Standard", icon: "🚌" },
-];
- 
-function TransportCard({ t, selected, onSelect }) {
-  return (
-    <div className={`transport-card ${selected ? 'selected' : ''}`} onClick={() => onSelect(t)}>
-      <div className="transport-icon">{t.icon}</div>
-      <div className="transport-route" style={{flex:1}}>
-        <div className="transport-times">
-          <span className="transport-time">{t.dep_time}</span>
-          <span className="transport-arrow">——→</span>
-          <span className="transport-time">{t.arr_time}</span>
-        </div>
-        <div className="transport-duration" style={{marginBottom: '8px'}}>{t.duration} · {t.company}</div>
-        <div style={{display:'flex', flexWrap:'wrap', gap: '6px'}}>
-          <span className="transport-detail-tag">{t.type}</span>
-          <span className="transport-detail-tag">{t.class}</span>
-        </div>
-      </div>
-      <div className="transport-price-section">
-        <div className="transport-price">{t.price} €</div>
-        <div className={`transport-seats ${t.seats_left <= 5 ? 'low' : ''}`}>
-          {t.seats_left <= 5 ? `⚠️ ${t.seats_left} places restantes` : `${t.seats_left} places disponibles`}
-        </div>
-      </div>
-      <div className="transport-select-btn">{selected ? '✓' : '+'}</div>
-    </div>
-  );
-}
- 
+
 function TransportsApp() {
-  const [cart, setCartState] = useState(null);
+  const [cart, setCart] = useState(null);
+  const [transports, setTransports] = useState([]);
   const [selectedTransport, setSelectedTransport] = useState(null);
   const [typeFilter, setTypeFilter] = useState('all');
-  const [sortBy, setSortBy] = useState('price');
- 
+
   useEffect(() => {
-    const c = JSON.parse(localStorage.getItem('vv_cart') || '{}');
-    setCartState(c);
+    const c = Cart.get();
+    setCart(c);
     if (c.transport) setSelectedTransport(c.transport);
+    if (c.destination) {
+      fetch(`transports.php?dest_id=${c.destination.id}`)
+        .then(res => res.json())
+        .then(data => setTransports(data))
+        .catch(err => console.error(err));
+    }
   }, []);
- 
+
   function handleSelect(t) {
+    Cart.setTransport(t);
     setSelectedTransport(t);
-    const c = JSON.parse(localStorage.getItem('vv_cart') || '{}');
-    c.transport = t;
-    localStorage.setItem('vv_cart', JSON.stringify(c));
-    document.querySelector('.cart-badge') && (document.querySelector('.cart-badge').textContent = '2');
+    Toast.show('Transport sélectionné', 'success');
+    // Mettre à jour le badge du panier (main.js le fait déjà via updateBadge)
+    Cart.updateBadge();
   }
- 
-  const filtered = MOCK_TRANSPORTS
-    .filter(t => typeFilter === 'all' || t.type.toLowerCase().includes(typeFilter))
-    .sort((a,b) => sortBy === 'price' ? a.price - b.price : sortBy === 'duration' ? a.duration.localeCompare(b.duration) : 0);
- 
+
   if (!cart?.destination) {
     return (
       <div className="empty-state">
         <div className="empty-state-icon">🗺️</div>
-        <h3 className="empty-state-title">Aucune destination sélectionnée</h3>
-        <p>Commencez par choisir votre destination.</p>
+        <h3>Aucune destination sélectionnée</h3>
+        <p>Commencez par choisir une destination.</p>
         <a href="destinations.html" className="btn btn-primary" style={{marginTop:'16px'}}>Explorer les destinations</a>
       </div>
     );
   }
- 
+
+  const filtered = transports.filter(t => typeFilter === 'all' || t.type.toLowerCase().includes(typeFilter));
+
   return (
     <div style={{display:'grid', gridTemplateColumns:'1fr 340px', gap:'32px', alignItems:'start'}}>
       <div>
-        <div style={{background:'var(--white)', borderRadius:'var(--radius-lg)', padding:'16px 20px', marginBottom:'20px', display:'flex', alignItems:'center', gap:'12px', boxShadow:'var(--shadow-sm)'}}>
+        <div style={{background:'var(--white)', borderRadius:'var(--radius-lg)', padding:'16px 20px', marginBottom:'20px'}}>
           <span style={{fontSize:'1.3rem'}}>📍</span>
-          <div>
-            <div style={{fontSize:'0.75rem', color:'var(--text-light)', fontWeight:600, textTransform:'uppercase'}}>Destination sélectionnée</div>
-            <div style={{fontWeight:700}}>{cart.destination.name}, {cart.destination.country}</div>
-          </div>
+          <div><div style={{fontSize:'0.75rem', color:'var(--text-light)'}}>Destination sélectionnée</div>
+          <div style={{fontWeight:700}}>{cart.destination.name}, {cart.destination.country}</div></div>
         </div>
- 
+
         <div className="filter-bar" style={{marginBottom:'20px', padding:'14px 20px'}}>
-          <span style={{fontSize:'0.8rem', fontWeight:700, color:'var(--text-mid)'}}>Type :</span>
+          <span style={{fontWeight:700}}>Type :</span>
           <div className="filter-chips">
             {[['all','Tous'],['vol','Avion'],['tgv','Train'],['bus','Bus']].map(([k,l]) => (
               <button key={k} className={`chip ${typeFilter===k?'active':''}`} onClick={()=>setTypeFilter(k)}>{l}</button>
             ))}
           </div>
-          <select className="filter-select" value={sortBy} onChange={e=>setSortBy(e.target.value)}>
-            <option value="price">Prix croissant</option>
-            <option value="duration">Durée</option>
-          </select>
         </div>
- 
+
         {filtered.map(t => (
-          <TransportCard key={t.id} t={t} selected={selectedTransport?.id === t.id} onSelect={handleSelect} />
+          <div key={t.id} className={`transport-card ${selectedTransport?.id === t.id ? 'selected' : ''}`} onClick={() => handleSelect(t)}>
+            <div className="transport-icon">{t.icon || '✈️'}</div>
+            <div className="transport-route" style={{flex:1}}>
+              <div className="transport-times">
+                <span className="transport-time">{t.dep_time || '--:--'}</span>
+                <span className="transport-arrow">——→</span>
+                <span className="transport-time">{t.arr_time || '--:--'}</span>
+              </div>
+              <div className="transport-duration">{t.duration || '?'} · {t.company || t.type}</div>
+              <div><span className="transport-detail-tag">{t.type}</span> <span className="transport-detail-tag">{t.class || 'Standard'}</span></div>
+            </div>
+            <div className="transport-price-section">
+              <div className="transport-price">{t.price} €</div>
+              <div className={`transport-seats ${t.seats_left <= 5 ? 'low' : ''}`}>
+                {t.seats_left <= 5 ? `⚠️ ${t.seats_left} places restantes` : `${t.seats_left} places disponibles`}
+              </div>
+            </div>
+            <div className="transport-select-btn">{selectedTransport?.id === t.id ? '✓' : '+'}</div>
+          </div>
         ))}
       </div>
- 
+
       <div style={{position:'sticky', top:'88px'}}>
         <div className="order-summary">
-          <h3 className="summary-title">Récapitulatif du voyage</h3>
-          {cart.destination && (
-            <div className="summary-line">
-              <span>📍 {cart.destination.name}</span>
-              <strong>{cart.destination.price} €</strong>
-            </div>
-          )}
+          <h3 className="summary-title">Récapitulatif</h3>
+          <div className="summary-line"><span>📍 {cart.destination.name}</span><strong>{cart.destination.price} €</strong></div>
           {selectedTransport ? (
-            <div className="summary-line">
-              <span>{selectedTransport.icon} {selectedTransport.type}</span>
-              <strong>{selectedTransport.price} €</strong>
-            </div>
+            <div className="summary-line"><span>{selectedTransport.icon} {selectedTransport.type}</span><strong>{selectedTransport.price} €</strong></div>
           ) : (
-            <div className="summary-line" style={{color:'var(--text-light)', fontStyle:'italic'}}>
-              <span>Transport non sélectionné</span>
-              <strong>—</strong>
-            </div>
+            <div className="summary-line" style={{fontStyle:'italic'}}><span>Transport non sélectionné</span><strong>—</strong></div>
           )}
           <div className="summary-divider"></div>
           <div className="summary-total">
             <span>Total provisoire</span>
-            <span className="price">{(cart.destination?.price || 0) + (selectedTransport?.price || 0)} €</span>
+            <span className="price">{(cart.destination.price || 0) + (selectedTransport?.price || 0)} €</span>
           </div>
-          <a href="hebergements.html" className={`checkout-btn ${!selectedTransport ? 'disabled' : ''}`}
-            style={!selectedTransport ? {opacity:0.5, pointerEvents:'none'} : {}}>
+          <a href="hebergements.html" className={`checkout-btn ${!selectedTransport ? 'disabled' : ''}`} style={!selectedTransport ? {opacity:0.5, pointerEvents:'none'} : {}}>
             Continuer : Hébergements →
           </a>
-          {!selectedTransport && (
-            <p style={{textAlign:'center', fontSize:'0.78rem', color:'var(--text-light)', marginTop:'10px'}}>
-              Sélectionnez un transport pour continuer
-            </p>
-          )}
+          {!selectedTransport && <p style={{textAlign:'center', fontSize:'0.78rem', marginTop:'10px'}}>Sélectionnez un transport pour continuer</p>}
         </div>
       </div>
     </div>
   );
 }
- 
+
 ReactDOM.render(<TransportsApp />, document.getElementById('transports-app'));
 </script>
 </body>
