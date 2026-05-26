@@ -118,85 +118,8 @@
     </div>
 
     <div class="dest-grid dest-grid-featured" id="featuredGrid">
-      <!-- Carte 1 — Featured tall -->
-      <div class="card">
-        <div class="card-img card-img-featured" style="height: 100%; min-height: 480px; position: relative;">
-          <img src="https://images.unsplash.com/photo-1511739001486-6bfe10ce785f?w=800&auto=format" alt="Paris" style="height: 100%; object-fit: cover;">
-          <span class="card-badge badge-new">Tendance</span>
-          <button class="card-wishlist">🤍</button>
-          <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 28px; background: linear-gradient(to top, rgba(13,27,42,.85), transparent);">
-            <span class="card-tag" style="background: rgba(255,255,255,.15); color: #fff;">City Break</span>
-            <h3 class="card-title" style="color: #fff; font-size: 1.6rem; margin-top: 8px;">Paris, France</h3>
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px;">
-              <span style="color: rgba(255,255,255,.75); font-size: 0.88rem;">⭐ 4.9 · 1 240 avis</span>
-              <span style="font-family: var(--font-display); color: var(--terra-light); font-size: 1.3rem; font-weight: 700;">Dès 299 €</span>
-            </div>
-            <a href="destination-detail.html?id=1" class="btn btn-primary btn-sm" style="margin-top: 14px; width: 100%; justify-content: center;">Voir le séjour</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Carte 2 -->
-      <div class="card">
-        <div class="card-img card-img-tall">
-          <img src="https://images.unsplash.com/photo-1537953773345-d172ccf13cf1?w=600&auto=format" alt="Bali">
-          <span class="card-badge">Nature</span>
-          <button class="card-wishlist">🤍</button>
-        </div>
-        <div class="card-body">
-          <span class="card-tag">Île tropicale</span>
-          <h3 class="card-title">Bali, Indonésie</h3>
-          <p class="card-desc">Rizières en terrasse, temples millénaires et surf inoubliable.</p>
-        </div>
-        <div class="card-footer">
-          <div>
-            <div class="card-price">Dès 649 € <span>/ pers.</span></div>
-            <div class="card-rating" style="margin-top:4px;"><span class="stars">★★★★★</span> <span style="color:var(--text-light)">4.8</span></div>
-          </div>
-          <a href="destination-detail.html?id=2" class="btn btn-secondary btn-sm">Découvrir</a>
-        </div>
-      </div>
-
-      <!-- Carte 3 -->
-      <div class="card">
-        <div class="card-img card-img-tall">
-          <img src="https://images.unsplash.com/photo-1534430480872-3498386e7856?w=600&auto=format" alt="Kyoto">
-          <span class="card-badge badge-promo">-15%</span>
-          <button class="card-wishlist">🤍</button>
-        </div>
-        <div class="card-body">
-          <span class="card-tag">Culture & Tradition</span>
-          <h3 class="card-title">Kyoto, Japon</h3>
-          <p class="card-desc">Temples zen, jardins de cerisiers et gastronomie raffinée.</p>
-        </div>
-        <div class="card-footer">
-          <div>
-            <div class="card-price">Dès 890 € <span>/ pers.</span></div>
-            <div class="card-rating" style="margin-top:4px;"><span class="stars">★★★★★</span> <span style="color:var(--text-light)">4.9</span></div>
-          </div>
-          <a href="destination-detail.html?id=3" class="btn btn-secondary btn-sm">Découvrir</a>
-        </div>
-      </div>
-
-      <!-- Carte 4 -->
-      <div class="card">
-        <div class="card-img card-img-tall">
-          <img src="https://images.unsplash.com/photo-1483729558449-99ef09a8c325?w=600&auto=format" alt="Rio">
-          <button class="card-wishlist">🤍</button>
-        </div>
-        <div class="card-body">
-          <span class="card-tag">Aventure</span>
-          <h3 class="card-title">Rio de Janeiro, Brésil</h3>
-          <p class="card-desc">Carnival, Christ Rédempteur et plages légendaires.</p>
-        </div>
-        <div class="card-footer">
-          <div>
-            <div class="card-price">Dès 780 € <span>/ pers.</span></div>
-            <div class="card-rating" style="margin-top:4px;"><span class="stars">★★★★☆</span> <span style="color:var(--text-light)">4.6</span></div>
-          </div>
-          <a href="destination-detail.html?id=4" class="btn btn-secondary btn-sm">Découvrir</a>
-        </div>
-      </div>
+      <!-- Les cartes seront chargées dynamiquement depuis destinations.php -->
+      <div class="loading-spinner" style="margin: 40px auto;"></div>
     </div>
 
     <div class="text-center" style="margin-top: 40px;">
@@ -218,25 +141,25 @@
         <div style="width: 72px; height: 72px; background: rgba(201,113,74,.1); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin: 0 auto 20px;">🗺️</div>
         <div style="font-size: 0.72rem; font-weight: 700; color: var(--terra); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 8px;">Étape 1</div>
         <h3 class="heading-3" style="margin-bottom: 8px;">Choisissez une destination</h3>
-        <p style="font-size: 0.88rem; color: var(--text-mid); line-height: 1.7;">Parcourez notre catalogue de 120+ destinations filtrées selon vos envies.</p>
+        <p style="font-size: 0.88rem; color: var(--text-mid);">Parcourez notre catalogue de 120+ destinations filtrées selon vos envies.</p>
       </div>
       <div style="text-align: center;">
         <div style="width: 72px; height: 72px; background: rgba(212,168,83,.1); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin: 0 auto 20px;">✈️</div>
         <div style="font-size: 0.72rem; font-weight: 700; color: var(--gold); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 8px;">Étape 2</div>
         <h3 class="heading-3" style="margin-bottom: 8px;">Réservez votre transport</h3>
-        <p style="font-size: 0.88rem; color: var(--text-mid); line-height: 1.7;">Vol, train ou bus — comparez les options disponibles pour votre trajet.</p>
+        <p style="font-size: 0.88rem; color: var(--text-mid);">Vol, train ou bus — comparez les options disponibles pour votre trajet.</p>
       </div>
       <div style="text-align: center;">
         <div style="width: 72px; height: 72px; background: rgba(13,27,42,.06); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin: 0 auto 20px;">🏨</div>
         <div style="font-size: 0.72rem; font-weight: 700; color: var(--navy); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 8px;">Étape 3</div>
         <h3 class="heading-3" style="margin-bottom: 8px;">Sélectionnez votre hôtel</h3>
-        <p style="font-size: 0.88rem; color: var(--text-mid); line-height: 1.7;">Hôtels, villas, appartements — choisissez l'hébergement qui vous correspond.</p>
+        <p style="font-size: 0.88rem; color: var(--text-mid);">Hôtels, villas, appartements — choisissez l'hébergement qui vous correspond.</p>
       </div>
       <div style="text-align: center;">
         <div style="width: 72px; height: 72px; background: rgba(45,122,79,.08); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin: 0 auto 20px;">🎭</div>
         <div style="font-size: 0.72rem; font-weight: 700; color: var(--success); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 8px;">Étape 4</div>
         <h3 class="heading-3" style="margin-bottom: 8px;">Ajoutez vos activités</h3>
-        <p style="font-size: 0.88rem; color: var(--text-mid); line-height: 1.7;">Composez votre programme avec des expériences locales uniques.</p>
+        <p style="font-size: 0.88rem; color: var(--text-mid);">Composez votre programme avec des expériences locales uniques.</p>
       </div>
     </div>
   </div>
@@ -256,10 +179,7 @@
         <p style="font-family: var(--font-display); font-size: 1rem; font-style: italic; line-height: 1.7; color: var(--text-main); margin-bottom: 20px;">"Une expérience incroyable de bout en bout. La plateforme m'a permis de composer mon voyage à Bali en moins de 20 minutes, avec exactement ce que je voulais."</p>
         <div style="display: flex; align-items: center; gap: 12px;">
           <div style="width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, var(--terra), var(--gold)); display: flex; align-items: center; justify-content: center; color: var(--white); font-weight: 700;">S</div>
-          <div>
-            <div style="font-weight: 600; font-size: 0.9rem;">Sophie M.</div>
-            <div style="font-size: 0.78rem; color: var(--text-light);">Bali, Indonésie — Jan. 2026</div>
-          </div>
+          <div><div style="font-weight: 600;">Sophie M.</div><div style="font-size: 0.78rem; color: var(--text-light);">Bali, Indonésie — Jan. 2026</div></div>
         </div>
       </div>
       <div style="background: var(--white); border-radius: var(--radius-lg); padding: 28px; box-shadow: var(--shadow-sm);">
@@ -267,10 +187,7 @@
         <p style="font-family: var(--font-display); font-size: 1rem; font-style: italic; line-height: 1.7; color: var(--text-main); margin-bottom: 20px;">"Le système d'itinéraire est vraiment bien pensé. J'ai pu ajouter des activités au fur et à mesure et voir le total se mettre à jour en temps réel."</p>
         <div style="display: flex; align-items: center; gap: 12px;">
           <div style="width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, var(--navy), var(--navy-light)); display: flex; align-items: center; justify-content: center; color: var(--white); font-weight: 700;">A</div>
-          <div>
-            <div style="font-weight: 600; font-size: 0.9rem;">Antoine R.</div>
-            <div style="font-size: 0.78rem; color: var(--text-light);">Kyoto, Japon — Fév. 2026</div>
-          </div>
+          <div><div style="font-weight: 600;">Antoine R.</div><div style="font-size: 0.78rem; color: var(--text-light);">Kyoto, Japon — Fév. 2026</div></div>
         </div>
       </div>
       <div style="background: var(--white); border-radius: var(--radius-lg); padding: 28px; box-shadow: var(--shadow-sm);">
@@ -278,10 +195,7 @@
         <p style="font-family: var(--font-display); font-size: 1rem; font-style: italic; line-height: 1.7; color: var(--text-main); margin-bottom: 20px;">"Interface fluide, design élégant. J'apprécie particulièrement la section hébergements qui compare vraiment bien les options disponibles sur place."</p>
         <div style="display: flex; align-items: center; gap: 12px;">
           <div style="width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, var(--gold), var(--terra-light)); display: flex; align-items: center; justify-content: center; color: var(--white); font-weight: 700;">L</div>
-          <div>
-            <div style="font-weight: 600; font-size: 0.9rem;">Léa D.</div>
-            <div style="font-size: 0.78rem; color: var(--text-light);">Paris, France — Mars 2026</div>
-          </div>
+          <div><div style="font-weight: 600;">Léa D.</div><div style="font-size: 0.78rem; color: var(--text-light);">Paris, France — Mars 2026</div></div>
         </div>
       </div>
     </div>
@@ -306,5 +220,43 @@
 
 <script src="js/components.js"></script>
 <script src="js/main.js"></script>
+<script>
+// Chargement dynamique des destinations vedettes depuis la base de données
+fetch('destinations.php')
+  .then(res => res.json())
+  .then(destinations => {
+    const featured = destinations.slice(0, 4); // les 4 premières
+    const grid = document.getElementById('featuredGrid');
+    if (grid && featured.length) {
+      grid.innerHTML = featured.map(d => `
+        <div class="card">
+          <div class="card-img card-img-tall">
+            <img src="${d.image_url}" alt="${d.name}" loading="lazy">
+            <button class="card-wishlist">🤍</button>
+          </div>
+          <div class="card-body">
+            <span class="card-tag">${d.tag || 'Destination'}</span>
+            <h3 class="card-title">${d.name}, ${d.country || ''}</h3>
+            <p class="card-desc">${(d.description || '').substring(0, 80)}...</p>
+          </div>
+          <div class="card-footer">
+            <div>
+              <div class="card-price">Dès ${d.price} € <span>/ pers.</span></div>
+              <div class="card-rating">⭐ ${d.rating || '4.5'} · ${d.reviews || 0} avis</div>
+            </div>
+            <a href="destination-detail.html?id=${d.id}" class="btn btn-secondary btn-sm">Découvrir</a>
+          </div>
+        </div>
+      `).join('');
+    } else if (grid) {
+      grid.innerHTML = '<div class="empty-state">Aucune destination disponible pour le moment.</div>';
+    }
+  })
+  .catch(err => {
+    console.error('Erreur chargement destinations vedettes:', err);
+    const grid = document.getElementById('featuredGrid');
+    if (grid) grid.innerHTML = '<div class="empty-state">Impossible de charger les destinations.</div>';
+  });
+</script>
 </body>
 </html>
