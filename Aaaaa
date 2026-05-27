@@ -21,9 +21,7 @@ function formatPrice(price) {
   return Number(price || 0).toLocaleString("fr-FR");
 }
 
-/* ==========================================================
-   RECHERCHE DYNAMIQUE
-========================================================== */
+/*RECHERCHE DYNAMIQUE*/
 
 function setupSearch() {
   const searchButton = document.querySelector(".search-submit");
