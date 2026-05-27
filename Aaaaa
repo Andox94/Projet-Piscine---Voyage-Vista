@@ -1,0 +1,342 @@
+<script src="js/components.js"></script>
+<script src="js/main.js"></script>
+
+<script>
+/* ==========================================================
+   CONFIG
+========================================================== */
+
+const API_URL = "api/destinations.php";
+
+/* ==========================================================
+   HELPERS
+========================================================== */
+
+function escapeHTML(str) {
+  return String(str || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function formatPrice(price) {
+  return Number(price || 0).toLocaleString("fr-FR");
+}
+
+/* ==========================================================
+   RECHERCHE DYNAMIQUE
+========================================================== */
+
+function setupSearch() {
+  const searchButton = document.querySelector(".search-submit");
+
+  if (!searchButton) return;
+
+  searchButton.addEventListener("click", () => {
+
+    const destination =
+      document.getElementById("searchDest")?.value.trim();
+
+    const depart =
+      document.getElementById("searchDep")?.value;
+
+    const retour =
+      document.getElementById("searchRet")?.value;
+
+    const voyageurs =
+      document.getElementById("searchVoy")?.value;
+
+    // Vérification des dates
+    if (depart && retour) {
+      const depDate = new Date(depart);
+      const retDate = new Date(retour);
+
+      if (retDate < depDate) {
+        alert(
+          "La date de retour doit être après la date de départ."
+        );
+        return;
+      }
+    }
+
+    const params = new URLSearchParams();
+
+    if (destination)
+      params.append("destination", destination);
+
+    if (depart)
+      params.append("depart", depart);
+
+    if (retour)
+      params.append("retour", retour);
+
+    if (voyageurs)
+      params.append("voyageurs", voyageurs);
+
+    window.location.href =
+      `destinations.html?${params.toString()}`;
+  });
+}
+
+/* ==========================================================
+   CHARGEMENT DESTINATIONS VEDETTES
+========================================================== */
+
+async function loadFeaturedDestinations() {
+
+  const grid =
+    document.getElementById("featuredGrid");
+
+  if (!grid) return;
+
+  try {
+
+    const response = await fetch(API_URL);
+
+    if (!response.ok) {
+      throw new Error(
+        "Erreur serveur"
+      );
+    }
+
+    const destinations =
+      await response.json();
+
+    if (!Array.isArray(destinations)
+      || destinations.length === 0) {
+
+      grid.innerHTML = `
+        <div class="empty-state">
+          <h3>
+            Aucune destination disponible
+          </h3>
+          <p>
+            Revenez plus tard.
+          </p>
+        </div>
+      `;
+
+      return;
+    }
+
+    // Affiche seulement les 4 premières
+    const featured =
+      destinations.slice(0, 4);
+
+    grid.innerHTML =
+      featured.map(d => {
+
+      const description =
+        escapeHTML(
+          d.description || ""
+        ).substring(0, 95);
+
+      const rating =
+        d.rating || "4.5";
+
+      const reviews =
+        d.reviews || 0;
+
+      const tag =
+        d.tag || "Destination";
+
+      const duration =
+        d.duration || "7 jours";
+
+      const country =
+        d.country || "";
+
+      const image =
+        d.image_url ||
+        "assets/default.jpg";
+
+      const available =
+        d.available == 1;
+
+      return `
+      <div class="card">
+
+        <div class="card-img card-img-tall">
+
+          <img
+            src="${image}"
+            alt="${escapeHTML(d.name)}"
+            loading="lazy"
+          >
+
+          <button
+            class="card-wishlist"
+            title="Ajouter aux favoris"
+          >
+            🤍
+          </button>
+
+          <span
+            style="
+              position:absolute;
+              top:14px;
+              left:14px;
+              background:
+              ${available
+                ? '#2d7a4f'
+                : '#c0392b'};
+              color:white;
+              padding:6px 12px;
+              border-radius:999px;
+              font-size:.75rem;
+              font-weight:600;
+            "
+          >
+            ${
+              available
+              ? 'Disponible'
+              : 'Complet'
+            }
+          </span>
+
+        </div>
+
+        <div class="card-body">
+
+          <span class="card-tag">
+            ${escapeHTML(tag)}
+          </span>
+
+          <h3 class="card-title">
+            ${escapeHTML(d.name)}
+            ${country
+              ? `, ${escapeHTML(country)}`
+              : ""}
+          </h3>
+
+          <p class="card-desc">
+            ${description}...
+          </p>
+
+          <div
+            style="
+              display:flex;
+              gap:14px;
+              margin-top:14px;
+              color:var(--text-mid);
+              font-size:.85rem;
+            "
+          >
+            <span>
+              🕒 ${duration}
+            </span>
+
+            <span>
+              ⭐ ${rating}
+            </span>
+          </div>
+
+        </div>
+
+        <div class="card-footer">
+
+          <div>
+
+            <div class="card-price">
+              Dès
+              ${formatPrice(d.price)}
+              €
+              <span>/ pers.</span>
+            </div>
+
+            <div class="card-rating">
+              ⭐ ${rating}
+              · ${reviews} avis
+            </div>
+
+          </div>
+
+          <a
+            href="
+            destination-detail.html?id=${d.id}
+            "
+            class="
+            btn
+            btn-secondary
+            btn-sm
+            "
+          >
+            Découvrir
+          </a>
+
+        </div>
+
+      </div>
+      `;
+    }).join("");
+
+  } catch (error) {
+
+    console.error(
+      "Erreur chargement destinations :",
+      error
+    );
+
+    grid.innerHTML = `
+      <div class="empty-state">
+        <h3>
+          Impossible de charger
+          les destinations
+        </h3>
+
+        <p>
+          Vérifiez votre API PHP
+          ou votre connexion base
+          de données.
+        </p>
+      </div>
+    `;
+  }
+}
+
+/* ==========================================================
+   SCROLL HERO
+========================================================== */
+
+function setupHeroScroll() {
+
+  const heroScroll =
+    document.querySelector(".hero-scroll");
+
+  if (!heroScroll) return;
+
+  heroScroll.addEventListener(
+    "click",
+    () => {
+
+      document
+        .getElementById(
+          "searchSection"
+        )
+        ?.scrollIntoView({
+          behavior: "smooth"
+        });
+
+    }
+  );
+}
+
+/* ==========================================================
+   INIT APP
+========================================================== */
+
+document.addEventListener(
+  "DOMContentLoaded",
+  () => {
+
+    setupSearch();
+
+    setupHeroScroll();
+
+    loadFeaturedDestinations();
+
+  }
+);
+</script>
