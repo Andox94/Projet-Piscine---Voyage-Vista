@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VoyageVista - Réservation</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <style>
+        /* === CSS NATIF MODERNE === */
+        :root {
+            --primary: #0056b3;
+            --primary-hover: #004494;
+            --secondary: #ff7f50;
+            --secondary-hover: #e06c42;
+            --success: #28a745;
+            --bg-color: #f4f7f6;
+            --text-main: #333;
+            --text-light: #666;
+            --card-bg: #fff;
+            --border: #e1e4e8;
+            --radius: 12px;
+            --shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        body { background-color: var(--bg-color); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; }
+        
+        header { background-color: var(--primary); color: white; padding: 1rem 0; box-shadow: var(--shadow); position: sticky; top: 0; z-index: 100; }
+        .header-content { max-width: 1200px; margin: 0 auto; padding: 0 1rem; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.5rem; font-weight: bold; cursor: pointer; }
+        
+        nav { display: flex; gap: 0.5rem; }
+        .nav-btn { background: transparent; color: rgba(255,255,255,0.8); border: 1px solid transparent; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .nav-btn:hover { color: white; background: rgba(255,255,255,0.1); }
+        .nav-btn.active { background: white; color: var(--primary); }
+        
+        .cart-btn { background-color: var(--secondary); color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 0.5rem; }
+        .cart-btn:hover { background-color: var(--secondary-hover); }
+        .cart-badge { background: white; color: var(--secondary); padding: 0.1rem 0.4rem; border-radius: 10px; font-size: 0.8rem; }
+
+        main { flex: 1; max-width: 1200px; margin: 2rem auto; padding: 0 1rem; width: 100%; }
+        
+        .title-section { margin-bottom: 2rem; }
+        .title-section h2 { font-size: 2rem; margin-bottom: 0.5rem; }
+        .title-section p { color: var(--text-light); }
+
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
+        
+        .card { background: var(--card-bg); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); border: 2px solid transparent; transition: transform 0.2s, border-color 0.2s; display: flex; flex-direction: column; }
+        .card:hover { transform: translateY(-3px); box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
+        .card.selected { border-color: var(--primary); background-color: #f0f7ff; }
+        
+        .card-img { width: 100%; height: 200px; object-fit: cover; }
+        .card-content { padding: 1.5rem; display: flex; flex-direction: column; flex: 1; }
+        .tag { display: inline-block; background: #e0f0ff; color: var(--primary); padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.8rem; font-weight: bold; margin-bottom: 0.5rem; width: fit-content; }
+        .card-title { font-size: 1.25rem; margin-bottom: 0.5rem; }
+        .card-desc { color: var(--text-light); font-size: 0.9rem; margin-bottom: 1rem; flex: 1; }
+        
+        .card-footer { display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 1rem; border-top: 1px solid var(--border); }
+        .price { font-size: 1.25rem; font-weight: bold; color: var(--primary); }
+        
+        .btn { padding: 0.6rem 1.2rem; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        .btn-outline { background: transparent; border: 2px solid var(--text-main); color: var(--text-main); }
+        .btn-outline:hover { background: var(--text-main); color: white; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-hover); }
+        .btn-success { background: var(--success); color: white; }
+
+        .list-item { background: white; border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; }
+        .list-item.selected { border-color: var(--primary); background: #f0f7ff; }
+        
+        .cart-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; }
+        .form-group { margin-bottom: 1rem; }
+        .form-control { width: 100%; padding: 0.8rem; border: 1px solid var(--border); border-radius: 6px; font-size: 1rem; }
+        
+        .alert { padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; }
+        .alert-warning { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+        .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; text-align: center; padding: 2rem; }
+
+        footer { background: #222; color: #aaa; text-align: center; padding: 1.5rem; margin-top: auto; }
+    </style>
+</head>
+<body>
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, createContext, useContext } = React;
+
+        const VoyageContext = createContext();
+
+        function VoyageProvider({ children }) {
+            const [cart, setCart] = useState({ destination: null, transport: null, accommodation: null, activities: [] });
+
+            const selectDestination = (dest) => {
+                setCart({ destination: dest, transport: null, accommodation: null, activities: [] });
+            };
+
+            const toggleActivity = (act) => {
+                setCart(prev => {
+                    const exists = prev.activities.find(a => a.id === act.id);
+                    if (exists) return { ...prev, activities: prev.activities.filter(a => a.id !== act.id) };
+                    return { ...prev, activities: [...prev.activities, act] };
+                });
+            };
+
+            return (
+                <VoyageContext.Provider value={{ cart, setCart, selectDestination, toggleActivity }}>
+                    {children}
+                </VoyageContext.Provider>
+            );
+        }
+
+        const useVoyage = () => useContext(VoyageContext);
+
+        // --- VUE DESTINATIONS ---
+        function DestinationsView({ setTab }) {
+            const { selectDestination, cart } = useVoyage();
+            const [destinations, setDestinations] = useState([]);
+
+            useEffect(() => {
+                fetch('api/destinations.php')
+                    .then(res => res.json())
+                    .then(data => setDestinations(data))
+                    .catch(err => console.error("Erreur PHP:", err));
+            }, []);
+
+            return (
+                <div>
+                    <div className="title-section">
+                        <h2>Choisissez votre destination</h2>
+                        <p>Sélectionnez le lieu de votre prochain voyage.</p>
+                    </div>
+                    <div className="grid">
+                        {destinations.map(d => (
+                            <div key={d.id} className={`card ${cart.destination?.id === d.id ? 'selected' : ''}`}>
+                                <img src={d.image_url} className="card-img" alt={d.name}/>
+                                <div className="card-content">
+                                    <span className="tag">{d.tag}</span>
+                                    <h3 className="card-title">{d.name}, {d.country}</h3>
+                                    <p className="card-desc">{d.description}</p>
+                                    <div className="card-footer">
+                                        <span className="price">{d.price} €</span>
+                                        <button onClick={() => selectDestination(d)} className={`btn ${cart.destination?.id === d.id ? 'btn-success' : 'btn-outline'}`}>
+                                            {cart.destination?.id === d.id ? 'Sélectionné' : 'Choisir'}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        }
+
+        // --- VUE TRANSPORTS ---
+        function TransportsView() {
+            const { cart, setCart } = useVoyage();
+            const [transports, setTransports] = useState([]);
+
+            useEffect(() => {
+                if (cart.destination) {
+                    fetch(`api/transports.php?destination_id=${cart.destination.id}`)
+                        .then(res => res.json())
+                        .then(data => setTransports(data));
+                }
+            }, [cart.destination]);
+
+            if (!cart.destination) return <div className="alert alert-warning">Veuillez d'abord choisir une destination.</div>;
+
+            return (
+                <div>
+                    <div className="title-section">
+                        <h2>Vols & Trajets vers {cart.destination.name}</h2>
+                    </div>
+                    <div>
+                        {transports.map(t => (
+                            <div key={t.id} className={`list-item ${cart.transport?.id === t.id ? 'selected' : ''}`}>
+                                <div>
+                                    <h3 style={{marginBottom: '0.2rem'}}>{t.type} - {t.company}</h3>
+                                    <p style={{color: 'var(--text-light)', fontSize: '0.9rem'}}>Départ: {t.departure_time} | Durée: {t.duration} | Classe: {t.class}</p>
+                                </div>
+                                <div style={{textAlign: 'right'}}>
+                                    <div className="price" style={{marginBottom: '0.5rem'}}>{t.price} €</div>
+                                    <button onClick={() => setCart(p => ({...p, transport: t}))} className={`btn ${cart.transport?.id === t.id ? 'btn-success' : 'btn-outline'}`}>
+                                        Choisir
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        }
+
+        // --- VUE HÉBERGEMENTS ---
+        function AccommodationsView() {
+            const { cart, setCart } = useVoyage();
+            const [hotels, setHotels] = useState([]);
+
+            useEffect(() => {
+                if (cart.destination) {
+                    fetch(`api/accommodations.php?destination_id=${cart.destination.id}`)
+                        .then(res => res.json())
+                        .then(data => setHotels(data));
+                }
+            }, [cart.destination]);
+
+            if (!cart.destination) return <div className="alert alert-warning">Veuillez d'abord choisir une destination.</div>;
+
+            return (
+                <div>
+                    <div className="title-section">
+                        <h2>Logements à {cart.destination.name}</h2>
+                    </div>
+                    <div className="grid">
+                        {hotels.map(h => (
+                            <div key={h.id} className={`card ${cart.accommodation?.id === h.id ? 'selected' : ''}`}>
+                                <img src={h.image_url} className="card-img" alt={h.name}/>
+                                <div className="card-content">
+                                    <h3 className="card-title">{h.name} {Array(parseInt(h.stars)).fill('⭐').join('')}</h3>
+                                    <p className="card-desc">Type: {h.type}<br/>{h.amenities}</p>
+                                    <div className="card-footer">
+                                        <span className="price">{h.price_per_night} € <small style={{fontSize:'0.7rem', color:'var(--text-light)'}}>/nuit</small></span>
+                                        <button onClick={() => setCart(p => ({...p, accommodation: h}))} className={`btn ${cart.accommodation?.id === h.id ? 'btn-success' : 'btn-outline'}`}>
+                                            Choisir
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        }
+
+        // --- VUE ACTIVITÉS ---
+        function ActivitiesView() {
+            const { cart, toggleActivity } = useVoyage();
+            const [activities, setActivities] = useState([]);
+
+            useEffect(() => {
+                if (cart.destination) {
+                    fetch(`api/activities.php?destination_id=${cart.destination.id}`)
+                        .then(res => res.json())
+                        .then(data => setActivities(data));
+                }
+            }, [cart.destination]);
+
+            if (!cart.destination) return <div className="alert alert-warning">Veuillez d'abord choisir une destination.</div>;
+
+            return (
+                <div>
+                    <div className="title-section">
+                        <h2>Activités & Excursions à {cart.destination.name}</h2>
+                    </div>
+                    <div className="grid">
+                        {activities.map(a => {
+                            const isSelected = cart.activities.some(act => act.id === a.id);
+                            return (
+                                <div key={a.id} className={`card ${isSelected ? 'selected' : ''}`}>
+                                    <div className="card-content">
+                                        <span className="tag">{a.category}</span>
+                                        <h3 className="card-title">{a.name}</h3>
+                                        <p className="card-desc">{a.description}<br/><br/><strong>Durée:</strong> {a.duration}</p>
+                                        <div className="card-footer">
+                                            <span className="price">{a.price_per_person} €</span>
+                                            <button onClick={() => toggleActivity(a)} className={`btn ${isSelected ? 'btn-success' : 'btn-outline'}`}>
+                                                {isSelected ? 'Retirer' : 'Ajouter'}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+            );
+        }
+
+        // --- VUE PANIER & VALIDATION ---
+        function CartView() {
+            const { cart, setCart } = useVoyage();
+            const [clientName, setClientName] = useState('');
+            const [clientEmail, setClientEmail] = useState('');
+            const [successMsg, setSuccessMsg] = useState('');
+
+            const nights = 3; // Fixé pour la démo
+			const total = Number(cart.destination?.price || 0) + 
+						  Number(cart.transport?.price || 0) + 
+						  (Number(cart.accommodation?.price_per_night || 0) * nights) + 
+						  cart.activities.reduce((sum, a) => sum + Number(a.price_per_person), 0);
+
+            const submitTrip = (e) => {
+                e.preventDefault();
+                const payload = {
+                    destination_id: cart.destination.id,
+                    transport_id: cart.transport?.id,
+                    accommodation_id: cart.accommodation?.id,
+                    activities: cart.activities.map(a => a.id),
+                    client_name: clientName,
+                    client_email: clientEmail,
+                    total_price: total
+                };
+
+                fetch('api/save_trip.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if(data.status === 'success') {
+                        setSuccessMsg(data.message);
+                        setCart({ destination: null, transport: null, accommodation: null, activities: [] });
+                    } else {
+                        alert("Erreur: " + data.message);
+                    }
+                });
+            };
+
+            if (successMsg) return (
+                <div className="alert alert-success">
+                    <h2>🎉 Félicitations !</h2>
+                    <p>{successMsg}</p>
+                    <p style={{marginTop:'1rem', fontSize:'0.9rem'}}>Les données ont été insérées dans les tables <i>trips</i> et <i>trip_activities</i>.</p>
+                </div>
+            );
+
+            if (!cart.destination) return <div className="alert alert-warning">Votre panier est vide.</div>;
+
+            return (
+                <div className="cart-layout">
+                    <div>
+                        <h2>Récapitulatif du Séjour</h2>
+                        <div style={{background:'white', padding:'1.5rem', borderRadius:'12px', border:'1px solid var(--border)', marginTop:'1rem'}}>
+                            <div style={{display:'flex', justifyContent:'space-between', marginBottom:'1rem', paddingBottom:'1rem', borderBottom:'1px solid #eee'}}>
+                                <span><strong>Destination :</strong> {cart.destination.name}</span>
+                                <span>{cart.destination.price} €</span>
+                            </div>
+                            {cart.transport && (
+                                <div style={{display:'flex', justifyContent:'space-between', marginBottom:'1rem', paddingBottom:'1rem', borderBottom:'1px solid #eee'}}>
+                                    <span><strong>Transport :</strong> {cart.transport.type} ({cart.transport.company})</span>
+                                    <span>{cart.transport.price} €</span>
+                                </div>
+                            )}
+                            {cart.accommodation && (
+                                <div style={{display:'flex', justifyContent:'space-between', marginBottom:'1rem', paddingBottom:'1rem', borderBottom:'1px solid #eee'}}>
+                                    <span><strong>Hébergement :</strong> {cart.accommodation.name} ({nights} nuits)</span>
+                                    <span>{cart.accommodation.price_per_night * nights} €</span>
+                                </div>
+                            )}
+                            {cart.activities.length > 0 && (
+                                <div>
+                                    <strong>Activités :</strong>
+                                    <ul style={{listStyle:'none', paddingLeft:'1rem', marginTop:'0.5rem'}}>
+                                        {cart.activities.map(a => (
+                                            <li key={a.id} style={{display:'flex', justifyContent:'space-between', marginBottom:'0.5rem', color:'var(--text-light)', fontSize:'0.9rem'}}>
+                                                <span>- {a.name}</span>
+                                                <span>{a.price_per_person} €</span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    <div style={{background:'white', padding:'1.5rem', borderRadius:'12px', border:'1px solid var(--border)', height:'fit-content'}}>
+                        <h3 style={{marginBottom:'1rem'}}>Validation</h3>
+                        <div style={{display:'flex', justifyContent:'space-between', fontSize:'1.5rem', fontWeight:'bold', marginBottom:'1.5rem', color:'var(--primary)'}}>
+                            <span>Total :</span>
+                            <span>{total} €</span>
+                        </div>
+                        <form onSubmit={submitTrip}>
+                            <div className="form-group">
+                                <input type="text" className="form-control" placeholder="Prénom et Nom" required value={clientName} onChange={e => setClientName(e.target.value)} />
+                            </div>
+                            <div className="form-group">
+                                <input type="email" className="form-control" placeholder="Adresse Email" required value={clientEmail} onChange={e => setClientEmail(e.target.value)} />
+                            </div>
+                            <button type="submit" className="btn btn-primary" style={{width:'100%', padding:'1rem', fontSize:'1.1rem'}}>Confirmer la réservation</button>
+                        </form>
+                    </div>
+                </div>
+            );
+        }
+
+        // --- APP PRINCIPALE ---
+        function App() {
+            const [tab, setTab] = useState('destinations');
+            const { cart } = useVoyage();
+            const cartItems = (cart.destination?1:0) + (cart.transport?1:0) + (cart.accommodation?1:0) + cart.activities.length;
+
+            return (
+                <React.Fragment>
+                    <header>
+                        <div className="header-content">
+                            <div className="logo" onClick={() => setTab('destinations')}>🌍 VoyageVista</div>
+                            <nav>
+                                <button className={`nav-btn ${tab === 'destinations' ? 'active' : ''}`} onClick={() => setTab('destinations')}>Destinations</button>
+                                <button className={`nav-btn ${tab === 'transports' ? 'active' : ''}`} onClick={() => setTab('transports')}>Transports</button>
+                                <button className={`nav-btn ${tab === 'accommodations' ? 'active' : ''}`} onClick={() => setTab('accommodations')}>Hébergements</button>
+                                <button className={`nav-btn ${tab === 'activities' ? 'active' : ''}`} onClick={() => setTab('activities')}>Activités</button>
+                            </nav>
+                            <button className="cart-btn" onClick={() => setTab('cart')}>
+                                Panier <span className="cart-badge">{cartItems}</span>
+                            </button>
+                        </div>
+                    </header>
+                    <main>
+                        {tab === 'destinations' && <DestinationsView />}
+                        {tab === 'transports' && <TransportsView />}
+                        {tab === 'accommodations' && <AccommodationsView />}
+                        {tab === 'activities' && <ActivitiesView />}
+                        {tab === 'cart' && <CartView />}
+                    </main>
+                    <footer>
+                        <p>© 2026 VoyageVista - Connecté à la base de données MySQL</p>
+                    </footer>
+                </React.Fragment>
+            );
+        }
+
+        ReactDOM.render(<VoyageProvider><App /></VoyageProvider>, document.getElementById('root'));
+    </script>
+</body>
+</html>
