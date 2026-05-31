@@ -6,13 +6,12 @@ $user_id = isset($_GET['user_id']) ? intval($_GET['user_id']) : 0;
 
 // ── LIST TRIPS ─────────────────────────────────────────
 if ($method === 'GET' && !isset($_GET['action'])) {
-    if ($user_id === 0) {
-        echo json_encode([]);
-        exit();
-    }
+    if ($user_id === 0) { echo json_encode([]); exit(); }
     $sql  = "SELECT t.*, d.name AS destination_name, d.country, d.image_url AS destination_image,
                     tr.type AS transport_type, tr.company AS transport_company,
-                    ac.name AS accommodation_name, ac.type AS accommodation_type
+                    tr.departure_time, tr.arrival_time, tr.duration AS transport_duration,
+                    ac.name AS accommodation_name, ac.type AS accommodation_type,
+                    ac.price_per_night AS accommodation_price_per_night
              FROM trips t
              JOIN destinations d ON t.destination_id = d.id
              LEFT JOIN transports tr ON t.transport_id = tr.id
@@ -25,8 +24,7 @@ if ($method === 'GET' && !isset($_GET['action'])) {
     $result = mysqli_stmt_get_result($stmt);
     $trips  = [];
     while ($row = mysqli_fetch_assoc($result)) {
-        // Récupérer les activités associées
-        $sql_act  = "SELECT a.name, a.category, a.price_per_person, ta.quantity
+        $sql_act  = "SELECT a.id, a.name, a.category, a.price_per_person, ta.quantity
                      FROM trip_activities ta JOIN activities a ON ta.activity_id = a.id
                      WHERE ta.trip_id = ?";
         $stmt_act = mysqli_prepare($conn, $sql_act);
@@ -55,16 +53,16 @@ if ($method === 'GET' && !isset($_GET['action'])) {
     }
     echo json_encode($trips);
 
-// ── CANCEL TRIP ────────────────────────────────────────
+// ── POST ACTIONS ───────────────────────────────────────
 } elseif ($method === 'POST') {
     $data   = json_decode(file_get_contents("php://input"), true);
     $action = $data['action'] ?? '';
 
+    // ── CANCEL ────────────────────────────────────────
     if ($action === 'cancel') {
         $trip_id = intval($data['trip_id']);
         $uid     = intval($data['user_id']);
 
-        // Récupérer le voyage pour remettre les disponibilités
         $sel  = mysqli_prepare($conn, "SELECT * FROM trips WHERE id=? AND user_id=? AND status != 'cancelled'");
         mysqli_stmt_bind_param($sel, "ii", $trip_id, $uid);
         mysqli_stmt_execute($sel);
@@ -78,26 +76,22 @@ if ($method === 'GET' && !isset($_GET['action'])) {
 
         mysqli_begin_transaction($conn);
         try {
-            // Mettre à jour le statut
             $upd  = mysqli_prepare($conn, "UPDATE trips SET status='cancelled', updated_at=NOW() WHERE id=?");
             mysqli_stmt_bind_param($upd, "i", $trip_id);
             mysqli_stmt_execute($upd);
 
-            // Remettre les places transport
             if ($trip['transport_id']) {
                 $upd = mysqli_prepare($conn, "UPDATE transports SET seats_left = seats_left + ? WHERE id=?");
                 mysqli_stmt_bind_param($upd, "ii", $trip['travelers'], $trip['transport_id']);
                 mysqli_stmt_execute($upd);
             }
 
-            // Remettre les chambres hébergement
             if ($trip['accommodation_id']) {
                 $upd = mysqli_prepare($conn, "UPDATE accommodations SET rooms_left = rooms_left + 1 WHERE id=?");
                 mysqli_stmt_bind_param($upd, "i", $trip['accommodation_id']);
                 mysqli_stmt_execute($upd);
             }
 
-            // Remettre les places activités
             $acts_q  = mysqli_prepare($conn, "SELECT activity_id, quantity FROM trip_activities WHERE trip_id=?");
             mysqli_stmt_bind_param($acts_q, "i", $trip_id);
             mysqli_stmt_execute($acts_q);
@@ -108,7 +102,6 @@ if ($method === 'GET' && !isset($_GET['action'])) {
                 mysqli_stmt_execute($upd);
             }
 
-            // Récupérer le nom destination pour la notif
             $dest_q = mysqli_prepare($conn, "SELECT name FROM destinations WHERE id=?");
             mysqli_stmt_bind_param($dest_q, "i", $trip['destination_id']);
             mysqli_stmt_execute($dest_q);
@@ -121,41 +114,62 @@ if ($method === 'GET' && !isset($_GET['action'])) {
             );
 
             mysqli_commit($conn);
-            echo json_encode(["status" => "success", "message" => "Réservation annulée."]);
+            echo json_encode(["status" => "success", "message" => "Réservation annulée avec succès."]);
         } catch (Exception $e) {
             mysqli_rollback($conn);
             http_response_code(500);
             echo json_encode(["status" => "error", "message" => $e->getMessage()]);
         }
 
+    // ── UPDATE ────────────────────────────────────────
     } elseif ($action === 'update') {
-        // Modifier le nombre de voyageurs et/ou les notes
         $trip_id   = intval($data['trip_id']);
         $uid       = intval($data['user_id']);
         $travelers = intval($data['travelers'] ?? 1);
         $notes     = $data['notes'] ?? '';
+        $dep_date  = !empty($data['departure_date']) ? $data['departure_date'] : null;
+        $ret_date  = !empty($data['return_date'])     ? $data['return_date']    : null;
+        $nights    = isset($data['nights'])           ? intval($data['nights']) : null;
 
-        $upd  = mysqli_prepare($conn, "UPDATE trips SET travelers=?, notes=?, updated_at=NOW() WHERE id=? AND user_id=? AND status='confirmed'");
-        mysqli_stmt_bind_param($upd, "isii", $travelers, $notes, $trip_id, $uid);
+        // Validate dates
+        if ($dep_date && $ret_date) {
+            $dep = new DateTime($dep_date);
+            $ret = new DateTime($ret_date);
+            if ($ret <= $dep) {
+                http_response_code(400);
+                echo json_encode(["status" => "error", "message" => "La date de retour doit être postérieure à la date de départ."]);
+                exit();
+            }
+        }
+
+        if ($nights !== null) {
+            $upd  = mysqli_prepare($conn, "UPDATE trips SET travelers=?, notes=?, departure_date=?, return_date=?, nights=?, updated_at=NOW() WHERE id=? AND user_id=? AND status='confirmed'");
+            mysqli_stmt_bind_param($upd, "isssiii", $travelers, $notes, $dep_date, $ret_date, $nights, $trip_id, $uid);
+        } else {
+            $upd  = mysqli_prepare($conn, "UPDATE trips SET travelers=?, notes=?, departure_date=?, return_date=?, updated_at=NOW() WHERE id=? AND user_id=? AND status='confirmed'");
+            mysqli_stmt_bind_param($upd, "isssii", $travelers, $notes, $dep_date, $ret_date, $trip_id, $uid);
+        }
+
         if (mysqli_stmt_execute($upd)) {
-            // Récupérer le voyage
             $sel  = mysqli_prepare($conn, "SELECT t.reference_code, d.name AS dest FROM trips t JOIN destinations d ON t.destination_id=d.id WHERE t.id=?");
             mysqli_stmt_bind_param($sel, "i", $trip_id);
             mysqli_stmt_execute($sel);
             $row = mysqli_fetch_assoc(mysqli_stmt_get_result($sel));
 
-            createNotification($conn, $uid, 'modification',
-                "Réservation modifiée",
-                "Votre réservation (réf. {$row['reference_code']}) pour {$row['dest']} a été mise à jour."
-            );
-            echo json_encode(["status" => "success", "message" => "Réservation mise à jour."]);
+            if ($row) {
+                createNotification($conn, $uid, 'modification',
+                    "Réservation modifiée",
+                    "Votre réservation (réf. {$row['reference_code']}) pour {$row['dest']} a été mise à jour."
+                );
+            }
+            echo json_encode(["status" => "success", "message" => "Réservation mise à jour avec succès."]);
         } else {
             http_response_code(500);
-            echo json_encode(["status" => "error", "message" => "Modification échouée."]);
+            echo json_encode(["status" => "error", "message" => "Modification échouée: " . mysqli_error($conn)]);
         }
 
+    // ── DELETE ────────────────────────────────────────
     } elseif ($action === 'delete') {
-        // Suppression définitive (admin only)
         $trip_id = intval($data['trip_id']);
         $sql     = "DELETE FROM trips WHERE id=?";
         $stmt    = mysqli_prepare($conn, $sql);

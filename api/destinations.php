@@ -2,7 +2,6 @@
 require_once 'config.php';
 
 $method = $_SERVER['REQUEST_METHOD'];
-$action = isset($_GET['action']) ? $_GET['action'] : 'list';
 
 // ── LIST / SEARCH / FILTER ─────────────────────────────
 if ($method === 'GET') {
@@ -10,7 +9,6 @@ if ($method === 'GET') {
     $params     = [];
     $types      = "";
 
-    // Recherche textuelle
     if (!empty($_GET['search'])) {
         $search       = "%" . $_GET['search'] . "%";
         $conditions[] = "(name LIKE ? OR country LIKE ? OR description LIKE ? OR tag LIKE ?)";
@@ -19,35 +17,30 @@ if ($method === 'GET') {
         $types       .= "ssss";
     }
 
-    // Filtre par tag/catégorie
     if (!empty($_GET['tag'])) {
         $conditions[] = "tag = ?";
         $params[]     = $_GET['tag'];
         $types       .= "s";
     }
 
-    // Filtre prix max
     if (!empty($_GET['max_price'])) {
         $conditions[] = "price <= ?";
         $params[]     = intval($_GET['max_price']);
         $types       .= "i";
     }
 
-    // Filtre prix min
     if (!empty($_GET['min_price'])) {
         $conditions[] = "price >= ?";
         $params[]     = intval($_GET['min_price']);
         $types       .= "i";
     }
 
-    // Filtre continent
     if (!empty($_GET['continent'])) {
         $conditions[] = "continent = ?";
         $params[]     = $_GET['continent'];
         $types       .= "s";
     }
 
-    // Tri
     $sort_map = [
         'price_asc'   => 'price ASC',
         'price_desc'  => 'price DESC',
@@ -75,7 +68,7 @@ if ($method === 'GET') {
     }
     echo json_encode($destinations);
 
-// ── ADD DESTINATION (admin/prestataire) ───────────────
+// ── ADD DESTINATION ────────────────────────────────────
 } elseif ($method === 'POST') {
     $data = json_decode(file_get_contents("php://input"), true);
 
@@ -91,6 +84,7 @@ if ($method === 'GET') {
     $sql  = "INSERT INTO destinations (name, country, description, tag, price, image_url, rating, duration_days, continent, language, currency, best_season, created_by)
              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = mysqli_prepare($conn, $sql);
+
     $name        = $data['name'];
     $country     = $data['country'];
     $description = isset($data['description'])  ? $data['description']  : '';
@@ -105,13 +99,8 @@ if ($method === 'GET') {
     $best_season = isset($data['best_season'])   ? $data['best_season']  : '';
     $created_by  = isset($data['created_by'])    ? intval($data['created_by']) : 1;
 
-    mysqli_stmt_bind_param($stmt, "ssssissssssi",
-        $name, $country, $description, $tag, $price, $image_url,
-        $rating, $duration, $continent, $language, $currency, $best_season, $created_by
-    );
-    // fix: use correct types string
-    $stmt = mysqli_prepare($conn, $sql);
-    mysqli_stmt_bind_param($stmt, "ssssisssisssi",
+    // Correct type string: s s s s i s d i s s s s i
+    mysqli_stmt_bind_param($stmt, "ssssisdissssi",
         $name, $country, $description, $tag, $price, $image_url,
         $rating, $duration, $continent, $language, $currency, $best_season, $created_by
     );
@@ -121,14 +110,13 @@ if ($method === 'GET') {
         echo json_encode(["status" => "success", "message" => "Destination ajoutée.", "id" => $new_id]);
     } else {
         http_response_code(500);
-        echo json_encode(["status" => "error", "message" => "Erreur lors de l'ajout."]);
+        echo json_encode(["status" => "error", "message" => "Erreur lors de l'ajout: " . mysqli_error($conn)]);
     }
 
-// ── DELETE DESTINATION (admin) ─────────────────────────
+// ── DELETE DESTINATION ─────────────────────────────────
 } elseif ($method === 'DELETE') {
     $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
     if ($id > 0) {
-        // Soft delete
         $sql  = "UPDATE destinations SET is_active=0 WHERE id=?";
         $stmt = mysqli_prepare($conn, $sql);
         mysqli_stmt_bind_param($stmt, "i", $id);

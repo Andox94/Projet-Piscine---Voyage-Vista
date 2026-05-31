@@ -14,8 +14,8 @@ mysqli_begin_transaction($conn);
 try {
     $user_id      = isset($data['user_id'])         ? intval($data['user_id'])         : 2;
     $dest_id      = intval($data['destination_id']);
-    $trans_id     = isset($data['transport_id'])     ? intval($data['transport_id'])     : null;
-    $accom_id     = isset($data['accommodation_id']) ? intval($data['accommodation_id']) : null;
+    $trans_id     = isset($data['transport_id'])     && $data['transport_id']     ? intval($data['transport_id'])     : null;
+    $accom_id     = isset($data['accommodation_id']) && $data['accommodation_id'] ? intval($data['accommodation_id']) : null;
     $name         = $data['client_name'];
     $email        = $data['client_email'] ?? '';
     $total        = intval($data['total_price']);
@@ -77,8 +77,8 @@ try {
 
     // ── Insérer le voyage ─────────────────────────────
     $sql  = "INSERT INTO trips (user_id, destination_id, transport_id, accommodation_id, client_name, client_email,
-             travelers, departure_date, return_date, nights, total_price, reference_code, payment_method, notes)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+             travelers, departure_date, return_date, nights, total_price, reference_code, payment_method, notes, status, payment_status)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'confirmed', 'paid')";
     $stmt = mysqli_prepare($conn, $sql);
     mysqli_stmt_bind_param($stmt, "iiiisssissisis",
         $user_id, $dest_id, $trans_id, $accom_id, $name, $email,
@@ -89,7 +89,7 @@ try {
 
     // ── Lier les activités ────────────────────────────
     if (!empty($data['activities'])) {
-        $sql_act = "INSERT INTO trip_activities (trip_id, activity_id, quantity) VALUES (?, ?, ?)";
+        $sql_act  = "INSERT INTO trip_activities (trip_id, activity_id, quantity) VALUES (?, ?, ?)";
         $stmt_act = mysqli_prepare($conn, $sql_act);
         foreach ($data['activities'] as $act_id) {
             $act_id_int = intval($act_id);
