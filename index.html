@@ -1130,7 +1130,7 @@ function ItineraryView() {
                 const d = await apiFetch('api/save_trip.php', {
                     method: 'POST',
                     body: JSON.stringify({
-                        user_id: user?.id || 2,
+                        user_id: user ? parseInt(user.id) : null,
                         destination_id: step.destination.id,
                         transport_id: step.transport?.id || null,
                         accommodation_id: step.accommodation?.id || null,
@@ -1479,7 +1479,7 @@ function CartView() {
         apiFetch('api/save_trip.php', {
             method: 'POST',
             body: JSON.stringify({
-                user_id:          user?.id || 2,
+                user_id:          user ? parseInt(user.id) : null,
                 destination_id:   cart.destination.id,
                 transport_id:     cart.transport?.id || null,
                 accommodation_id: cart.accommodation?.id || null,
@@ -1653,11 +1653,16 @@ function CartView() {
                         <div style={{display:'flex',justifyContent:'space-between',fontWeight:700,fontSize:'1.2rem',marginBottom:'1.5rem',color:'var(--navy)'}}>
                             <span>Total :</span><span>{total} €</span>
                         </div>
+                        {!user && (
+                            <div className="alert alert-warn" style={{marginBottom:'1rem'}}>
+                                🔒 Vous devez être <strong>connecté</strong> pour réserver.
+                            </div>
+                        )}
                         {error && <div className="alert alert-danger" style={{marginBottom:'1rem'}}>{error}</div>}
                         <button className="btn btn-gold btn-full"
-                            disabled={!clientName || !clientEmail || !!dErr}
+                            disabled={!clientName || !clientEmail || !!dErr || !user}
                             onClick={() => { setError(''); setStep(2); }}>
-                            Procéder au paiement →
+                            {user ? 'Procéder au paiement →' : '🔒 Connexion requise'}
                         </button>
                     </div>
                 </div>
