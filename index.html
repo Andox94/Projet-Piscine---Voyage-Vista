@@ -665,7 +665,7 @@ function DestinationDetail({ dest, onBack }) {
                     {loading ? <div className="spinner" style={{width:24,height:24,borderWidth:2}}></div> : (
                         <>
                             <p style={{fontSize:'2rem',fontWeight:700,color:'var(--navy)',fontFamily:'Playfair Display,serif'}}>{minTotal} €</p>
-                            <p className="text-muted text-sm">base + vol + hébergement 3 nuits</p>
+                            <p className="text-muted text-sm">base + vol + hébergement estimé</p>
                         </>
                     )}
                     <hr className="divider" />
@@ -902,7 +902,7 @@ function AccommodationsView() {
                                 <div className="card-footer">
                                     <div>
                                         <div className="price">{h.price_per_night} € <small>/nuit</small></div>
-                                        <div className="text-muted text-sm">≈ {h.price_per_night * cart.nights} € pour {cart.nights} nuits</div>
+                                        <div className="text-muted text-sm">≈ {h.price_per_night * cart.nights} € pour {cart.nights} nuit{cart.nights > 1 ? 's' : ''}</div>
                                     </div>
                                     <button
                                         disabled={parseInt(h.rooms_left) <= 0}
@@ -1192,12 +1192,19 @@ function ItineraryView() {
                             <label className="form-label">Destination *</label>
                             <select className="form-control" value={s.destination?.id || ''}
                                 onChange={e => {
-                                    const dest = allDestinations.find(d => d.id === parseInt(e.target.value));
-                                    updateStep(activeStep, 'destination', dest || null);
-                                    updateStep(activeStep, 'transport', null);
-                                    updateStep(activeStep, 'accommodation', null);
-                                    updateStep(activeStep, 'activities', []);
-                                    if (dest) loadStepData(s.id, dest.id);
+                                    const val = e.target.value;
+                                    if (!val) {
+                                        updateStep(activeStep, 'destination', null);
+                                        return;
+                                    }
+                                    const dest = allDestinations.find(d => String(d.id) === String(val));
+                                    if (!dest) return;
+                                    const stepId = s.id;
+                                    setSteps(prev => prev.map((st, i) => i === activeStep
+                                        ? { ...st, destination: dest, transport: null, accommodation: null, activities: [] }
+                                        : st
+                                    ));
+                                    loadStepData(stepId, dest.id);
                                 }}>
                                 <option value="">— Choisir une destination —</option>
                                 {allDestinations.map(d => <option key={d.id} value={d.id}>{d.name}, {d.country}</option>)}
