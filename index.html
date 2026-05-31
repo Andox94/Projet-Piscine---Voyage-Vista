@@ -3,430 +3,1786 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VoyageVista - Réservation</title>
+    <title>VoyageVista — Réservation de voyages</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    
+
     <style>
-        /* === CSS NATIF MODERNE === */
-        :root {
-            --primary: #0056b3;
-            --primary-hover: #004494;
-            --secondary: #ff7f50;
-            --secondary-hover: #e06c42;
-            --success: #28a745;
-            --bg-color: #f4f7f6;
-            --text-main: #333;
-            --text-light: #666;
-            --card-bg: #fff;
-            --border: #e1e4e8;
-            --radius: 12px;
-            --shadow: 0 4px 6px rgba(0,0,0,0.05);
-        }
+/* ═══════════════════════════════════════════════════════════
+   DESIGN SYSTEM — VoyageVista
+═══════════════════════════════════════════════════════════ */
+:root {
+    --navy: #0f1b2d;
+    --navy-mid: #1a2d47;
+    --navy-light: #243752;
+    --gold: #c9a84c;
+    --gold-light: #e8c97a;
+    --ivory: #f8f5ef;
+    --ivory-mid: #ede9e0;
+    --text: #1a1a2e;
+    --text-muted: #5a6477;
+    --white: #ffffff;
+    --success: #2d9e6b;
+    --danger: #c0392b;
+    --warn: #d4830a;
+    --card-shadow: 0 2px 16px rgba(15,27,45,0.10);
+    --radius: 14px;
+    --radius-sm: 8px;
+}
+[data-theme="dark"] {
+    --navy: #0a0f1a;
+    --navy-mid: #111927;
+    --navy-light: #1c2a3d;
+    --ivory: #1e2537;
+    --ivory-mid: #252e42;
+    --text: #e8eaf0;
+    --text-muted: #8a94a8;
+    --white: #1c2a3d;
+    --card-shadow: 0 2px 16px rgba(0,0,0,0.4);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--ivory);color:var(--text);min-height:100vh;transition:background .3s,color .3s;}
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        
-        body { background-color: var(--bg-color); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; }
-        
-        header { background-color: var(--primary); color: white; padding: 1rem 0; box-shadow: var(--shadow); position: sticky; top: 0; z-index: 100; }
-        .header-content { max-width: 1200px; margin: 0 auto; padding: 0 1rem; display: flex; justify-content: space-between; align-items: center; }
-        .logo { font-size: 1.5rem; font-weight: bold; cursor: pointer; }
-        
-        nav { display: flex; gap: 0.5rem; }
-        .nav-btn { background: transparent; color: rgba(255,255,255,0.8); border: 1px solid transparent; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        .nav-btn:hover { color: white; background: rgba(255,255,255,0.1); }
-        .nav-btn.active { background: white; color: var(--primary); }
-        
-        .cart-btn { background-color: var(--secondary); color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 0.5rem; }
-        .cart-btn:hover { background-color: var(--secondary-hover); }
-        .cart-badge { background: white; color: var(--secondary); padding: 0.1rem 0.4rem; border-radius: 10px; font-size: 0.8rem; }
+/* ── HEADER ── */
+header{background:var(--navy);color:#fff;position:sticky;top:0;z-index:200;box-shadow:0 2px 20px rgba(0,0,0,.3);}
+.header-inner{max-width:1300px;margin:0 auto;padding:0 1.5rem;display:flex;align-items:center;gap:1rem;height:64px;}
+.logo{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--gold);cursor:pointer;white-space:nowrap;letter-spacing:.5px;}
+.logo span{color:#fff;font-weight:300;}
+.nav-main{display:flex;gap:.25rem;flex:1;justify-content:center;flex-wrap:wrap;}
+.nav-btn{background:transparent;border:none;color:rgba(255,255,255,.7);padding:.45rem .85rem;border-radius:6px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.85rem;font-weight:500;transition:.2s;white-space:nowrap;}
+.nav-btn:hover{color:#fff;background:rgba(255,255,255,.1);}
+.nav-btn.active{background:var(--gold);color:var(--navy);font-weight:600;}
+.header-actions{display:flex;align-items:center;gap:.5rem;}
+.icon-btn{background:transparent;border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.8);width:38px;height:38px;border-radius:8px;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:.2s;position:relative;}
+.icon-btn:hover{background:rgba(255,255,255,.1);color:#fff;}
+.badge{position:absolute;top:-5px;right:-5px;background:var(--gold);color:var(--navy);font-size:.65rem;font-weight:700;padding:1px 5px;border-radius:10px;min-width:16px;text-align:center;}
+.cart-btn{background:var(--gold);color:var(--navy);border:none;padding:.45rem 1rem;border-radius:8px;cursor:pointer;font-weight:600;font-size:.85rem;display:flex;align-items:center;gap:.4rem;transition:.2s;white-space:nowrap;}
+.cart-btn:hover{background:var(--gold-light);}
+.user-chip{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;padding:.35rem .75rem;border-radius:8px;cursor:pointer;font-size:.8rem;font-weight:500;transition:.2s;white-space:nowrap;}
+.user-chip:hover{background:rgba(255,255,255,.2);}
 
-        main { flex: 1; max-width: 1200px; margin: 2rem auto; padding: 0 1rem; width: 100%; }
-        
-        .title-section { margin-bottom: 2rem; }
-        .title-section h2 { font-size: 2rem; margin-bottom: 0.5rem; }
-        .title-section p { color: var(--text-light); }
+/* ── MAIN LAYOUT ── */
+main{max-width:1300px;margin:0 auto;padding:2rem 1.5rem;min-height:calc(100vh - 128px);}
 
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
-        
-        .card { background: var(--card-bg); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); border: 2px solid transparent; transition: transform 0.2s, border-color 0.2s; display: flex; flex-direction: column; }
-        .card:hover { transform: translateY(-3px); box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
-        .card.selected { border-color: var(--primary); background-color: #f0f7ff; }
-        
-        .card-img { width: 100%; height: 200px; object-fit: cover; }
-        .card-content { padding: 1.5rem; display: flex; flex-direction: column; flex: 1; }
-        .tag { display: inline-block; background: #e0f0ff; color: var(--primary); padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.8rem; font-weight: bold; margin-bottom: 0.5rem; width: fit-content; }
-        .card-title { font-size: 1.25rem; margin-bottom: 0.5rem; }
-        .card-desc { color: var(--text-light); font-size: 0.9rem; margin-bottom: 1rem; flex: 1; }
-        
-        .card-footer { display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 1rem; border-top: 1px solid var(--border); }
-        .price { font-size: 1.25rem; font-weight: bold; color: var(--primary); }
-        
-        .btn { padding: 0.6rem 1.2rem; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.2s; }
-        .btn-outline { background: transparent; border: 2px solid var(--text-main); color: var(--text-main); }
-        .btn-outline:hover { background: var(--text-main); color: white; }
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-primary:hover { background: var(--primary-hover); }
-        .btn-success { background: var(--success); color: white; }
+/* ── SECTION TITLES ── */
+.section-head{margin-bottom:2rem;}
+.section-head h2{font-family:'Playfair Display',serif;font-size:2rem;color:var(--navy);margin-bottom:.3rem;}
+[data-theme="dark"] .section-head h2{color:var(--gold-light);}
+.section-head p{color:var(--text-muted);font-size:.95rem;}
 
-        .list-item { background: white; border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; }
-        .list-item.selected { border-color: var(--primary); background: #f0f7ff; }
-        
-        .cart-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; }
-        .form-group { margin-bottom: 1rem; }
-        .form-control { width: 100%; padding: 0.8rem; border: 1px solid var(--border); border-radius: 6px; font-size: 1rem; }
-        
-        .alert { padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; }
-        .alert-warning { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
-        .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; text-align: center; padding: 2rem; }
+/* ── CARDS GRID ── */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:1.5rem;}
+.card{background:var(--white);border-radius:var(--radius);overflow:hidden;box-shadow:var(--card-shadow);border:2px solid transparent;transition:transform .2s,border-color .2s,box-shadow .2s;display:flex;flex-direction:column;cursor:default;}
+.card:hover{transform:translateY(-4px);box-shadow:0 8px 30px rgba(15,27,45,.15);}
+.card.selected{border-color:var(--gold);box-shadow:0 0 0 4px rgba(201,168,76,.15);}
+.card-img{width:100%;height:195px;object-fit:cover;}
+.card-body{padding:1.25rem;flex:1;display:flex;flex-direction:column;}
+.tag{display:inline-block;background:rgba(201,168,76,.15);color:var(--gold);border:1px solid rgba(201,168,76,.35);padding:.2rem .6rem;border-radius:20px;font-size:.75rem;font-weight:600;margin-bottom:.6rem;width:fit-content;text-transform:uppercase;letter-spacing:.5px;}
+.card h3{font-size:1.1rem;font-weight:600;margin-bottom:.4rem;line-height:1.3;}
+.card-desc{color:var(--text-muted);font-size:.85rem;flex:1;line-height:1.5;margin-bottom:1rem;}
+.card-footer{display:flex;justify-content:space-between;align-items:center;padding-top:.85rem;border-top:1px solid var(--ivory-mid);margin-top:auto;}
+.price{font-size:1.2rem;font-weight:700;color:var(--navy);}
+[data-theme="dark"] .price{color:var(--gold-light);}
+.price small{font-size:.7rem;font-weight:400;color:var(--text-muted);}
 
-        footer { background: #222; color: #aaa; text-align: center; padding: 1.5rem; margin-top: auto; }
+/* ── BUTTONS ── */
+.btn{padding:.5rem 1.1rem;border:none;border-radius:var(--radius-sm);cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;font-size:.85rem;transition:.2s;display:inline-flex;align-items:center;gap:.35rem;}
+.btn-primary{background:var(--navy);color:#fff;}
+.btn-primary:hover{background:var(--navy-light);}
+.btn-gold{background:var(--gold);color:var(--navy);}
+.btn-gold:hover{background:var(--gold-light);}
+.btn-outline{background:transparent;border:2px solid var(--text-muted);color:var(--text);}
+.btn-outline:hover{border-color:var(--navy);color:var(--navy);}
+.btn-success{background:var(--success);color:#fff;}
+.btn-danger{background:var(--danger);color:#fff;}
+.btn-danger:hover{opacity:.85;}
+.btn-sm{padding:.35rem .75rem;font-size:.8rem;}
+.btn:disabled{opacity:.5;cursor:not-allowed;}
+.btn-full{width:100%;justify-content:center;padding:.75rem;}
+
+/* ── LIST ITEMS (transports) ── */
+.list-item{background:var(--white);border:2px solid var(--ivory-mid);border-radius:var(--radius);padding:1.25rem;margin-bottom:.85rem;display:flex;justify-content:space-between;align-items:center;gap:1rem;transition:.2s;}
+.list-item:hover{border-color:var(--gold-light);}
+.list-item.selected{border-color:var(--gold);background:rgba(201,168,76,.05);}
+.list-item h4{font-size:1rem;margin-bottom:.25rem;}
+.list-item .meta{color:var(--text-muted);font-size:.8rem;line-height:1.6;}
+.avail-badge{font-size:.7rem;padding:.15rem .5rem;border-radius:10px;font-weight:600;}
+.avail-high{background:#d4edda;color:#155724;}
+.avail-mid{background:#fff3cd;color:#856404;}
+.avail-low{background:#f8d7da;color:#721c24;}
+
+/* ── ALERTS ── */
+.alert{padding:1rem 1.25rem;border-radius:var(--radius-sm);margin-bottom:1.5rem;font-size:.9rem;}
+.alert-warn{background:#fff3cd;color:#856404;border:1px solid #ffeeba;}
+.alert-success{background:#d4edda;color:#155724;border:1px solid #c3e6cb;}
+.alert-danger{background:#f8d7da;color:#721c24;border:1px solid #f5c6cb;}
+.alert-info{background:rgba(201,168,76,.1);color:var(--navy);border:1px solid rgba(201,168,76,.3);}
+
+/* ── FORMS ── */
+.form-group{margin-bottom:1rem;}
+.form-label{display:block;font-weight:600;font-size:.85rem;margin-bottom:.35rem;color:var(--text);}
+.form-control{width:100%;padding:.7rem .9rem;border:1.5px solid var(--ivory-mid);border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:.9rem;background:var(--white);color:var(--text);transition:.2s;}
+.form-control:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,.15);}
+select.form-control{cursor:pointer;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+
+/* ── SEARCH / FILTERS BAR ── */
+.search-bar{background:var(--white);border-radius:var(--radius);padding:1.25rem;box-shadow:var(--card-shadow);margin-bottom:1.75rem;display:flex;gap:.75rem;flex-wrap:wrap;align-items:flex-end;}
+.search-bar .form-group{margin:0;flex:1;min-width:150px;}
+.filter-row{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-bottom:1.5rem;}
+.filter-chip{background:var(--ivory-mid);border:1.5px solid transparent;color:var(--text-muted);padding:.35rem .85rem;border-radius:20px;cursor:pointer;font-size:.8rem;font-weight:500;transition:.2s;}
+.filter-chip:hover,.filter-chip.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+
+/* ── CART / CHECKOUT ── */
+.cart-layout{display:grid;grid-template-columns:1.6fr 1fr;gap:2rem;}
+@media(max-width:820px){.cart-layout{grid-template-columns:1fr;}}
+.cart-summary{background:var(--white);border-radius:var(--radius);padding:1.5rem;box-shadow:var(--card-shadow);}
+.cart-row{display:flex;justify-content:space-between;align-items:center;padding:.7rem 0;border-bottom:1px solid var(--ivory-mid);font-size:.9rem;}
+.cart-row:last-child{border:none;}
+.cart-total{font-size:1.4rem;font-weight:700;color:var(--navy);padding-top:.75rem;}
+[data-theme="dark"] .cart-total{color:var(--gold-light);}
+.checkout-panel{background:var(--white);border-radius:var(--radius);padding:1.5rem;box-shadow:var(--card-shadow);height:fit-content;position:sticky;top:80px;}
+.checkout-panel h3{font-family:'Playfair Display',serif;font-size:1.25rem;margin-bottom:1.25rem;}
+
+/* ── PAYMENT CARD ── */
+.payment-card-preview{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-light) 100%);border-radius:12px;padding:1.25rem;color:#fff;margin:1rem 0;font-family:monospace;}
+.cc-number{font-size:1.1rem;letter-spacing:2px;margin:.5rem 0;}
+.cc-meta{display:flex;justify-content:space-between;font-size:.8rem;opacity:.7;margin-top:.5rem;}
+
+/* ── AUTH MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(15,27,45,.7);backdrop-filter:blur(4px);z-index:500;display:flex;align-items:center;justify-content:center;padding:1rem;}
+.modal{background:var(--white);border-radius:var(--radius);padding:2rem;width:100%;max-width:440px;box-shadow:0 20px 60px rgba(0,0,0,.3);animation:slideUp .25s ease;}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.modal h2{font-family:'Playfair Display',serif;font-size:1.6rem;margin-bottom:1.5rem;color:var(--navy);}
+[data-theme="dark"] .modal h2{color:var(--gold-light);}
+.modal-close{position:absolute;top:1rem;right:1rem;background:transparent;border:none;font-size:1.3rem;cursor:pointer;color:var(--text-muted);}
+.auth-tabs{display:flex;border-bottom:2px solid var(--ivory-mid);margin-bottom:1.5rem;}
+.auth-tab{flex:1;padding:.6rem;border:none;background:transparent;cursor:pointer;font-weight:600;font-size:.9rem;color:var(--text-muted);border-bottom:3px solid transparent;margin-bottom:-2px;transition:.2s;}
+.auth-tab.active{color:var(--gold);border-bottom-color:var(--gold);}
+
+/* ── PROFILE ── */
+.profile-header{background:linear-gradient(135deg,var(--navy),var(--navy-light));border-radius:var(--radius);padding:2rem;color:#fff;margin-bottom:2rem;display:flex;align-items:center;gap:1.5rem;}
+.avatar{width:72px;height:72px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:1.8rem;font-weight:700;color:var(--navy);flex-shrink:0;}
+.role-badge{display:inline-block;background:var(--gold);color:var(--navy);padding:.25rem .75rem;border-radius:20px;font-size:.75rem;font-weight:700;text-transform:uppercase;margin-top:.4rem;}
+
+/* ── NOTIFICATIONS PANEL ── */
+.notif-panel{position:fixed;top:64px;right:1rem;width:360px;background:var(--white);border-radius:var(--radius);box-shadow:0 8px 30px rgba(0,0,0,.2);z-index:300;max-height:70vh;overflow-y:auto;animation:slideDown .2s ease;}
+@keyframes slideDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+.notif-header{padding:1rem 1.25rem;border-bottom:1px solid var(--ivory-mid);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:var(--white);}
+.notif-item{padding:.85rem 1.25rem;border-bottom:1px solid var(--ivory-mid);display:flex;gap:.75rem;transition:.15s;cursor:pointer;}
+.notif-item:hover{background:var(--ivory);}
+.notif-item.unread{background:rgba(201,168,76,.07);}
+.notif-dot{width:8px;height:8px;background:var(--gold);border-radius:50%;flex-shrink:0;margin-top:6px;}
+.notif-dot.read{background:transparent;}
+.notif-content p{font-size:.82rem;line-height:1.4;color:var(--text-muted);}
+.notif-content strong{font-size:.88rem;color:var(--text);}
+.notif-time{font-size:.72rem;color:var(--text-muted);margin-top:.2rem;}
+
+/* ── ADMIN PANEL ── */
+.admin-grid{display:grid;grid-template-columns:200px 1fr;gap:2rem;}
+@media(max-width:700px){.admin-grid{grid-template-columns:1fr;}}
+.admin-sidebar{background:var(--white);border-radius:var(--radius);padding:1rem;box-shadow:var(--card-shadow);height:fit-content;}
+.admin-nav-item{padding:.6rem .9rem;border-radius:var(--radius-sm);cursor:pointer;font-size:.88rem;font-weight:500;color:var(--text-muted);transition:.2s;margin-bottom:.2rem;}
+.admin-nav-item:hover{background:var(--ivory);}
+.admin-nav-item.active{background:var(--navy);color:#fff;}
+.admin-content{background:var(--white);border-radius:var(--radius);padding:1.5rem;box-shadow:var(--card-shadow);}
+.data-table{width:100%;border-collapse:collapse;font-size:.85rem;}
+.data-table th{background:var(--ivory);padding:.7rem 1rem;text-align:left;font-weight:600;font-size:.8rem;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);}
+.data-table td{padding:.7rem 1rem;border-bottom:1px solid var(--ivory-mid);}
+.data-table tr:hover td{background:var(--ivory);}
+
+/* ── TRIPS HISTORY ── */
+.trip-card{background:var(--white);border-radius:var(--radius);padding:1.25rem;box-shadow:var(--card-shadow);margin-bottom:1rem;display:flex;gap:1.25rem;align-items:flex-start;}
+.trip-img{width:90px;height:70px;border-radius:8px;object-fit:cover;flex-shrink:0;}
+.status-pill{display:inline-block;padding:.2rem .6rem;border-radius:10px;font-size:.72rem;font-weight:700;text-transform:uppercase;}
+.status-confirmed{background:#d4edda;color:#155724;}
+.status-cancelled{background:#f8d7da;color:#721c24;}
+.status-pending{background:#fff3cd;color:#856404;}
+
+/* ── DESTINATION DETAIL ── */
+.dest-hero{border-radius:var(--radius);overflow:hidden;height:300px;position:relative;margin-bottom:2rem;}
+.dest-hero img{width:100%;height:100%;object-fit:cover;}
+.dest-hero-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(15,27,45,.8) 0%,transparent 60%);padding:1.5rem;display:flex;flex-direction:column;justify-content:flex-end;color:#fff;}
+.stars{color:var(--gold);}
+
+/* ── SUCCESS SCREEN ── */
+.success-screen{text-align:center;padding:3rem 1rem;}
+.success-icon{font-size:4rem;margin-bottom:1rem;}
+.success-screen h2{font-family:'Playfair Display',serif;font-size:2rem;color:var(--navy);margin-bottom:.75rem;}
+[data-theme="dark"] .success-screen h2{color:var(--gold-light);}
+.ref-code{display:inline-block;background:rgba(201,168,76,.15);border:2px solid var(--gold);padding:.5rem 1.5rem;border-radius:8px;font-family:monospace;font-size:1.3rem;font-weight:700;color:var(--navy);margin:1rem 0;}
+[data-theme="dark"] .ref-code{color:var(--gold-light);}
+
+/* ── LOADING ── */
+.loading{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4rem;color:var(--text-muted);gap:1rem;}
+.spinner{width:40px;height:40px;border:3px solid var(--ivory-mid);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── MISC ── */
+.divider{border:none;border-top:1px solid var(--ivory-mid);margin:1.25rem 0;}
+.flex{display:flex;} .items-center{align-items:center;} .justify-between{justify-content:space-between;}
+.gap-sm{gap:.5rem;} .gap-md{gap:1rem;}
+.text-muted{color:var(--text-muted);}
+.text-sm{font-size:.85rem;}
+.mt-1{margin-top:.5rem;} .mt-2{margin-top:1rem;}
+footer{background:var(--navy);color:rgba(255,255,255,.6);text-align:center;padding:1.5rem;font-size:.85rem;}
+footer strong{color:var(--gold);}
+
+/* ── RESPONSIVE ── */
+@media(max-width:640px){
+  .nav-main{display:none;}
+  .header-inner{gap:.5rem;}
+  .form-row{grid-template-columns:1fr;}
+  .notif-panel{width:calc(100vw - 2rem);right:.5rem;}
+}
     </style>
 </head>
 <body>
+<div id="root"></div>
 
-    <div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useCallback, createContext, useContext, useRef } = React;
 
-    <script type="text/babel">
-        const { useState, useEffect, createContext, useContext } = React;
+/* ═══════════════════════════════════════════════════════════
+   CONTEXT & STATE
+═══════════════════════════════════════════════════════════ */
+const AppCtx = createContext();
 
-        const VoyageContext = createContext();
+function AppProvider({ children }) {
+    // Auth
+    const [user, setUser]         = useState(() => {
+        try { return JSON.parse(localStorage.getItem('vv_user') || 'null'); } catch { return null; }
+    });
+    // Cart
+    const [cart, setCart]         = useState({
+        destination: null, transport: null, accommodation: null, activities: [],
+        nights: 3, travelers: 1, departure_date: '', return_date: ''
+    });
+    // UI
+    const [tab, setTab]           = useState('destinations');
+    const [darkMode, setDarkMode] = useState(() => localStorage.getItem('vv_dark') === '1');
+    const [notifOpen, setNotifOpen] = useState(false);
+    const [notifications, setNotifications] = useState([]);
 
-        function VoyageProvider({ children }) {
-            const [cart, setCart] = useState({ destination: null, transport: null, accommodation: null, activities: [] });
+    useEffect(() => {
+        document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : 'light');
+        localStorage.setItem('vv_dark', darkMode ? '1' : '0');
+    }, [darkMode]);
 
-            const selectDestination = (dest) => {
-                setCart({ destination: dest, transport: null, accommodation: null, activities: [] });
-            };
+    useEffect(() => {
+        if (user) { localStorage.setItem('vv_user', JSON.stringify(user)); fetchNotifications(); }
+        else localStorage.removeItem('vv_user');
+    }, [user]);
 
-            const toggleActivity = (act) => {
-                setCart(prev => {
-                    const exists = prev.activities.find(a => a.id === act.id);
-                    if (exists) return { ...prev, activities: prev.activities.filter(a => a.id !== act.id) };
-                    return { ...prev, activities: [...prev.activities, act] };
-                });
-            };
+    const fetchNotifications = useCallback(() => {
+        if (!user) return;
+        fetch(`api/notifications.php?user_id=${user.id}`)
+            .then(r => r.json()).then(setNotifications).catch(() => {});
+    }, [user]);
 
-            return (
-                <VoyageContext.Provider value={{ cart, setCart, selectDestination, toggleActivity }}>
-                    {children}
-                </VoyageContext.Provider>
-            );
-        }
+    const logout = () => {
+        setUser(null);
+        setCart({ destination: null, transport: null, accommodation: null, activities: [], nights: 3, travelers: 1, departure_date: '', return_date: '' });
+        setTab('destinations');
+    };
 
-        const useVoyage = () => useContext(VoyageContext);
+    const selectDestination = (dest) => {
+        setCart(prev => ({ ...prev, destination: dest, transport: null, accommodation: null, activities: [] }));
+    };
 
-        // --- VUE DESTINATIONS ---
-        function DestinationsView({ setTab }) {
-            const { selectDestination, cart } = useVoyage();
-            const [destinations, setDestinations] = useState([]);
+    const toggleActivity = (act) => {
+        setCart(prev => {
+            const exists = prev.activities.find(a => a.id === act.id);
+            if (exists) return { ...prev, activities: prev.activities.filter(a => a.id !== act.id) };
+            if (act.is_full || !act.has_enough) return prev;
+            return { ...prev, activities: [...prev.activities, act] };
+        });
+    };
 
-            useEffect(() => {
-                fetch('api/destinations.php')
-                    .then(res => res.json())
-                    .then(data => setDestinations(data))
-                    .catch(err => console.error("Erreur PHP:", err));
-            }, []);
+    const cartCount = (cart.destination ? 1 : 0) + (cart.transport ? 1 : 0) + (cart.accommodation ? 1 : 0) + cart.activities.length;
+    const unreadCount = notifications.filter(n => !n.is_read).length;
 
-            return (
-                <div>
-                    <div className="title-section">
-                        <h2>Choisissez votre destination</h2>
-                        <p>Sélectionnez le lieu de votre prochain voyage.</p>
+    return (
+        <AppCtx.Provider value={{
+            user, setUser, logout,
+            cart, setCart, selectDestination, toggleActivity, cartCount,
+            tab, setTab,
+            darkMode, setDarkMode,
+            notifOpen, setNotifOpen,
+            notifications, setNotifications, fetchNotifications, unreadCount
+        }}>
+            {children}
+        </AppCtx.Provider>
+    );
+}
+const useApp = () => useContext(AppCtx);
+
+/* ═══════════════════════════════════════════════════════════
+   HELPERS
+═══════════════════════════════════════════════════════════ */
+function Stars({ n }) {
+    return <span className="stars">{'★'.repeat(Math.round(n))}{'☆'.repeat(5 - Math.round(n))}</span>;
+}
+
+function AvailBadge({ left, total }) {
+    if (!total) return null;
+    const pct = (left / total) * 100;
+    const cls = pct > 50 ? 'avail-high' : pct > 20 ? 'avail-mid' : 'avail-low';
+    const label = left === 0 ? 'Complet' : left <= 3 ? `${left} restant(s)` : `${left} dispo.`;
+    return <span className={`avail-badge ${cls}`}>{label}</span>;
+}
+
+function Loading() {
+    return <div className="loading"><div className="spinner"></div><p>Chargement…</p></div>;
+}
+
+function apiFetch(url, opts = {}) {
+    return fetch(url, { headers: { 'Content-Type': 'application/json' }, ...opts })
+        .then(r => r.json());
+}
+
+/* ═══════════════════════════════════════════════════════════
+   AUTH MODAL
+═══════════════════════════════════════════════════════════ */
+function AuthModal({ onClose }) {
+    const { setUser, fetchNotifications } = useApp();
+    const [mode, setMode]   = useState('login');
+    const [form, setForm]   = useState({ name: '', email: '', password: '', phone: '' });
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
+
+    const handle = (e) => {
+        e.preventDefault(); setError(''); setLoading(true);
+        apiFetch(`api/auth.php?action=${mode}`, { method: 'POST', body: JSON.stringify(form) })
+            .then(d => {
+                if (d.status === 'success') {
+                    if (mode === 'login') { setUser(d.user); fetchNotifications(); onClose(); }
+                    else { setMode('login'); setError(''); alert('Compte créé ! Connectez-vous.'); }
+                } else { setError(d.message); }
+            })
+            .catch(() => setError('Erreur réseau.'))
+            .finally(() => setLoading(false));
+    };
+
+    const set = (k, v) => setForm(p => ({ ...p, [k]: v }));
+
+    return (
+        <div className="modal-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
+            <div className="modal" style={{position:'relative'}}>
+                <button className="modal-close" onClick={onClose}>✕</button>
+                <h2>🌍 VoyageVista</h2>
+                <div className="auth-tabs">
+                    <button className={`auth-tab ${mode==='login'?'active':''}`} onClick={() => setMode('login')}>Connexion</button>
+                    <button className={`auth-tab ${mode==='register'?'active':''}`} onClick={() => setMode('register')}>Inscription</button>
+                </div>
+                {error && <div className="alert alert-danger" style={{marginBottom:'1rem'}}>{error}</div>}
+                <form onSubmit={handle}>
+                    {mode === 'register' && (
+                        <div className="form-group">
+                            <label className="form-label">Prénom et Nom</label>
+                            <input className="form-control" value={form.name} onChange={e => set('name', e.target.value)} required placeholder="Marie Dupont" />
+                        </div>
+                    )}
+                    <div className="form-group">
+                        <label className="form-label">Email</label>
+                        <input type="email" className="form-control" value={form.email} onChange={e => set('email', e.target.value)} required placeholder="vous@email.com" />
                     </div>
-                    <div className="grid">
-                        {destinations.map(d => (
-                            <div key={d.id} className={`card ${cart.destination?.id === d.id ? 'selected' : ''}`}>
-                                <img src={d.image_url} className="card-img" alt={d.name}/>
-                                <div className="card-content">
-                                    <span className="tag">{d.tag}</span>
-                                    <h3 className="card-title">{d.name}, {d.country}</h3>
-                                    <p className="card-desc">{d.description}</p>
-                                    <div className="card-footer">
-                                        <span className="price">{d.price} €</span>
-                                        <button onClick={() => selectDestination(d)} className={`btn ${cart.destination?.id === d.id ? 'btn-success' : 'btn-outline'}`}>
-                                            {cart.destination?.id === d.id ? 'Sélectionné' : 'Choisir'}
+                    <div className="form-group">
+                        <label className="form-label">Mot de passe</label>
+                        <input type="password" className="form-control" value={form.password} onChange={e => set('password', e.target.value)} required placeholder="••••••••" />
+                    </div>
+                    {mode === 'register' && (
+                        <div className="form-group">
+                            <label className="form-label">Téléphone (optionnel)</label>
+                            <input className="form-control" value={form.phone} onChange={e => set('phone', e.target.value)} placeholder="+33 6 00 00 00 00" />
+                        </div>
+                    )}
+                    <button type="submit" className="btn btn-gold btn-full" disabled={loading}>
+                        {loading ? 'Chargement…' : mode === 'login' ? 'Se connecter' : "Créer mon compte"}
+                    </button>
+                </form>
+                {mode === 'login' && (
+                    <p className="text-muted text-sm" style={{marginTop:'1rem',textAlign:'center'}}>
+                        Démo — admin@voyagevista.fr / marie@example.com — mot de passe: <strong>password</strong>
+                    </p>
+                )}
+            </div>
+        </div>
+    );
+}
+
+/* ═══════════════════════════════════════════════════════════
+   NOTIFICATIONS PANEL
+═══════════════════════════════════════════════════════════ */
+function NotifPanel() {
+    const { user, notifications, setNotifications, fetchNotifications, setNotifOpen } = useApp();
+    const unread = notifications.filter(n => !n.is_read).length;
+
+    const markRead = (id) => {
+        apiFetch('api/notifications.php', { method: 'POST', body: JSON.stringify({ action: 'mark_read', id, user_id: user.id }) })
+            .then(() => {
+                setNotifications(prev => prev.map(n => n.id === id ? { ...n, is_read: 1 } : n));
+            });
+    };
+
+    const markAll = () => {
+        apiFetch('api/notifications.php', { method: 'POST', body: JSON.stringify({ action: 'mark_all_read', user_id: user.id }) })
+            .then(() => { setNotifications(prev => prev.map(n => ({ ...n, is_read: 1 }))); });
+    };
+
+    const del = (id) => {
+        apiFetch('api/notifications.php', { method: 'POST', body: JSON.stringify({ action: 'delete', id, user_id: user.id }) })
+            .then(() => setNotifications(prev => prev.filter(n => n.id !== id)));
+    };
+
+    const typeIcon = { reservation: '✈️', transport: '🚌', hebergement: '🏨', activite: '🎯', promotion: '🏷️', systeme: '⚙️', annulation: '❌', modification: '✏️' };
+
+    const formatDate = (d) => {
+        const dt = new Date(d);
+        const now = new Date();
+        const diff = Math.floor((now - dt) / 1000);
+        if (diff < 60) return 'À l\'instant';
+        if (diff < 3600) return `Il y a ${Math.floor(diff/60)} min`;
+        if (diff < 86400) return `Il y a ${Math.floor(diff/3600)}h`;
+        return dt.toLocaleDateString('fr-FR');
+    };
+
+    return (
+        <div className="notif-panel">
+            <div className="notif-header">
+                <strong>Notifications {unread > 0 && <span style={{color:'var(--gold)'}}>({unread})</span>}</strong>
+                <div style={{display:'flex',gap:'.5rem'}}>
+                    {unread > 0 && <button className="btn btn-sm btn-outline" onClick={markAll}>Tout lire</button>}
+                    <button className="btn btn-sm btn-outline" onClick={() => setNotifOpen(false)}>✕</button>
+                </div>
+            </div>
+            {notifications.length === 0 ? (
+                <div style={{padding:'2rem',textAlign:'center',color:'var(--text-muted)'}}>Aucune notification</div>
+            ) : notifications.map(n => (
+                <div key={n.id} className={`notif-item ${!n.is_read ? 'unread' : ''}`} onClick={() => markRead(n.id)}>
+                    <div className={`notif-dot ${n.is_read ? 'read' : ''}`}></div>
+                    <div className="notif-content" style={{flex:1}}>
+                        <strong>{typeIcon[n.type] || '📢'} {n.title}</strong>
+                        <p>{n.message}</p>
+                        <div className="notif-time">{formatDate(n.created_at)}</div>
+                    </div>
+                    <button className="btn btn-sm" style={{background:'transparent',color:'var(--text-muted)',padding:'.2rem .4rem'}}
+                        onClick={e => { e.stopPropagation(); del(n.id); }}>✕</button>
+                </div>
+            ))}
+        </div>
+    );
+}
+
+/* ═══════════════════════════════════════════════════════════
+   HEADER
+═══════════════════════════════════════════════════════════ */
+function Header() {
+    const { user, logout, tab, setTab, darkMode, setDarkMode, notifOpen, setNotifOpen, cartCount, unreadCount } = useApp();
+    const [showAuth, setShowAuth] = useState(false);
+
+    const navItems = [
+        { key: 'destinations', label: '🌍 Destinations' },
+        { key: 'transports',   label: '✈️ Transports' },
+        { key: 'accommodations', label: '🏨 Hébergements' },
+        { key: 'activities',   label: '🎯 Activités' },
+        ...(user ? [{ key: 'trips', label: '🗺️ Mes voyages' }] : []),
+        ...(user?.role === 'admin' ? [{ key: 'admin', label: '⚙️ Admin' }] : []),
+    ];
+
+    return (
+        <>
+            <header>
+                <div className="header-inner">
+                    <div className="logo" onClick={() => setTab('destinations')}>
+                        Voyage<span>Vista</span>
+                    </div>
+                    <nav className="nav-main">
+                        {navItems.map(({ key, label }) => (
+                            <button key={key} className={`nav-btn ${tab === key ? 'active' : ''}`} onClick={() => setTab(key)}>{label}</button>
+                        ))}
+                    </nav>
+                    <div className="header-actions">
+                        <button className="icon-btn" onClick={() => setDarkMode(d => !d)} title="Mode sombre">{darkMode ? '☀️' : '🌙'}</button>
+                        {user && (
+                            <button className="icon-btn" onClick={() => setNotifOpen(o => !o)} title="Notifications">
+                                🔔
+                                {unreadCount > 0 && <span className="badge">{unreadCount}</span>}
+                            </button>
+                        )}
+                        <button className="cart-btn" onClick={() => setTab('cart')}>
+                            🛒 Panier <span style={{background:'var(--navy)',color:'var(--gold)',padding:'1px 7px',borderRadius:'10px',fontSize:'.75rem',fontWeight:'700'}}>{cartCount}</span>
+                        </button>
+                        {user ? (
+                            <div style={{display:'flex',gap:'.4rem'}}>
+                                <button className="user-chip" onClick={() => setTab('profile')}>👤 {user.name.split(' ')[0]}</button>
+                                <button className="icon-btn" onClick={logout} title="Déconnexion">🚪</button>
+                            </div>
+                        ) : (
+                            <button className="cart-btn" style={{background:'transparent',border:'1px solid rgba(255,255,255,.3)',color:'#fff'}} onClick={() => setShowAuth(true)}>Connexion</button>
+                        )}
+                    </div>
+                </div>
+            </header>
+            {showAuth && <AuthModal onClose={() => setShowAuth(false)} />}
+            {notifOpen && user && <NotifPanel />}
+        </>
+    );
+}
+
+/* ═══════════════════════════════════════════════════════════
+   DESTINATIONS VIEW
+═══════════════════════════════════════════════════════════ */
+function DestinationsView() {
+    const { selectDestination, cart, setTab } = useApp();
+    const [destinations, setDestinations] = useState([]);
+    const [loading, setLoading]           = useState(true);
+    const [search, setSearch]             = useState('');
+    const [tag, setTag]                   = useState('');
+    const [sort, setSort]                 = useState('');
+    const [maxPrice, setMaxPrice]         = useState('');
+    const [detail, setDetail]             = useState(null);
+
+    const tags = ['Culture', 'Romantique', 'Nature', 'Aventure', 'City Break'];
+
+    const load = useCallback(() => {
+        setLoading(true);
+        const p = new URLSearchParams();
+        if (search)   p.append('search', search);
+        if (tag)      p.append('tag', tag);
+        if (sort)     p.append('sort', sort);
+        if (maxPrice) p.append('max_price', maxPrice);
+        fetch(`api/destinations.php?${p}`)
+            .then(r => r.json()).then(d => { setDestinations(d); setLoading(false); })
+            .catch(() => setLoading(false));
+    }, [search, tag, sort, maxPrice]);
+
+    useEffect(() => { load(); }, [load]);
+
+    if (detail) return <DestinationDetail dest={detail} onBack={() => setDetail(null)} />;
+
+    return (
+        <div>
+            <div className="section-head">
+                <h2>Nos Destinations</h2>
+                <p>Découvrez {destinations.length} destination{destinations.length > 1 ? 's' : ''} d'exception dans le monde entier.</p>
+            </div>
+
+            <div className="search-bar">
+                <div className="form-group" style={{flex:2}}>
+                    <label className="form-label">🔍 Recherche</label>
+                    <input className="form-control" placeholder="Pays, ville, ambiance…" value={search}
+                        onChange={e => setSearch(e.target.value)} />
+                </div>
+                <div className="form-group">
+                    <label className="form-label">Catégorie</label>
+                    <select className="form-control" value={tag} onChange={e => setTag(e.target.value)}>
+                        <option value="">Toutes</option>
+                        {tags.map(t => <option key={t}>{t}</option>)}
+                    </select>
+                </div>
+                <div className="form-group">
+                    <label className="form-label">Budget max (€)</label>
+                    <input type="number" className="form-control" placeholder="Illimité" value={maxPrice}
+                        onChange={e => setMaxPrice(e.target.value)} min="0" />
+                </div>
+                <div className="form-group">
+                    <label className="form-label">Trier par</label>
+                    <select className="form-control" value={sort} onChange={e => setSort(e.target.value)}>
+                        <option value="">Par défaut</option>
+                        <option value="price_asc">Prix ↑</option>
+                        <option value="price_desc">Prix ↓</option>
+                        <option value="rating_desc">Note ↓</option>
+                        <option value="name_asc">Nom A-Z</option>
+                    </select>
+                </div>
+            </div>
+
+            {loading ? <Loading /> : destinations.length === 0 ? (
+                <div className="alert alert-warn">Aucune destination trouvée pour ces critères.</div>
+            ) : (
+                <div className="grid">
+                    {destinations.map(d => (
+                        <div key={d.id} className={`card ${cart.destination?.id === d.id ? 'selected' : ''}`}>
+                            <img src={d.image_url} className="card-img" alt={d.name} loading="lazy" />
+                            <div className="card-body">
+                                <span className="tag">{d.tag}</span>
+                                <h3>{d.name}, {d.country}</h3>
+                                <p className="card-desc">{d.description}</p>
+                                <div style={{display:'flex',gap:'.5rem',marginBottom:'.75rem',fontSize:'.8rem',color:'var(--text-muted)'}}>
+                                    <span>⭐ {d.rating}</span>
+                                    <span>📅 {d.duration_days} jours</span>
+                                    {d.continent && <span>🌐 {d.continent}</span>}
+                                </div>
+                                <div className="card-footer">
+                                    <div>
+                                        <div className="price">à partir de {d.price} €</div>
+                                    </div>
+                                    <div style={{display:'flex',gap:'.4rem'}}>
+                                        <button className="btn btn-outline btn-sm" onClick={() => setDetail(d)}>Détails</button>
+                                        <button className={`btn btn-sm ${cart.destination?.id === d.id ? 'btn-success' : 'btn-gold'}`}
+                                            onClick={() => { selectDestination(d); setTab('transports'); }}>
+                                            {cart.destination?.id === d.id ? '✓ Choisi' : 'Choisir'}
                                         </button>
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    ))}
+                </div>
+            )}
+        </div>
+    );
+}
+
+/* ═══════════════════════════════════════════════════════════
+   DESTINATION DETAIL
+═══════════════════════════════════════════════════════════ */
+function DestinationDetail({ dest, onBack }) {
+    const { selectDestination, cart, setTab } = useApp();
+    const [transports, setTransports]         = useState([]);
+    const [accommodations, setAccommodations] = useState([]);
+    const [activities, setActivities]         = useState([]);
+
+    useEffect(() => {
+        Promise.all([
+            fetch(`api/transports.php?destination_id=${dest.id}`).then(r => r.json()),
+            fetch(`api/accommodations.php?destination_id=${dest.id}`).then(r => r.json()),
+            fetch(`api/activities.php?destination_id=${dest.id}`).then(r => r.json()),
+        ]).then(([t, a, ac]) => { setTransports(t); setAccommodations(a); setActivities(ac); });
+    }, [dest.id]);
+
+    const minPrice = dest.price
+        + (transports.length ? Math.min(...transports.map(t => t.price)) : 0)
+        + (accommodations.length ? Math.min(...accommodations.map(a => a.price_per_night * 3)) : 0);
+
+    return (
+        <div>
+            <button className="btn btn-outline btn-sm" onClick={onBack} style={{marginBottom:'1rem'}}>← Retour</button>
+            <div className="dest-hero">
+                <img src={dest.image_url} alt={dest.name} />
+                <div className="dest-hero-overlay">
+                    <span className="tag">{dest.tag}</span>
+                    <h2 style={{fontFamily:'Playfair Display,serif',fontSize:'2rem',margin:'.4rem 0'}}>{dest.name}, {dest.country}</h2>
+                    <div style={{display:'flex',gap:'1rem',fontSize:'.85rem',opacity:.85}}>
+                        <span>⭐ {dest.rating}/5</span>
+                        <span>📅 {dest.duration_days} jours recommandés</span>
+                        {dest.best_season && <span>🌤 {dest.best_season}</span>}
+                    </div>
+                </div>
+            </div>
+            <div style={{display:'grid',gridTemplateColumns:'2fr 1fr',gap:'2rem',marginBottom:'2rem'}}>
+                <div>
+                    <h3 style={{marginBottom:'.75rem'}}>À propos</h3>
+                    <p style={{lineHeight:1.7,color:'var(--text-muted)'}}>{dest.description}</p>
+                    {dest.language && <p style={{marginTop:'.75rem',fontSize:'.9rem'}}>🗣️ Langue : <strong>{dest.language}</strong> | 💱 Devise : <strong>{dest.currency}</strong></p>}
+                </div>
+                <div style={{background:'var(--ivory)',borderRadius:'var(--radius)',padding:'1.25rem'}}>
+                    <p className="text-muted text-sm" style={{marginBottom:'.5rem'}}>Séjour à partir de</p>
+                    <p style={{fontSize:'2rem',fontWeight:700,color:'var(--navy)',fontFamily:'Playfair Display,serif'}}>{minPrice} €</p>
+                    <p className="text-muted text-sm">vols + hébergement 3 nuits inclus</p>
+                    <hr className="divider" />
+                    <p style={{marginBottom:'.5rem',fontSize:'.85rem'}}><strong>{transports.length}</strong> options de transport</p>
+                    <p style={{marginBottom:'.5rem',fontSize:'.85rem'}}><strong>{accommodations.length}</strong> hébergements disponibles</p>
+                    <p style={{marginBottom:'1rem',fontSize:'.85rem'}}><strong>{activities.length}</strong> activités proposées</p>
+                    <button className="btn btn-gold btn-full"
+                        onClick={() => { selectDestination(dest); setTab('transports'); }}>
+                        {cart.destination?.id === dest.id ? '✓ Destination choisie' : 'Composer mon séjour →'}
+                    </button>
+                </div>
+            </div>
+            {activities.length > 0 && (
+                <div>
+                    <h3 style={{marginBottom:'1rem'}}>Activités phares</h3>
+                    <div className="grid" style={{gridTemplateColumns:'repeat(auto-fill,minmax(240px,1fr))'}}>
+                        {activities.slice(0,3).map(a => (
+                            <div key={a.id} style={{background:'var(--white)',borderRadius:'var(--radius)',padding:'1rem',boxShadow:'var(--card-shadow)'}}>
+                                <span className="tag">{a.category}</span>
+                                <h4 style={{margin:'.4rem 0'}}>{a.name}</h4>
+                                <p className="text-muted text-sm">{a.duration} · {a.difficulty}</p>
+                                <p style={{marginTop:'.5rem',fontWeight:700,color:'var(--gold)'}}>{a.price_per_person} € / pers.</p>
+                            </div>
                         ))}
                     </div>
                 </div>
-            );
-        }
+            )}
+        </div>
+    );
+}
 
-        // --- VUE TRANSPORTS ---
-        function TransportsView() {
-            const { cart, setCart } = useVoyage();
-            const [transports, setTransports] = useState([]);
+/* ═══════════════════════════════════════════════════════════
+   TRANSPORTS VIEW
+═══════════════════════════════════════════════════════════ */
+function TransportsView() {
+    const { cart, setCart } = useApp();
+    const [transports, setTransports] = useState([]);
+    const [loading, setLoading]       = useState(true);
+    const [filterClass, setFilterClass] = useState('');
+    const [sortBy, setSortBy]           = useState('');
 
-            useEffect(() => {
-                if (cart.destination) {
-                    fetch(`api/transports.php?destination_id=${cart.destination.id}`)
-                        .then(res => res.json())
-                        .then(data => setTransports(data));
-                }
-            }, [cart.destination]);
+    useEffect(() => {
+        if (!cart.destination) return;
+        setLoading(true);
+        const p = new URLSearchParams({ destination_id: cart.destination.id });
+        if (filterClass) p.append('class', filterClass);
+        if (sortBy)      p.append('sort', sortBy);
+        p.append('travelers', cart.travelers);
+        fetch(`api/transports.php?${p}`)
+            .then(r => r.json()).then(d => { setTransports(d); setLoading(false); })
+            .catch(() => setLoading(false));
+    }, [cart.destination, filterClass, sortBy, cart.travelers]);
 
-            if (!cart.destination) return <div className="alert alert-warning">Veuillez d'abord choisir une destination.</div>;
+    if (!cart.destination) return <div className="alert alert-warn">⚠️ Veuillez d'abord choisir une destination.</div>;
 
-            return (
-                <div>
-                    <div className="title-section">
-                        <h2>Vols & Trajets vers {cart.destination.name}</h2>
+    return (
+        <div>
+            <div className="section-head">
+                <h2>Transports vers {cart.destination.name}</h2>
+                <p>Vols et trajets disponibles au départ de Paris.</p>
+            </div>
+            <div className="search-bar">
+                <div className="form-group">
+                    <label className="form-label">Classe</label>
+                    <select className="form-control" value={filterClass} onChange={e => setFilterClass(e.target.value)}>
+                        <option value="">Toutes</option>
+                        <option>Économique</option><option>Affaires</option><option>Standard</option>
+                    </select>
+                </div>
+                <div className="form-group">
+                    <label className="form-label">Trier par</label>
+                    <select className="form-control" value={sortBy} onChange={e => setSortBy(e.target.value)}>
+                        <option value="">Par défaut</option>
+                        <option value="price_asc">Prix ↑</option>
+                        <option value="price_desc">Prix ↓</option>
+                        <option value="duration">Durée</option>
+                    </select>
+                </div>
+            </div>
+            {loading ? <Loading /> : transports.length === 0 ? (
+                <div className="alert alert-warn">Aucun transport disponible pour ces critères.</div>
+            ) : transports.map(t => (
+                <div key={t.id} className={`list-item ${cart.transport?.id === t.id ? 'selected' : ''}`}>
+                    <div style={{flex:1}}>
+                        <h4>{t.type} · <span style={{color:'var(--text-muted)'}}>{t.company}</span></h4>
+                        <div className="meta">
+                            🕐 Départ {t.departure_time} → Arrivée {t.arrival_time} · ⏱ {t.duration}
+                            {t.stops > 0 && ` · ${t.stops} escale(s)`} · 💺 {t.class}
+                        </div>
+                        <div style={{marginTop:'.4rem',display:'flex',gap:'.5rem',alignItems:'center'}}>
+                            <AvailBadge left={t.seats_left} total={t.seats_total} />
+                            {t.seats_left === 0 && <span style={{fontSize:'.75rem',color:'var(--danger)'}}>Complet</span>}
+                        </div>
                     </div>
-                    <div>
-                        {transports.map(t => (
-                            <div key={t.id} className={`list-item ${cart.transport?.id === t.id ? 'selected' : ''}`}>
-                                <div>
-                                    <h3 style={{marginBottom: '0.2rem'}}>{t.type} - {t.company}</h3>
-                                    <p style={{color: 'var(--text-light)', fontSize: '0.9rem'}}>Départ: {t.departure_time} | Durée: {t.duration} | Classe: {t.class}</p>
+                    <div style={{textAlign:'right',minWidth:120}}>
+                        <div className="price" style={{marginBottom:'.4rem'}}>{t.price} €</div>
+                        <button
+                            disabled={t.seats_left < cart.travelers}
+                            className={`btn btn-sm ${cart.transport?.id === t.id ? 'btn-success' : 'btn-gold'}`}
+                            onClick={() => setCart(p => ({ ...p, transport: t }))}>
+                            {t.seats_left < cart.travelers ? 'Indisponible' : cart.transport?.id === t.id ? '✓ Choisi' : 'Sélectionner'}
+                        </button>
+                    </div>
+                </div>
+            ))}
+        </div>
+    );
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ACCOMMODATIONS VIEW
+═══════════════════════════════════════════════════════════ */
+function AccommodationsView() {
+    const { cart, setCart } = useApp();
+    const [hotels, setHotels] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [filterType, setFilterType]   = useState('');
+    const [minStars, setMinStars]       = useState('');
+    const [sortBy, setSortBy]           = useState('');
+    const [availOnly, setAvailOnly]     = useState(false);
+
+    useEffect(() => {
+        if (!cart.destination) return;
+        setLoading(true);
+        const p = new URLSearchParams({ destination_id: cart.destination.id });
+        if (filterType) p.append('type', filterType);
+        if (minStars)   p.append('min_stars', minStars);
+        if (sortBy)     p.append('sort', sortBy);
+        if (availOnly)  p.append('available_only', '1');
+        fetch(`api/accommodations.php?${p}`)
+            .then(r => r.json()).then(d => { setHotels(d); setLoading(false); })
+            .catch(() => setLoading(false));
+    }, [cart.destination, filterType, minStars, sortBy, availOnly]);
+
+    if (!cart.destination) return <div className="alert alert-warn">⚠️ Veuillez d'abord choisir une destination.</div>;
+
+    return (
+        <div>
+            <div className="section-head">
+                <h2>Hébergements à {cart.destination.name}</h2>
+            </div>
+            <div className="search-bar">
+                <div className="form-group">
+                    <label className="form-label">Type</label>
+                    <select className="form-control" value={filterType} onChange={e => setFilterType(e.target.value)}>
+                        <option value="">Tous</option>
+                        {['Hôtel','Villa','Resort','Riad','Lodge','Auberge','Appartement','Insolite','Maison d\'hôtes'].map(t => <option key={t}>{t}</option>)}
+                    </select>
+                </div>
+                <div className="form-group">
+                    <label className="form-label">Étoiles min.</label>
+                    <select className="form-control" value={minStars} onChange={e => setMinStars(e.target.value)}>
+                        <option value="">Toutes</option>
+                        {[2,3,4,5].map(s => <option key={s} value={s}>{s}★</option>)}
+                    </select>
+                </div>
+                <div className="form-group">
+                    <label className="form-label">Trier par</label>
+                    <select className="form-control" value={sortBy} onChange={e => setSortBy(e.target.value)}>
+                        <option value="">Par défaut</option>
+                        <option value="price_asc">Prix ↑</option>
+                        <option value="price_desc">Prix ↓</option>
+                        <option value="rating_desc">Note ↓</option>
+                        <option value="stars_desc">Étoiles ↓</option>
+                    </select>
+                </div>
+                <div className="form-group" style={{display:'flex',alignItems:'flex-end',gap:'.5rem'}}>
+                    <label style={{display:'flex',alignItems:'center',gap:'.4rem',cursor:'pointer',fontSize:'.85rem',fontWeight:600}}>
+                        <input type="checkbox" checked={availOnly} onChange={e => setAvailOnly(e.target.checked)} />
+                        Disponibles seulement
+                    </label>
+                </div>
+            </div>
+            {loading ? <Loading /> : hotels.length === 0 ? (
+                <div className="alert alert-warn">Aucun hébergement trouvé.</div>
+            ) : (
+                <div className="grid">
+                    {hotels.map(h => (
+                        <div key={h.id} className={`card ${cart.accommodation?.id === h.id ? 'selected' : ''}`}>
+                            <img src={h.image_url} className="card-img" alt={h.name} loading="lazy" />
+                            <div className="card-body">
+                                <h3>{h.name} <span style={{fontSize:'.9rem'}}>{'⭐'.repeat(parseInt(h.stars))}</span></h3>
+                                <p className="card-desc">
+                                    <span className="tag" style={{marginBottom:'.5rem'}}>{h.type}</span><br />
+                                    {h.amenities}
+                                </p>
+                                <div style={{display:'flex',gap:'.5rem',marginBottom:'.5rem',alignItems:'center'}}>
+                                    <AvailBadge left={h.rooms_left} total={h.rooms_total} />
+                                    {h.free_cancellation ? <span style={{fontSize:'.75rem',color:'var(--success)'}}>✓ Annulation gratuite</span> : null}
                                 </div>
-                                <div style={{textAlign: 'right'}}>
-                                    <div className="price" style={{marginBottom: '0.5rem'}}>{t.price} €</div>
-                                    <button onClick={() => setCart(p => ({...p, transport: t}))} className={`btn ${cart.transport?.id === t.id ? 'btn-success' : 'btn-outline'}`}>
-                                        Choisir
+                                <div className="card-footer">
+                                    <div className="price">{h.price_per_night} € <small>/nuit</small></div>
+                                    <button
+                                        disabled={h.rooms_left === 0}
+                                        className={`btn btn-sm ${cart.accommodation?.id === h.id ? 'btn-success' : h.rooms_left === 0 ? 'btn-outline' : 'btn-gold'}`}
+                                        onClick={() => setCart(p => ({ ...p, accommodation: h }))}>
+                                        {h.rooms_left === 0 ? 'Complet' : cart.accommodation?.id === h.id ? '✓ Choisi' : 'Réserver'}
                                     </button>
                                 </div>
                             </div>
-                        ))}
-                    </div>
+                        </div>
+                    ))}
                 </div>
-            );
-        }
+            )}
+        </div>
+    );
+}
 
-        // --- VUE HÉBERGEMENTS ---
-        function AccommodationsView() {
-            const { cart, setCart } = useVoyage();
-            const [hotels, setHotels] = useState([]);
+/* ═══════════════════════════════════════════════════════════
+   ACTIVITIES VIEW
+═══════════════════════════════════════════════════════════ */
+function ActivitiesView() {
+    const { cart, toggleActivity } = useApp();
+    const [activities, setActivities] = useState([]);
+    const [loading, setLoading]       = useState(true);
+    const [filterCat, setFilterCat]   = useState('');
+    const [filterDiff, setFilterDiff] = useState('');
 
-            useEffect(() => {
-                if (cart.destination) {
-                    fetch(`api/accommodations.php?destination_id=${cart.destination.id}`)
-                        .then(res => res.json())
-                        .then(data => setHotels(data));
-                }
-            }, [cart.destination]);
+    useEffect(() => {
+        if (!cart.destination) return;
+        setLoading(true);
+        const p = new URLSearchParams({ destination_id: cart.destination.id, travelers: cart.travelers });
+        if (filterCat)  p.append('category', filterCat);
+        if (filterDiff) p.append('difficulty', filterDiff);
+        fetch(`api/activities.php?${p}`)
+            .then(r => r.json()).then(d => { setActivities(d); setLoading(false); })
+            .catch(() => setLoading(false));
+    }, [cart.destination, filterCat, filterDiff, cart.travelers]);
 
-            if (!cart.destination) return <div className="alert alert-warning">Veuillez d'abord choisir une destination.</div>;
+    if (!cart.destination) return <div className="alert alert-warn">⚠️ Veuillez d'abord choisir une destination.</div>;
 
-            return (
-                <div>
-                    <div className="title-section">
-                        <h2>Logements à {cart.destination.name}</h2>
-                    </div>
-                    <div className="grid">
-                        {hotels.map(h => (
-                            <div key={h.id} className={`card ${cart.accommodation?.id === h.id ? 'selected' : ''}`}>
-                                <img src={h.image_url} className="card-img" alt={h.name}/>
-                                <div className="card-content">
-                                    <h3 className="card-title">{h.name} {Array(parseInt(h.stars)).fill('⭐').join('')}</h3>
-                                    <p className="card-desc">Type: {h.type}<br/>{h.amenities}</p>
+    const cats  = [...new Set(activities.map(a => a.category))];
+    const diffs = ['Facile', 'Modéré', 'Difficile'];
+
+    return (
+        <div>
+            <div className="section-head">
+                <h2>Activités à {cart.destination.name}</h2>
+                <p>{cart.activities.length} activité(s) sélectionnée(s).</p>
+            </div>
+            <div className="search-bar">
+                <div className="form-group">
+                    <label className="form-label">Catégorie</label>
+                    <select className="form-control" value={filterCat} onChange={e => setFilterCat(e.target.value)}>
+                        <option value="">Toutes</option>
+                        {cats.map(c => <option key={c}>{c}</option>)}
+                    </select>
+                </div>
+                <div className="form-group">
+                    <label className="form-label">Difficulté</label>
+                    <select className="form-control" value={filterDiff} onChange={e => setFilterDiff(e.target.value)}>
+                        <option value="">Toutes</option>
+                        {diffs.map(d => <option key={d}>{d}</option>)}
+                    </select>
+                </div>
+            </div>
+            {loading ? <Loading /> : (
+                <div className="grid">
+                    {activities.map(a => {
+                        const sel = cart.activities.some(x => x.id === a.id);
+                        return (
+                            <div key={a.id} className={`card ${sel ? 'selected' : ''}`}>
+                                <div className="card-body">
+                                    <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
+                                        <span className="tag">{a.category}</span>
+                                        {a.is_full && <span style={{background:'#f8d7da',color:'#721c24',padding:'.2rem .5rem',borderRadius:'10px',fontSize:'.7rem',fontWeight:700}}>COMPLET</span>}
+                                    </div>
+                                    <h3 style={{margin:'.5rem 0'}}>{a.name}</h3>
+                                    <p className="card-desc">{a.description}</p>
+                                    <div style={{fontSize:'.8rem',color:'var(--text-muted)',marginBottom:'.5rem',lineHeight:1.6}}>
+                                        ⏱ {a.duration} · 🎯 {a.difficulty}<br />
+                                        👥 {a.spots_left} place(s) restante(s) / {a.max_participants}<br />
+                                        {a.includes && <span>✓ {a.includes}</span>}
+                                    </div>
                                     <div className="card-footer">
-                                        <span className="price">{h.price_per_night} € <small style={{fontSize:'0.7rem', color:'var(--text-light)'}}>/nuit</small></span>
-                                        <button onClick={() => setCart(p => ({...p, accommodation: h}))} className={`btn ${cart.accommodation?.id === h.id ? 'btn-success' : 'btn-outline'}`}>
-                                            Choisir
+                                        <span className="price">{a.price_per_person} € <small>/pers.</small></span>
+                                        <button
+                                            disabled={a.is_full && !sel}
+                                            className={`btn btn-sm ${sel ? 'btn-danger' : a.is_full ? 'btn-outline' : 'btn-gold'}`}
+                                            onClick={() => toggleActivity(a)}>
+                                            {sel ? '✕ Retirer' : a.is_full ? 'Complet' : '+ Ajouter'}
                                         </button>
                                     </div>
                                 </div>
                             </div>
-                        ))}
-                    </div>
+                        );
+                    })}
                 </div>
-            );
+            )}
+        </div>
+    );
+}
+
+/* ═══════════════════════════════════════════════════════════
+   CART & CHECKOUT VIEW
+═══════════════════════════════════════════════════════════ */
+function CartView() {
+    const { cart, setCart, user } = useApp();
+    const [clientName,  setClientName]  = useState(user?.name  || '');
+    const [clientEmail, setClientEmail] = useState(user?.email || '');
+    const [travelers,   setTravelers]   = useState(cart.travelers || 1);
+    const [nights,      setNights]      = useState(cart.nights || 3);
+    const [depDate,     setDepDate]     = useState(cart.departure_date || '');
+    const [retDate,     setRetDate]     = useState(cart.return_date || '');
+    const [payMethod,   setPayMethod]   = useState('carte');
+    const [cardNum,     setCardNum]     = useState('');
+    const [cardExp,     setCardExp]     = useState('');
+    const [cardCvv,     setCardCvv]     = useState('');
+    const [cardName,    setCardName]    = useState('');
+    const [step,        setStep]        = useState(1); // 1=recap, 2=paiement
+    const [success,     setSuccess]     = useState(null);
+    const [error,       setError]       = useState('');
+    const [loading,     setLoading]     = useState(false);
+
+    const total = Number(cart.destination?.price || 0)
+        + (Number(cart.transport?.price || 0) * travelers)
+        + (Number(cart.accommodation?.price_per_night || 0) * nights)
+        + cart.activities.reduce((s, a) => s + Number(a.price_per_person) * travelers, 0);
+
+    const dateError = () => {
+        if (!depDate || !retDate) return null;
+        const d = new Date(depDate), r = new Date(retDate), today = new Date();
+        today.setHours(0,0,0,0);
+        if (d < today) return 'La date de départ doit être dans le futur.';
+        if (r <= d)    return 'La date de retour doit être après le départ.';
+        return null;
+    };
+
+    const removeItem = (type) => {
+        if (type === 'transport')      setCart(p => ({ ...p, transport: null }));
+        if (type === 'accommodation')  setCart(p => ({ ...p, accommodation: null }));
+        if (type === 'destination')    setCart(p => ({ ...p, destination: null, transport: null, accommodation: null, activities: [] }));
+    };
+    const removeActivity = (id) => setCart(p => ({ ...p, activities: p.activities.filter(a => a.id !== id) }));
+
+    const formatCard = (v) => v.replace(/\s/g,'').replace(/(.{4})/g,'$1 ').trim().slice(0,19);
+
+    const submit = (e) => {
+        e.preventDefault();
+        const de = dateError();
+        if (de) { setError(de); return; }
+        if (!cart.destination) { setError('Aucune destination sélectionnée.'); return; }
+        if (payMethod === 'carte' && (cardNum.replace(/\s/g,'').length < 16 || !cardExp || !cardCvv)) {
+            setError('Informations de carte incomplètes.');
+            return;
         }
+        setError(''); setLoading(true);
+        apiFetch('api/save_trip.php', {
+            method: 'POST',
+            body: JSON.stringify({
+                user_id:          user?.id || 2,
+                destination_id:   cart.destination.id,
+                transport_id:     cart.transport?.id || null,
+                accommodation_id: cart.accommodation?.id || null,
+                activities:       cart.activities.map(a => a.id),
+                client_name:      clientName,
+                client_email:     clientEmail,
+                total_price:      total,
+                nights,
+                travelers,
+                departure_date:   depDate,
+                return_date:      retDate,
+                payment_method:   payMethod,
+            })
+        }).then(d => {
+            if (d.status === 'success') {
+                setSuccess(d);
+                setCart({ destination:null, transport:null, accommodation:null, activities:[], nights:3, travelers:1, departure_date:'', return_date:'' });
+            } else {
+                setError(d.message);
+            }
+        }).catch(() => setError('Erreur réseau.'))
+          .finally(() => setLoading(false));
+    };
 
-        // --- VUE ACTIVITÉS ---
-        function ActivitiesView() {
-            const { cart, toggleActivity } = useVoyage();
-            const [activities, setActivities] = useState([]);
+    if (success) return (
+        <div className="success-screen">
+            <div className="success-icon">🎉</div>
+            <h2>Réservation confirmée !</h2>
+            <p className="text-muted">Votre voyage a été enregistré avec succès.</p>
+            <div className="ref-code">{success.ref_code}</div>
+            <p className="text-muted text-sm">Conservez ce code de référence pour vos démarches.</p>
+            <button className="btn btn-gold" style={{marginTop:'1.5rem'}} onClick={() => setSuccess(null)}>
+                ← Planifier un nouveau voyage
+            </button>
+        </div>
+    );
 
-            useEffect(() => {
-                if (cart.destination) {
-                    fetch(`api/activities.php?destination_id=${cart.destination.id}`)
-                        .then(res => res.json())
-                        .then(data => setActivities(data));
-                }
-            }, [cart.destination]);
+    if (!cart.destination) return (
+        <div style={{textAlign:'center',padding:'3rem'}}>
+            <p style={{fontSize:'2rem'}}>🛒</p>
+            <h3 style={{marginBottom:'.5rem'}}>Votre panier est vide</h3>
+            <p className="text-muted">Commencez par choisir une destination !</p>
+        </div>
+    );
 
-            if (!cart.destination) return <div className="alert alert-warning">Veuillez d'abord choisir une destination.</div>;
+    const dErr = dateError();
 
-            return (
-                <div>
-                    <div className="title-section">
-                        <h2>Activités & Excursions à {cart.destination.name}</h2>
-                    </div>
-                    <div className="grid">
-                        {activities.map(a => {
-                            const isSelected = cart.activities.some(act => act.id === a.id);
-                            return (
-                                <div key={a.id} className={`card ${isSelected ? 'selected' : ''}`}>
-                                    <div className="card-content">
-                                        <span className="tag">{a.category}</span>
-                                        <h3 className="card-title">{a.name}</h3>
-                                        <p className="card-desc">{a.description}<br/><br/><strong>Durée:</strong> {a.duration}</p>
-                                        <div className="card-footer">
-                                            <span className="price">{a.price_per_person} €</span>
-                                            <button onClick={() => toggleActivity(a)} className={`btn ${isSelected ? 'btn-success' : 'btn-outline'}`}>
-                                                {isSelected ? 'Retirer' : 'Ajouter'}
-                                            </button>
-                                        </div>
+    return (
+        <div>
+            <div className="section-head">
+                <h2>Panier & Réservation</h2>
+            </div>
+            {step === 1 && (
+                <div className="cart-layout">
+                    {/* ── RECAP ── */}
+                    <div>
+                        <div className="cart-summary">
+                            <h3 style={{marginBottom:'1rem',fontFamily:'Playfair Display,serif'}}>Récapitulatif</h3>
+
+                            <div className="cart-row">
+                                <div>
+                                    <strong>🌍 {cart.destination.name}, {cart.destination.country}</strong>
+                                    <div className="text-muted text-sm">{cart.destination.tag}</div>
+                                </div>
+                                <div style={{display:'flex',gap:'.5rem',alignItems:'center'}}>
+                                    <span>{cart.destination.price} €</span>
+                                    <button className="btn btn-sm" style={{color:'var(--danger)',background:'transparent',padding:'.1rem .3rem'}} onClick={() => removeItem('destination')}>✕</button>
+                                </div>
+                            </div>
+
+                            {cart.transport && (
+                                <div className="cart-row">
+                                    <div>
+                                        <strong>✈️ {cart.transport.type} — {cart.transport.company}</strong>
+                                        <div className="text-muted text-sm">{cart.transport.class} · {travelers} pers.</div>
+                                    </div>
+                                    <div style={{display:'flex',gap:'.5rem',alignItems:'center'}}>
+                                        <span>{cart.transport.price * travelers} €</span>
+                                        <button className="btn btn-sm" style={{color:'var(--danger)',background:'transparent',padding:'.1rem .3rem'}} onClick={() => removeItem('transport')}>✕</button>
                                     </div>
                                 </div>
-                            );
-                        })}
+                            )}
+
+                            {cart.accommodation && (
+                                <div className="cart-row">
+                                    <div>
+                                        <strong>🏨 {cart.accommodation.name}</strong>
+                                        <div className="text-muted text-sm">{nights} nuits · {cart.accommodation.type}</div>
+                                    </div>
+                                    <div style={{display:'flex',gap:'.5rem',alignItems:'center'}}>
+                                        <span>{cart.accommodation.price_per_night * nights} €</span>
+                                        <button className="btn btn-sm" style={{color:'var(--danger)',background:'transparent',padding:'.1rem .3rem'}} onClick={() => removeItem('accommodation')}>✕</button>
+                                    </div>
+                                </div>
+                            )}
+
+                            {cart.activities.map(a => (
+                                <div key={a.id} className="cart-row">
+                                    <div>
+                                        <strong>🎯 {a.name}</strong>
+                                        <div className="text-muted text-sm">{travelers} pers. × {a.price_per_person} €</div>
+                                    </div>
+                                    <div style={{display:'flex',gap:'.5rem',alignItems:'center'}}>
+                                        <span>{a.price_per_person * travelers} €</span>
+                                        <button className="btn btn-sm" style={{color:'var(--danger)',background:'transparent',padding:'.1rem .3rem'}} onClick={() => removeActivity(a.id)}>✕</button>
+                                    </div>
+                                </div>
+                            ))}
+
+                            <div className="cart-row cart-total">
+                                <span>Total estimé</span>
+                                <span>{total} €</span>
+                            </div>
+                        </div>
+
+                        {/* Paramètres du séjour */}
+                        <div className="cart-summary" style={{marginTop:'1rem'}}>
+                            <h4 style={{marginBottom:'1rem'}}>Paramètres du séjour</h4>
+                            <div className="form-row">
+                                <div className="form-group">
+                                    <label className="form-label">Voyageurs</label>
+                                    <input type="number" className="form-control" min="1" max="20" value={travelers}
+                                        onChange={e => { setTravelers(parseInt(e.target.value)||1); setCart(p => ({...p, travelers: parseInt(e.target.value)||1})); }} />
+                                </div>
+                                <div className="form-group">
+                                    <label className="form-label">Nuits</label>
+                                    <input type="number" className="form-control" min="1" max="30" value={nights}
+                                        onChange={e => { setNights(parseInt(e.target.value)||1); setCart(p => ({...p, nights: parseInt(e.target.value)||1})); }} />
+                                </div>
+                            </div>
+                            <div className="form-row">
+                                <div className="form-group">
+                                    <label className="form-label">Départ</label>
+                                    <input type="date" className="form-control" value={depDate}
+                                        min={new Date().toISOString().split('T')[0]}
+                                        onChange={e => { setDepDate(e.target.value); setCart(p => ({...p, departure_date: e.target.value})); }} />
+                                </div>
+                                <div className="form-group">
+                                    <label className="form-label">Retour</label>
+                                    <input type="date" className="form-control" value={retDate}
+                                        min={depDate || new Date().toISOString().split('T')[0]}
+                                        onChange={e => { setRetDate(e.target.value); setCart(p => ({...p, return_date: e.target.value})); }} />
+                                </div>
+                            </div>
+                            {dErr && <div className="alert alert-danger">{dErr}</div>}
+                        </div>
+                    </div>
+
+                    {/* ── PANNEAU LATÉRAL ── */}
+                    <div className="checkout-panel">
+                        <h3>Vos informations</h3>
+                        <div className="form-group">
+                            <label className="form-label">Prénom et Nom</label>
+                            <input className="form-control" value={clientName} onChange={e => setClientName(e.target.value)} required placeholder="Marie Dupont" />
+                        </div>
+                        <div className="form-group">
+                            <label className="form-label">Email</label>
+                            <input type="email" className="form-control" value={clientEmail} onChange={e => setClientEmail(e.target.value)} required placeholder="vous@email.com" />
+                        </div>
+                        <hr className="divider" />
+                        <div style={{display:'flex',justifyContent:'space-between',fontWeight:700,fontSize:'1.2rem',marginBottom:'1.5rem',color:'var(--navy)'}}>
+                            <span>Total :</span><span>{total} €</span>
+                        </div>
+                        {error && <div className="alert alert-danger" style={{marginBottom:'1rem'}}>{error}</div>}
+                        <button className="btn btn-gold btn-full"
+                            disabled={!clientName || !clientEmail || !!dErr}
+                            onClick={() => setStep(2)}>
+                            Procéder au paiement →
+                        </button>
                     </div>
                 </div>
-            );
-        }
+            )}
 
-        // --- VUE PANIER & VALIDATION ---
-        function CartView() {
-            const { cart, setCart } = useVoyage();
-            const [clientName, setClientName] = useState('');
-            const [clientEmail, setClientEmail] = useState('');
-            const [successMsg, setSuccessMsg] = useState('');
-
-            const nights = 3; // Fixé pour la démo
-			const total = Number(cart.destination?.price || 0) + 
-						  Number(cart.transport?.price || 0) + 
-						  (Number(cart.accommodation?.price_per_night || 0) * nights) + 
-						  cart.activities.reduce((sum, a) => sum + Number(a.price_per_person), 0);
-
-            const submitTrip = (e) => {
-                e.preventDefault();
-                const payload = {
-                    destination_id: cart.destination.id,
-                    transport_id: cart.transport?.id,
-                    accommodation_id: cart.accommodation?.id,
-                    activities: cart.activities.map(a => a.id),
-                    client_name: clientName,
-                    client_email: clientEmail,
-                    total_price: total
-                };
-
-                fetch('api/save_trip.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if(data.status === 'success') {
-                        setSuccessMsg(data.message);
-                        setCart({ destination: null, transport: null, accommodation: null, activities: [] });
-                    } else {
-                        alert("Erreur: " + data.message);
-                    }
-                });
-            };
-
-            if (successMsg) return (
-                <div className="alert alert-success">
-                    <h2>🎉 Félicitations !</h2>
-                    <p>{successMsg}</p>
-                    <p style={{marginTop:'1rem', fontSize:'0.9rem'}}>Les données ont été insérées dans les tables <i>trips</i> et <i>trip_activities</i>.</p>
-                </div>
-            );
-
-            if (!cart.destination) return <div className="alert alert-warning">Votre panier est vide.</div>;
-
-            return (
+            {step === 2 && (
                 <div className="cart-layout">
                     <div>
-                        <h2>Récapitulatif du Séjour</h2>
-                        <div style={{background:'white', padding:'1.5rem', borderRadius:'12px', border:'1px solid var(--border)', marginTop:'1rem'}}>
-                            <div style={{display:'flex', justifyContent:'space-between', marginBottom:'1rem', paddingBottom:'1rem', borderBottom:'1px solid #eee'}}>
-                                <span><strong>Destination :</strong> {cart.destination.name}</span>
-                                <span>{cart.destination.price} €</span>
+                        <div className="cart-summary">
+                            <button className="btn btn-outline btn-sm" onClick={() => setStep(1)} style={{marginBottom:'1rem'}}>← Retour</button>
+                            <h3 style={{marginBottom:'1.25rem',fontFamily:'Playfair Display,serif'}}>💳 Paiement</h3>
+
+                            <div className="form-group">
+                                <label className="form-label">Mode de paiement</label>
+                                <select className="form-control" value={payMethod} onChange={e => setPayMethod(e.target.value)}>
+                                    <option value="carte">Carte bancaire</option>
+                                    <option value="paypal">PayPal</option>
+                                    <option value="virement">Virement bancaire</option>
+                                </select>
                             </div>
-                            {cart.transport && (
-                                <div style={{display:'flex', justifyContent:'space-between', marginBottom:'1rem', paddingBottom:'1rem', borderBottom:'1px solid #eee'}}>
-                                    <span><strong>Transport :</strong> {cart.transport.type} ({cart.transport.company})</span>
-                                    <span>{cart.transport.price} €</span>
+
+                            {payMethod === 'carte' && (
+                                <>
+                                    <div className="payment-card-preview">
+                                        <div style={{fontSize:'.75rem',opacity:.7,marginBottom:'.25rem'}}>CARTE BANCAIRE</div>
+                                        <div className="cc-number">{cardNum || '•••• •••• •••• ••••'}</div>
+                                        <div className="cc-meta">
+                                            <span>{cardName || 'VOTRE NOM'}</span>
+                                            <span>{cardExp || 'MM/YY'}</span>
+                                        </div>
+                                    </div>
+                                    <div className="form-group">
+                                        <label className="form-label">Numéro de carte</label>
+                                        <input className="form-control" value={cardNum} maxLength={19}
+                                            onChange={e => setCardNum(formatCard(e.target.value))} placeholder="1234 5678 9012 3456" />
+                                    </div>
+                                    <div className="form-group">
+                                        <label className="form-label">Nom sur la carte</label>
+                                        <input className="form-control" value={cardName}
+                                            onChange={e => setCardName(e.target.value.toUpperCase())} placeholder="MARIE DUPONT" />
+                                    </div>
+                                    <div className="form-row">
+                                        <div className="form-group">
+                                            <label className="form-label">Expiration</label>
+                                            <input className="form-control" value={cardExp} maxLength={5}
+                                                onChange={e => {
+                                                    let v = e.target.value.replace(/\D/g,'');
+                                                    if (v.length >= 2) v = v.slice(0,2) + '/' + v.slice(2);
+                                                    setCardExp(v.slice(0,5));
+                                                }} placeholder="MM/YY" />
+                                        </div>
+                                        <div className="form-group">
+                                            <label className="form-label">CVV</label>
+                                            <input className="form-control" value={cardCvv} maxLength={3}
+                                                onChange={e => setCardCvv(e.target.value.replace(/\D/g,'').slice(0,3))} placeholder="123" type="password" />
+                                        </div>
+                                    </div>
+                                </>
+                            )}
+
+                            {payMethod === 'paypal' && (
+                                <div className="alert alert-info" style={{textAlign:'center',padding:'2rem'}}>
+                                    <p style={{fontSize:'1.5rem'}}>🅿️</p>
+                                    <p style={{fontWeight:600,marginTop:'.5rem'}}>Vous serez redirigé vers PayPal</p>
+                                    <p className="text-muted text-sm">pour finaliser le paiement de {total} €.</p>
                                 </div>
                             )}
-                            {cart.accommodation && (
-                                <div style={{display:'flex', justifyContent:'space-between', marginBottom:'1rem', paddingBottom:'1rem', borderBottom:'1px solid #eee'}}>
-                                    <span><strong>Hébergement :</strong> {cart.accommodation.name} ({nights} nuits)</span>
-                                    <span>{cart.accommodation.price_per_night * nights} €</span>
+
+                            {payMethod === 'virement' && (
+                                <div className="alert alert-info">
+                                    <p><strong>IBAN :</strong> FR76 3000 4008 0900 0000 0123 456</p>
+                                    <p><strong>BIC :</strong> BNPAFRPPXXX</p>
+                                    <p className="text-sm text-muted" style={{marginTop:'.5rem'}}>Référence : {clientName.split(' ').join('')}-VV</p>
                                 </div>
                             )}
-                            {cart.activities.length > 0 && (
-                                <div>
-                                    <strong>Activités :</strong>
-                                    <ul style={{listStyle:'none', paddingLeft:'1rem', marginTop:'0.5rem'}}>
-                                        {cart.activities.map(a => (
-                                            <li key={a.id} style={{display:'flex', justifyContent:'space-between', marginBottom:'0.5rem', color:'var(--text-light)', fontSize:'0.9rem'}}>
-                                                <span>- {a.name}</span>
-                                                <span>{a.price_per_person} €</span>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-                            )}
+
+                            {error && <div className="alert alert-danger">{error}</div>}
                         </div>
                     </div>
 
-                    <div style={{background:'white', padding:'1.5rem', borderRadius:'12px', border:'1px solid var(--border)', height:'fit-content'}}>
-                        <h3 style={{marginBottom:'1rem'}}>Validation</h3>
-                        <div style={{display:'flex', justifyContent:'space-between', fontSize:'1.5rem', fontWeight:'bold', marginBottom:'1.5rem', color:'var(--primary)'}}>
-                            <span>Total :</span>
-                            <span>{total} €</span>
+                    <div className="checkout-panel">
+                        <h3>Récapitulatif</h3>
+                        <div style={{fontSize:'.85rem',color:'var(--text-muted)',marginBottom:'1rem',lineHeight:1.8}}>
+                            <div>🌍 {cart.destination.name}</div>
+                            {cart.transport      && <div>✈️ {cart.transport.company}</div>}
+                            {cart.accommodation  && <div>🏨 {cart.accommodation.name}</div>}
+                            {cart.activities.length > 0 && <div>🎯 {cart.activities.length} activité(s)</div>}
+                            <div>👥 {travelers} voyageur(s) · 🌙 {nights} nuits</div>
                         </div>
-                        <form onSubmit={submitTrip}>
-                            <div className="form-group">
-                                <input type="text" className="form-control" placeholder="Prénom et Nom" required value={clientName} onChange={e => setClientName(e.target.value)} />
-                            </div>
-                            <div className="form-group">
-                                <input type="email" className="form-control" placeholder="Adresse Email" required value={clientEmail} onChange={e => setClientEmail(e.target.value)} />
-                            </div>
-                            <button type="submit" className="btn btn-primary" style={{width:'100%', padding:'1rem', fontSize:'1.1rem'}}>Confirmer la réservation</button>
-                        </form>
+                        <hr className="divider" />
+                        <div style={{display:'flex',justifyContent:'space-between',fontWeight:700,fontSize:'1.3rem',marginBottom:'1.5rem',color:'var(--navy)'}}>
+                            <span>Total :</span><span>{total} €</span>
+                        </div>
+                        <p className="text-sm text-muted" style={{marginBottom:'1rem'}}>
+                            👤 {clientName} · {clientEmail}
+                        </p>
+                        <button className="btn btn-gold btn-full" onClick={submit} disabled={loading}>
+                            {loading ? '⏳ Traitement…' : `✓ Confirmer — ${total} €`}
+                        </button>
+                        <p className="text-muted text-sm" style={{marginTop:'.75rem',textAlign:'center'}}>
+                            🔒 Paiement simulé — données non transmises
+                        </p>
                     </div>
                 </div>
-            );
-        }
+            )}
+        </div>
+    );
+}
 
-        // --- APP PRINCIPALE ---
-        function App() {
-            const [tab, setTab] = useState('destinations');
-            const { cart } = useVoyage();
-            const cartItems = (cart.destination?1:0) + (cart.transport?1:0) + (cart.accommodation?1:0) + cart.activities.length;
+/* ═══════════════════════════════════════════════════════════
+   MY TRIPS VIEW
+═══════════════════════════════════════════════════════════ */
+function TripsView() {
+    const { user } = useApp();
+    const [trips, setTrips]   = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [editing, setEditing] = useState(null);
+    const [editTravelers, setEditTravelers] = useState(1);
+    const [editNotes, setEditNotes]         = useState('');
+    const [msg, setMsg]       = useState('');
 
-            return (
-                <React.Fragment>
-                    <header>
-                        <div className="header-content">
-                            <div className="logo" onClick={() => setTab('destinations')}>🌍 VoyageVista</div>
-                            <nav>
-                                <button className={`nav-btn ${tab === 'destinations' ? 'active' : ''}`} onClick={() => setTab('destinations')}>Destinations</button>
-                                <button className={`nav-btn ${tab === 'transports' ? 'active' : ''}`} onClick={() => setTab('transports')}>Transports</button>
-                                <button className={`nav-btn ${tab === 'accommodations' ? 'active' : ''}`} onClick={() => setTab('accommodations')}>Hébergements</button>
-                                <button className={`nav-btn ${tab === 'activities' ? 'active' : ''}`} onClick={() => setTab('activities')}>Activités</button>
-                            </nav>
-                            <button className="cart-btn" onClick={() => setTab('cart')}>
-                                Panier <span className="cart-badge">{cartItems}</span>
-                            </button>
+    const load = () => {
+        setLoading(true);
+        fetch(`api/trips.php?user_id=${user.id}`)
+            .then(r => r.json()).then(d => { setTrips(d); setLoading(false); })
+            .catch(() => setLoading(false));
+    };
+
+    useEffect(() => { load(); }, []);
+
+    const cancel = (trip_id) => {
+        if (!confirm('Annuler ce voyage ?')) return;
+        apiFetch('api/trips.php', { method: 'POST', body: JSON.stringify({ action: 'cancel', trip_id, user_id: user.id }) })
+            .then(d => { setMsg(d.message); load(); });
+    };
+
+    const saveEdit = (trip_id) => {
+        apiFetch('api/trips.php', { method: 'POST', body: JSON.stringify({ action: 'update', trip_id, user_id: user.id, travelers: editTravelers, notes: editNotes }) })
+            .then(d => { setMsg(d.message); setEditing(null); load(); });
+    };
+
+    const del = (trip_id) => {
+        if (!confirm('Supprimer définitivement cet itinéraire ?')) return;
+        apiFetch('api/trips.php', { method: 'POST', body: JSON.stringify({ action: 'delete', trip_id, user_id: user.id }) })
+            .then(d => { setMsg(d.message); load(); });
+    };
+
+    if (!user) return <div className="alert alert-warn">Connectez-vous pour voir vos voyages.</div>;
+
+    return (
+        <div>
+            <div className="section-head">
+                <h2>Mes Voyages</h2>
+                <p>Historique et gestion de vos réservations.</p>
+            </div>
+            {msg && <div className="alert alert-success">{msg} <button style={{float:'right',background:'none',border:'none',cursor:'pointer'}} onClick={() => setMsg('')}>✕</button></div>}
+            {loading ? <Loading /> : trips.length === 0 ? (
+                <div style={{textAlign:'center',padding:'3rem',color:'var(--text-muted)'}}>
+                    <p style={{fontSize:'2rem'}}>🗺️</p>
+                    <p>Aucun voyage pour l'instant.</p>
+                </div>
+            ) : trips.map(t => (
+                <div key={t.id} className="trip-card">
+                    {t.destination_image && <img className="trip-img" src={t.destination_image} alt={t.destination_name} />}
+                    <div style={{flex:1}}>
+                        <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',flexWrap:'wrap',gap:'.5rem'}}>
+                            <div>
+                                <h4 style={{marginBottom:'.2rem'}}>{t.destination_name}, {t.country}</h4>
+                                <div className="text-muted text-sm">
+                                    Réf. <strong>{t.reference_code}</strong> · {t.travelers} voyageur(s) · {t.nights} nuit(s)
+                                </div>
+                                {t.departure_date && <div className="text-muted text-sm">📅 {t.departure_date} → {t.return_date}</div>}
+                                {t.transport_type && <div className="text-sm" style={{marginTop:'.2rem'}}>✈️ {t.transport_type} — {t.transport_company}</div>}
+                                {t.accommodation_name && <div className="text-sm">🏨 {t.accommodation_name}</div>}
+                                {t.activities.length > 0 && (
+                                    <div className="text-sm text-muted">🎯 {t.activities.map(a => a.name).join(', ')}</div>
+                                )}
+                            </div>
+                            <div style={{textAlign:'right'}}>
+                                <span className={`status-pill status-${t.status}`}>{t.status === 'confirmed' ? 'Confirmé' : t.status === 'cancelled' ? 'Annulé' : 'En attente'}</span>
+                                <div className="price" style={{marginTop:'.4rem',fontSize:'1.1rem'}}>{t.total_price} €</div>
+                            </div>
                         </div>
-                    </header>
-                    <main>
-                        {tab === 'destinations' && <DestinationsView />}
-                        {tab === 'transports' && <TransportsView />}
-                        {tab === 'accommodations' && <AccommodationsView />}
-                        {tab === 'activities' && <ActivitiesView />}
-                        {tab === 'cart' && <CartView />}
-                    </main>
-                    <footer>
-                        <p>© 2026 VoyageVista - Connecté à la base de données MySQL</p>
-                    </footer>
-                </React.Fragment>
-            );
-        }
 
-        ReactDOM.render(<VoyageProvider><App /></VoyageProvider>, document.getElementById('root'));
-    </script>
+                        {editing === t.id ? (
+                            <div style={{marginTop:'1rem',background:'var(--ivory)',padding:'1rem',borderRadius:'8px'}}>
+                                <div className="form-row">
+                                    <div className="form-group">
+                                        <label className="form-label">Voyageurs</label>
+                                        <input type="number" className="form-control" min="1" max="20" value={editTravelers} onChange={e => setEditTravelers(parseInt(e.target.value)||1)} />
+                                    </div>
+                                    <div className="form-group">
+                                        <label className="form-label">Notes</label>
+                                        <input className="form-control" value={editNotes} onChange={e => setEditNotes(e.target.value)} placeholder="Notes optionnelles…" />
+                                    </div>
+                                </div>
+                                <div style={{display:'flex',gap:'.5rem'}}>
+                                    <button className="btn btn-gold btn-sm" onClick={() => saveEdit(t.id)}>✓ Sauvegarder</button>
+                                    <button className="btn btn-outline btn-sm" onClick={() => setEditing(null)}>Annuler</button>
+                                </div>
+                            </div>
+                        ) : (
+                            <div style={{display:'flex',gap:'.5rem',marginTop:'.75rem',flexWrap:'wrap'}}>
+                                {t.status === 'confirmed' && (
+                                    <>
+                                        <button className="btn btn-outline btn-sm" onClick={() => { setEditing(t.id); setEditTravelers(t.travelers); setEditNotes(t.notes||''); }}>✏️ Modifier</button>
+                                        <button className="btn btn-sm" style={{background:'#fff3cd',color:'#856404'}} onClick={() => cancel(t.id)}>✕ Annuler</button>
+                                    </>
+                                )}
+                                <button className="btn btn-danger btn-sm" onClick={() => del(t.id)}>🗑 Supprimer</button>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            ))}
+        </div>
+    );
+}
+
+/* ═══════════════════════════════════════════════════════════
+   PROFILE VIEW
+═══════════════════════════════════════════════════════════ */
+function ProfileView() {
+    const { user, setUser } = useApp();
+    const [form, setForm]   = useState({ name: user?.name||'', phone: user?.phone||'', bio: user?.bio||'', password: '' });
+    const [msg, setMsg]     = useState('');
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
+
+    const set = (k, v) => setForm(p => ({ ...p, [k]: v }));
+
+    const save = (e) => {
+        e.preventDefault(); setError(''); setLoading(true);
+        apiFetch(`api/auth.php?action=update`, { method: 'POST', body: JSON.stringify({ ...form, id: user.id }) })
+            .then(d => {
+                if (d.status === 'success') { setUser(d.user); setMsg('Profil mis à jour !'); }
+                else setError(d.message);
+            }).catch(() => setError('Erreur réseau.'))
+              .finally(() => setLoading(false));
+    };
+
+    if (!user) return <div className="alert alert-warn">Connectez-vous pour accéder à votre profil.</div>;
+
+    const initials = user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0,2);
+
+    return (
+        <div>
+            <div className="profile-header">
+                <div className="avatar">{initials}</div>
+                <div>
+                    <h2 style={{fontFamily:'Playfair Display,serif',fontSize:'1.6rem'}}>{user.name}</h2>
+                    <p style={{opacity:.8,fontSize:'.9rem'}}>{user.email}</p>
+                    <div className="role-badge">{user.role}</div>
+                </div>
+            </div>
+
+            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'1.5rem'}}>
+                <div style={{background:'var(--white)',borderRadius:'var(--radius)',padding:'1.5rem',boxShadow:'var(--card-shadow)'}}>
+                    <h3 style={{marginBottom:'1.25rem',fontFamily:'Playfair Display,serif'}}>Modifier mon profil</h3>
+                    {msg && <div className="alert alert-success" style={{marginBottom:'1rem'}}>{msg}</div>}
+                    {error && <div className="alert alert-danger" style={{marginBottom:'1rem'}}>{error}</div>}
+                    <form onSubmit={save}>
+                        <div className="form-group">
+                            <label className="form-label">Nom complet</label>
+                            <input className="form-control" value={form.name} onChange={e => set('name', e.target.value)} required />
+                        </div>
+                        <div className="form-group">
+                            <label className="form-label">Téléphone</label>
+                            <input className="form-control" value={form.phone} onChange={e => set('phone', e.target.value)} placeholder="+33 6 …" />
+                        </div>
+                        <div className="form-group">
+                            <label className="form-label">Bio</label>
+                            <textarea className="form-control" rows={3} value={form.bio} onChange={e => set('bio', e.target.value)} placeholder="Quelques mots sur vous…" />
+                        </div>
+                        <div className="form-group">
+                            <label className="form-label">Nouveau mot de passe (laisser vide pour ne pas changer)</label>
+                            <input type="password" className="form-control" value={form.password} onChange={e => set('password', e.target.value)} placeholder="••••••••" />
+                        </div>
+                        <button type="submit" className="btn btn-gold btn-full" disabled={loading}>
+                            {loading ? 'Enregistrement…' : '✓ Sauvegarder'}
+                        </button>
+                    </form>
+                </div>
+
+                <div style={{background:'var(--white)',borderRadius:'var(--radius)',padding:'1.5rem',boxShadow:'var(--card-shadow)'}}>
+                    <h3 style={{marginBottom:'1rem',fontFamily:'Playfair Display,serif'}}>Informations du compte</h3>
+                    <div style={{lineHeight:2.2,color:'var(--text-muted)',fontSize:'.9rem'}}>
+                        <div><strong style={{color:'var(--text)'}}>ID :</strong> #{user.id}</div>
+                        <div><strong style={{color:'var(--text)'}}>Email :</strong> {user.email}</div>
+                        <div><strong style={{color:'var(--text)'}}>Rôle :</strong> <span className="role-badge">{user.role}</span></div>
+                        {user.phone && <div><strong style={{color:'var(--text)'}}>Tél. :</strong> {user.phone}</div>}
+                        {user.bio   && <div><strong style={{color:'var(--text)'}}>Bio :</strong> {user.bio}</div>}
+                        {user.created_at && <div><strong style={{color:'var(--text)'}}>Membre depuis :</strong> {new Date(user.created_at).toLocaleDateString('fr-FR')}</div>}
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ADMIN PANEL
+═══════════════════════════════════════════════════════════ */
+function AdminView() {
+    const { user } = useApp();
+    const [section, setSection] = useState('users');
+    const [users, setUsers]     = useState([]);
+    const [trips, setTrips]     = useState([]);
+    const [msg, setMsg]         = useState('');
+
+    // Add destination form
+    const [newDest, setNewDest] = useState({ name:'', country:'', description:'', tag:'Culture', price:'', duration_days:'7', image_url:'', continent:'', language:'', currency:'EUR', best_season:'' });
+
+    useEffect(() => {
+        if (section === 'users') {
+            fetch('api/auth.php?action=list').then(r => r.json()).then(setUsers);
+        }
+        if (section === 'trips') {
+            fetch('api/trips.php?action=all').then(r => r.json()).then(setTrips);
+        }
+    }, [section]);
+
+    const delUser = (id) => {
+        if (id === user.id) { alert('Impossible de se supprimer soi-même.'); return; }
+        if (!confirm('Supprimer cet utilisateur ?')) return;
+        apiFetch('api/auth.php?action=delete', { method: 'POST', body: JSON.stringify({ id }) })
+            .then(d => { setMsg(d.message); setUsers(prev => prev.filter(u => u.id !== id)); });
+    };
+
+    const updateRole = (id, role) => {
+        apiFetch('api/auth.php?action=update_role', { method: 'POST', body: JSON.stringify({ id, role }) })
+            .then(d => { setMsg(d.message); setUsers(prev => prev.map(u => u.id === id ? { ...u, role } : u)); });
+    };
+
+    const addDest = (e) => {
+        e.preventDefault();
+        apiFetch('api/destinations.php', { method: 'POST', body: JSON.stringify({ ...newDest, price: parseInt(newDest.price), duration_days: parseInt(newDest.duration_days), created_by: user.id }) })
+            .then(d => {
+                if (d.status === 'success') { setMsg('Destination ajoutée !'); setNewDest({ name:'', country:'', description:'', tag:'Culture', price:'', duration_days:'7', image_url:'', continent:'', language:'', currency:'EUR', best_season:'' }); }
+                else setMsg(d.message);
+            });
+    };
+
+    const delDest = (id) => {
+        if (!confirm('Supprimer cette destination ?')) return;
+        fetch(`api/destinations.php?id=${id}`, { method: 'DELETE' })
+            .then(r => r.json()).then(d => setMsg(d.message));
+    };
+
+    const delTrip = (trip_id) => {
+        if (!confirm('Supprimer cet itinéraire ?')) return;
+        apiFetch('api/trips.php', { method: 'POST', body: JSON.stringify({ action: 'delete', trip_id }) })
+            .then(d => { setMsg(d.message); setTrips(prev => prev.filter(t => t.id !== trip_id)); });
+    };
+
+    if (!user || user.role !== 'admin') return (
+        <div className="alert alert-danger">Accès réservé aux administrateurs.</div>
+    );
+
+    const navItems = [
+        { key: 'users',        label: '👥 Utilisateurs' },
+        { key: 'trips',        label: '✈️ Réservations' },
+        { key: 'add_dest',     label: '➕ Ajouter destination' },
+        { key: 'del_dest',     label: '🗑 Supprimer offre' },
+    ];
+
+    return (
+        <div>
+            <div className="section-head">
+                <h2>⚙️ Administration</h2>
+                <p>Gestion complète de la plateforme VoyageVista.</p>
+            </div>
+            {msg && <div className="alert alert-success" style={{marginBottom:'1rem'}}>{msg} <button style={{float:'right',background:'none',border:'none',cursor:'pointer'}} onClick={() => setMsg('')}>✕</button></div>}
+            <div className="admin-grid">
+                <div className="admin-sidebar">
+                    {navItems.map(({ key, label }) => (
+                        <div key={key} className={`admin-nav-item ${section === key ? 'active' : ''}`} onClick={() => setSection(key)}>{label}</div>
+                    ))}
+                </div>
+
+                <div className="admin-content">
+                    {/* ── USERS ── */}
+                    {section === 'users' && (
+                        <div>
+                            <h3 style={{marginBottom:'1rem'}}>Gestion des utilisateurs ({users.length})</h3>
+                            <div style={{overflowX:'auto'}}>
+                                <table className="data-table">
+                                    <thead><tr><th>#</th><th>Nom</th><th>Email</th><th>Rôle</th><th>Depuis</th><th>Actions</th></tr></thead>
+                                    <tbody>
+                                        {users.map(u => (
+                                            <tr key={u.id}>
+                                                <td>#{u.id}</td>
+                                                <td><strong>{u.name}</strong></td>
+                                                <td>{u.email}</td>
+                                                <td>
+                                                    <select className="form-control" style={{padding:'.25rem .5rem',fontSize:'.8rem'}} value={u.role}
+                                                        onChange={e => updateRole(u.id, e.target.value)}>
+                                                        <option value="client">client</option>
+                                                        <option value="prestataire">prestataire</option>
+                                                        <option value="admin">admin</option>
+                                                    </select>
+                                                </td>
+                                                <td>{new Date(u.created_at).toLocaleDateString('fr-FR')}</td>
+                                                <td>
+                                                    {u.id !== user.id && (
+                                                        <button className="btn btn-danger btn-sm" onClick={() => delUser(u.id)}>Supprimer</button>
+                                                    )}
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* ── TRIPS ── */}
+                    {section === 'trips' && (
+                        <div>
+                            <h3 style={{marginBottom:'1rem'}}>Toutes les réservations ({trips.length})</h3>
+                            <div style={{overflowX:'auto'}}>
+                                <table className="data-table">
+                                    <thead><tr><th>Réf.</th><th>Client</th><th>Destination</th><th>Total</th><th>Statut</th><th>Date</th><th>Action</th></tr></thead>
+                                    <tbody>
+                                        {trips.map(t => (
+                                            <tr key={t.id}>
+                                                <td><code style={{fontSize:'.78rem'}}>{t.reference_code}</code></td>
+                                                <td>{t.user_name}<br /><span className="text-muted text-sm">{t.user_email}</span></td>
+                                                <td>{t.destination_name}</td>
+                                                <td><strong>{t.total_price} €</strong></td>
+                                                <td><span className={`status-pill status-${t.status}`}>{t.status}</span></td>
+                                                <td>{new Date(t.created_at).toLocaleDateString('fr-FR')}</td>
+                                                <td><button className="btn btn-danger btn-sm" onClick={() => delTrip(t.id)}>Suppr.</button></td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* ── ADD DESTINATION ── */}
+                    {section === 'add_dest' && (
+                        <div>
+                            <h3 style={{marginBottom:'1.25rem'}}>Ajouter une destination</h3>
+                            <form onSubmit={addDest}>
+                                <div className="form-row">
+                                    <div className="form-group">
+                                        <label className="form-label">Nom *</label>
+                                        <input className="form-control" value={newDest.name} onChange={e => setNewDest(p => ({...p, name: e.target.value}))} required placeholder="Ex: Tokyo" />
+                                    </div>
+                                    <div className="form-group">
+                                        <label className="form-label">Pays *</label>
+                                        <input className="form-control" value={newDest.country} onChange={e => setNewDest(p => ({...p, country: e.target.value}))} required placeholder="Ex: Japon" />
+                                    </div>
+                                </div>
+                                <div className="form-group">
+                                    <label className="form-label">Description</label>
+                                    <textarea className="form-control" rows={3} value={newDest.description} onChange={e => setNewDest(p => ({...p, description: e.target.value}))} />
+                                </div>
+                                <div className="form-row">
+                                    <div className="form-group">
+                                        <label className="form-label">Catégorie</label>
+                                        <select className="form-control" value={newDest.tag} onChange={e => setNewDest(p => ({...p, tag: e.target.value}))}>
+                                            {['Culture','Romantique','Nature','Aventure','City Break','Autre'].map(t => <option key={t}>{t}</option>)}
+                                        </select>
+                                    </div>
+                                    <div className="form-group">
+                                        <label className="form-label">Prix de base (€) *</label>
+                                        <input type="number" className="form-control" value={newDest.price} onChange={e => setNewDest(p => ({...p, price: e.target.value}))} required min="0" />
+                                    </div>
+                                </div>
+                                <div className="form-row">
+                                    <div className="form-group">
+                                        <label className="form-label">Durée (jours)</label>
+                                        <input type="number" className="form-control" value={newDest.duration_days} onChange={e => setNewDest(p => ({...p, duration_days: e.target.value}))} min="1" />
+                                    </div>
+                                    <div className="form-group">
+                                        <label className="form-label">Continent</label>
+                                        <select className="form-control" value={newDest.continent} onChange={e => setNewDest(p => ({...p, continent: e.target.value}))}>
+                                            <option value="">Sélectionner</option>
+                                            {['Europe','Asie','Amérique','Afrique','Océanie'].map(c => <option key={c}>{c}</option>)}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div className="form-row">
+                                    <div className="form-group">
+                                        <label className="form-label">Langue</label>
+                                        <input className="form-control" value={newDest.language} onChange={e => setNewDest(p => ({...p, language: e.target.value}))} placeholder="Ex: Japonais" />
+                                    </div>
+                                    <div className="form-group">
+                                        <label className="form-label">Devise</label>
+                                        <input className="form-control" value={newDest.currency} onChange={e => setNewDest(p => ({...p, currency: e.target.value}))} placeholder="EUR" />
+                                    </div>
+                                </div>
+                                <div className="form-group">
+                                    <label className="form-label">URL de l'image</label>
+                                    <input className="form-control" value={newDest.image_url} onChange={e => setNewDest(p => ({...p, image_url: e.target.value}))} placeholder="https://images.unsplash.com/…" />
+                                </div>
+                                <div className="form-group">
+                                    <label className="form-label">Meilleure saison</label>
+                                    <input className="form-control" value={newDest.best_season} onChange={e => setNewDest(p => ({...p, best_season: e.target.value}))} placeholder="Ex: Avril - Octobre" />
+                                </div>
+                                <button type="submit" className="btn btn-gold">➕ Ajouter la destination</button>
+                            </form>
+                        </div>
+                    )}
+
+                    {/* ── DELETE DESTINATION ── */}
+                    {section === 'del_dest' && <AdminDeleteDest onMsg={setMsg} />}
+                </div>
+            </div>
+        </div>
+    );
+}
+
+function AdminDeleteDest({ onMsg }) {
+    const [destinations, setDestinations] = useState([]);
+
+    useEffect(() => {
+        fetch('api/destinations.php').then(r => r.json()).then(setDestinations);
+    }, []);
+
+    const del = (id) => {
+        if (!confirm('Supprimer cette offre touristique ?')) return;
+        fetch(`api/destinations.php?id=${id}`, { method: 'DELETE' })
+            .then(r => r.json())
+            .then(d => { onMsg(d.message); setDestinations(prev => prev.filter(x => x.id !== id)); });
+    };
+
+    return (
+        <div>
+            <h3 style={{marginBottom:'1rem'}}>Supprimer une offre touristique</h3>
+            <table className="data-table">
+                <thead><tr><th>#</th><th>Destination</th><th>Pays</th><th>Catégorie</th><th>Prix</th><th>Action</th></tr></thead>
+                <tbody>
+                    {destinations.map(d => (
+                        <tr key={d.id}>
+                            <td>#{d.id}</td>
+                            <td><strong>{d.name}</strong></td>
+                            <td>{d.country}</td>
+                            <td>{d.tag}</td>
+                            <td>{d.price} €</td>
+                            <td><button className="btn btn-danger btn-sm" onClick={() => del(d.id)}>Supprimer</button></td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </div>
+    );
+}
+
+/* ═══════════════════════════════════════════════════════════
+   APP ROOT
+═══════════════════════════════════════════════════════════ */
+function App() {
+    const { tab } = useApp();
+
+    return (
+        <React.Fragment>
+            <Header />
+            <main>
+                {tab === 'destinations'  && <DestinationsView />}
+                {tab === 'transports'    && <TransportsView />}
+                {tab === 'accommodations' && <AccommodationsView />}
+                {tab === 'activities'    && <ActivitiesView />}
+                {tab === 'cart'          && <CartView />}
+                {tab === 'trips'         && <TripsView />}
+                {tab === 'profile'       && <ProfileView />}
+                {tab === 'admin'         && <AdminView />}
+            </main>
+            <footer>
+                <p>© 2026 <strong>VoyageVista</strong> — Plateforme de réservation de voyages · Connecté à MySQL</p>
+            </footer>
+        </React.Fragment>
+    );
+}
+
+ReactDOM.render(
+    <AppProvider><App /></AppProvider>,
+    document.getElementById('root')
+);
+</script>
 </body>
 </html>
