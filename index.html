@@ -1785,14 +1785,67 @@ function TripsView() {
     const [editForm, setEditForm] = useState({ travelers:1, nights:3, departure_date:'', return_date:'', notes:'' });
     const [msg, setMsg]         = useState('');
     const [msgType, setMsgType] = useState('success');
+    // Companions management
+    const [compSearch, setCompSearch]       = useState({});   // {trip_id: query}
+    const [compResults, setCompResults]     = useState({});   // {trip_id: [users]}
+    const [companions, setCompanions]       = useState({});   // {trip_id: [users]}
+    const [compLoading, setCompLoading]     = useState({});
+    const [showCompPanel, setShowCompPanel] = useState({});   // {trip_id: bool}
 
     const load = () => {
         setLoading(true);
         fetch(`api/trips.php?user_id=${user.id}`)
-            .then(r => r.json()).then(d => { setTrips(d); setLoading(false); })
+            .then(r => r.json()).then(d => {
+                setTrips(d);
+                setLoading(false);
+                // Load companions for each owned trip
+                d.filter(t => !t.is_shared).forEach(t => loadCompanions(t.id));
+            })
             .catch(() => setLoading(false));
     };
     useEffect(() => { if (user) load(); }, []);
+
+    const loadCompanions = (trip_id) => {
+        fetch(`api/companions.php?action=list&trip_id=${trip_id}`)
+            .then(r => r.json())
+            .then(list => setCompanions(prev => ({ ...prev, [trip_id]: list })))
+            .catch(() => {});
+    };
+
+    const searchCompanions = (trip_id, q) => {
+        setCompSearch(prev => ({ ...prev, [trip_id]: q }));
+        if (q.length < 2) { setCompResults(prev => ({ ...prev, [trip_id]: [] })); return; }
+        fetch(`api/companions.php?action=search&q=${encodeURIComponent(q)}&exclude_id=${user.id}&trip_id=${trip_id}`)
+            .then(r => r.json())
+            .then(list => setCompResults(prev => ({ ...prev, [trip_id]: list })))
+            .catch(() => {});
+    };
+
+    const addCompanion = (trip_id, companion_id) => {
+        setCompLoading(prev => ({ ...prev, [trip_id]: true }));
+        apiFetch('api/companions.php?action=add', {
+            method: 'POST',
+            body: JSON.stringify({ action:'add', trip_id, owner_id: parseInt(user.id), companion_id })
+        }).then(d => {
+            if (d.status === 'success') {
+                showMsg(d.message);
+                loadCompanions(trip_id);
+                setCompSearch(prev => ({ ...prev, [trip_id]: '' }));
+                setCompResults(prev => ({ ...prev, [trip_id]: [] }));
+            } else showMsg(d.message, 'danger');
+        }).catch(() => showMsg('Erreur réseau.', 'danger'))
+          .finally(() => setCompLoading(prev => ({ ...prev, [trip_id]: false })));
+    };
+
+    const removeCompanion = (trip_id, companion_id) => {
+        apiFetch('api/companions.php?action=remove', {
+            method: 'POST',
+            body: JSON.stringify({ action:'remove', trip_id, owner_id: parseInt(user.id), companion_id })
+        }).then(d => {
+            if (d.status === 'success') { showMsg(d.message); loadCompanions(trip_id); }
+            else showMsg(d.message, 'danger');
+        }).catch(() => showMsg('Erreur réseau.', 'danger'));
+    };
 
     const showMsg = (m, type='success') => { setMsg(m); setMsgType(type); setTimeout(() => setMsg(''), 4000); };
 
@@ -1832,8 +1885,25 @@ function TripsView() {
             method: 'POST',
             body: JSON.stringify({ action:'update', trip_id, user_id:user.id, ...editForm, nights })
         }).then(d => {
-            if (d.status === 'success') { showMsg(d.message); setEditing(null); load(); if (fetchNotifications) fetchNotifications(); }
-            else showMsg(d.message, 'danger');
+            if (d.status === 'success') {
+                showMsg(d.message);
+                setEditing(null);
+                // Update local state immediately (price + nights) without full reload
+                if (d.new_total !== undefined) {
+                    setTrips(prev => prev.map(t => t.id === trip_id ? {
+                        ...t,
+                        travelers: editForm.travelers,
+                        nights: d.new_nights ?? nights,
+                        total_price: d.new_total,
+                        departure_date: editForm.departure_date || t.departure_date,
+                        return_date: editForm.return_date || t.return_date,
+                        notes: editForm.notes,
+                    } : t));
+                } else {
+                    load();
+                }
+                if (fetchNotifications) fetchNotifications();
+            } else showMsg(d.message, 'danger');
         }).catch(() => showMsg('Erreur réseau.', 'danger'));
     };
 
@@ -1866,9 +1936,13 @@ function TripsView() {
                     <div style={{flex:1}}>
                         <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',flexWrap:'wrap',gap:'.5rem'}}>
                             <div>
-                                <h4 style={{marginBottom:'.2rem'}}>{t.destination_name}, {t.country}</h4>
+                                <h4 style={{marginBottom:'.2rem'}}>
+                                    {t.destination_name}, {t.country}
+                                    {t.is_shared && <span style={{marginLeft:'.5rem',background:'#d4edda',color:'#155724',fontSize:'.68rem',fontWeight:700,padding:'.15rem .45rem',borderRadius:'10px',textTransform:'uppercase'}}>Partagé</span>}
+                                </h4>
                                 <div className="text-muted text-sm">
                                     Réf. <strong>{t.reference_code}</strong> · {t.travelers} voyageur(s) · {t.nights} nuit(s)
+                                    {t.is_shared && t.owner_name && <span> · Organisé par <strong>{t.owner_name}</strong></span>}
                                 </div>
                                 {t.departure_date && <div className="text-muted text-sm">📅 {t.departure_date} → {t.return_date || '?'}</div>}
                                 {t.transport_type && <div className="text-sm" style={{marginTop:'.2rem'}}>✈️ {t.transport_type} — {t.transport_company}</div>}
@@ -1876,7 +1950,22 @@ function TripsView() {
                                 {t.activities && t.activities.length > 0 && (
                                     <div className="text-sm text-muted">🎯 {t.activities.map(a => a.name).join(', ')}</div>
                                 )}
-                                {t.notes && <div className="text-sm text-muted" style={{fontStyle:'italic'}}>💬 {t.notes}</div>}
+                                {/* Companions list */}
+                                {!t.is_shared && companions[t.id] && companions[t.id].length > 0 && (
+                                    <div className="text-sm" style={{marginTop:'.4rem',display:'flex',alignItems:'center',gap:'.4rem',flexWrap:'wrap'}}>
+                                        <span>👥 Voyageurs :</span>
+                                        {companions[t.id].map(c => (
+                                            <span key={c.id} style={{background:'rgba(201,168,76,.12)',border:'1px solid rgba(201,168,76,.3)',borderRadius:'20px',padding:'.15rem .6rem',fontSize:'.75rem',display:'inline-flex',alignItems:'center',gap:'.3rem'}}>
+                                                {c.name}
+                                                {t.status === 'confirmed' && (
+                                                    <button style={{background:'none',border:'none',cursor:'pointer',color:'var(--danger)',fontWeight:700,fontSize:'.75rem',padding:0,lineHeight:1}}
+                                                        onClick={() => removeCompanion(t.id, c.id)}>×</button>
+                                                )}
+                                            </span>
+                                        ))}
+                                    </div>
+                                )}
+                                {t.notes && <div className="text-sm text-muted" style={{fontStyle:'italic',marginTop:'.3rem'}}>💬 {t.notes}</div>}
                             </div>
                             <div style={{textAlign:'right'}}>
                                 <span className={`status-pill status-${t.status}`}>{statusLabel[t.status] || t.status}</span>
@@ -1904,13 +1993,33 @@ function TripsView() {
                                     <div className="form-group">
                                         <label className="form-label">Date de départ</label>
                                         <input type="date" className="form-control" value={editForm.departure_date}
-                                            onChange={e => setEditForm(p => ({...p, departure_date:e.target.value}))} />
+                                            onChange={e => {
+                                                const dep = e.target.value;
+                                                setEditForm(p => {
+                                                    const upd = { ...p, departure_date: dep };
+                                                    if (dep && p.return_date) {
+                                                        const diff = Math.ceil((new Date(p.return_date) - new Date(dep)) / 86400000);
+                                                        if (diff > 0) upd.nights = diff;
+                                                    }
+                                                    return upd;
+                                                });
+                                            }} />
                                     </div>
                                     <div className="form-group">
                                         <label className="form-label">Date de retour</label>
                                         <input type="date" className="form-control" value={editForm.return_date}
                                             min={editForm.departure_date}
-                                            onChange={e => setEditForm(p => ({...p, return_date:e.target.value}))} />
+                                            onChange={e => {
+                                                const ret = e.target.value;
+                                                setEditForm(p => {
+                                                    const upd = { ...p, return_date: ret };
+                                                    if (p.departure_date && ret) {
+                                                        const diff = Math.ceil((new Date(ret) - new Date(p.departure_date)) / 86400000);
+                                                        if (diff > 0) upd.nights = diff;
+                                                    }
+                                                    return upd;
+                                                });
+                                            }} />
                                     </div>
                                 </div>
                                 <div className="form-group">
@@ -1924,18 +2033,85 @@ function TripsView() {
                                 </div>
                             </div>
                         ) : (
-                            <div style={{display:'flex',gap:'.5rem',marginTop:'.75rem',flexWrap:'wrap'}}>
-                                {t.status === 'confirmed' && (
-                                    <>
-                                        <button className="btn btn-outline btn-sm" onClick={() => startEdit(t)}>✏️ Modifier</button>
-                                        <button className="btn btn-warn btn-sm" onClick={() => cancel(t.id)}>✕ Annuler la réservation</button>
-                                    </>
+                            <>
+                                <div style={{display:'flex',gap:'.5rem',marginTop:'.75rem',flexWrap:'wrap'}}>
+                                    {t.status === 'confirmed' && !t.is_shared && (
+                                        <>
+                                            <button className="btn btn-outline btn-sm" onClick={() => startEdit(t)}>✏️ Modifier</button>
+                                            <button className="btn btn-sm" style={{background:'rgba(201,168,76,.15)',color:'var(--navy)',border:'1px solid rgba(201,168,76,.4)'}}
+                                                onClick={() => setShowCompPanel(prev => ({ ...prev, [t.id]: !prev[t.id] }))}>
+                                                👥 Voyageurs {companions[t.id]?.length > 0 ? `(${companions[t.id].length})` : ''}
+                                            </button>
+                                            <button className="btn btn-warn btn-sm" onClick={() => cancel(t.id)}>✕ Annuler</button>
+                                        </>
+                                    )}
+                                    {t.status === 'cancelled' && (
+                                        <span className="text-muted text-sm" style={{padding:'.35rem 0'}}>Réservation annulée</span>
+                                    )}
+                                    {!t.is_shared && (
+                                        <button className="btn btn-danger btn-sm" onClick={() => del(t.id)}>🗑 Supprimer</button>
+                                    )}
+                                </div>
+
+                                {/* Companion management panel */}
+                                {showCompPanel[t.id] && !t.is_shared && t.status === 'confirmed' && (
+                                    <div style={{marginTop:'.85rem',background:'var(--ivory)',border:'1px solid var(--ivory-mid)',borderRadius:'10px',padding:'1rem'}}>
+                                        <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'.75rem'}}>
+                                            <h5 style={{fontSize:'.9rem',fontWeight:700}}>👥 Gérer les voyageurs du groupe</h5>
+                                            <button className="btn btn-sm btn-outline" onClick={() => setShowCompPanel(prev => ({ ...prev, [t.id]: false }))}>✕</button>
+                                        </div>
+
+                                        {/* Current companions */}
+                                        {companions[t.id] && companions[t.id].length > 0 ? (
+                                            <div style={{marginBottom:'.85rem'}}>
+                                                <p className="text-muted text-sm" style={{marginBottom:'.4rem',fontWeight:600}}>Membres actuels :</p>
+                                                {companions[t.id].map(c => (
+                                                    <div key={c.id} style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'.4rem .75rem',background:'var(--white)',borderRadius:'8px',marginBottom:'.35rem',border:'1px solid var(--ivory-mid)'}}>
+                                                        <div>
+                                                            <span style={{fontWeight:600,fontSize:'.88rem'}}>{c.name}</span>
+                                                            <span className="text-muted text-sm" style={{marginLeft:'.5rem'}}>{c.email}</span>
+                                                        </div>
+                                                        <button className="btn btn-danger btn-sm" style={{padding:'.25rem .55rem',fontSize:'.75rem'}}
+                                                            onClick={() => removeCompanion(t.id, c.id)}>Retirer</button>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <p className="text-muted text-sm" style={{marginBottom:'.75rem'}}>Aucun voyageur ajouté pour l'instant.</p>
+                                        )}
+
+                                        {/* Search & add */}
+                                        <p className="text-muted text-sm" style={{marginBottom:'.4rem',fontWeight:600}}>Ajouter un voyageur VoyageVista :</p>
+                                        <div style={{display:'flex',gap:'.5rem',marginBottom:'.5rem'}}>
+                                            <input className="form-control" style={{flex:1,padding:'.5rem .75rem',fontSize:'.85rem'}}
+                                                placeholder="Rechercher par nom ou email…"
+                                                value={compSearch[t.id] || ''}
+                                                onChange={e => searchCompanions(t.id, e.target.value)} />
+                                        </div>
+                                        {compResults[t.id] && compResults[t.id].length > 0 && (
+                                            <div style={{border:'1px solid var(--ivory-mid)',borderRadius:'8px',overflow:'hidden',marginBottom:'.5rem'}}>
+                                                {compResults[t.id].map(u => (
+                                                    <div key={u.id} style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'.5rem .75rem',background:'var(--white)',borderBottom:'1px solid var(--ivory-mid)'}}>
+                                                        <div>
+                                                            <span style={{fontWeight:600,fontSize:'.88rem'}}>{u.name}</span>
+                                                            <span className="text-muted text-sm" style={{marginLeft:'.5rem'}}>{u.email}</span>
+                                                        </div>
+                                                        <button className="btn btn-gold btn-sm" style={{padding:'.3rem .65rem',fontSize:'.78rem'}}
+                                                            disabled={compLoading[t.id]}
+                                                            onClick={() => addCompanion(t.id, u.id)}>+ Ajouter</button>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                        {compSearch[t.id] && compSearch[t.id].length >= 2 && compResults[t.id] && compResults[t.id].length === 0 && (
+                                            <p className="text-muted text-sm">Aucun utilisateur trouvé pour "{compSearch[t.id]}".</p>
+                                        )}
+                                        <p className="text-muted text-sm" style={{marginTop:'.5rem',fontSize:'.75rem'}}>
+                                            💡 Seuls les utilisateurs VoyageVista peuvent être ajoutés. Ils verront le voyage dans leur profil.
+                                        </p>
+                                    </div>
                                 )}
-                                {t.status === 'cancelled' && (
-                                    <span className="text-muted text-sm" style={{padding:'.35rem 0'}}>Réservation annulée</span>
-                                )}
-                                <button className="btn btn-danger btn-sm" onClick={() => del(t.id)}>🗑 Supprimer</button>
-                            </div>
+                            </>
                         )}
                     </div>
                 </div>
