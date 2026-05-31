@@ -1,6 +1,6 @@
 <?php
 require_once 'config.php';
- 
+
 $method  = $_SERVER['REQUEST_METHOD'];
 $dest_id = isset($_GET['destination_id']) ? intval($_GET['destination_id']) : 0;
  
