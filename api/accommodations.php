@@ -93,7 +93,7 @@ if ($method === 'GET') {
         http_response_code(500);
         echo json_encode(["status" => "error", "message" => "Erreur insertion hébergement."]);
     }
-
+ 
 // ── DELETE ACCOMMODATION (admin) ───────────────────────
 } elseif ($method === 'DELETE') {
     $id   = isset($_GET['id']) ? intval($_GET['id']) : 0;
