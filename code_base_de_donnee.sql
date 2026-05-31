@@ -264,3 +264,17 @@ INSERT INTO activities (destination_id, name, category, description, duration, p
 INSERT INTO notifications (user_id, type, title, message, is_read) VALUES
 (2, 'systeme', 'Bienvenue sur VoyageVista !', 'Votre compte a été créé avec succès. Explorez nos destinations et composez votre voyage idéal.', 0),
 (2, 'promotion', 'Offre spéciale Bali', 'Profitez de -15% sur les séjours à Bali réservés avant le 30 juin 2026.', 0);
+
+-- ============================================================================
+-- 9. TABLE : COMPAGNONS DE VOYAGE (trip_companions)
+--    Permet d'associer d'autres utilisateurs VoyageVista à un voyage
+-- ============================================================================
+CREATE TABLE IF NOT EXISTS trip_companions (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    trip_id INT NOT NULL,
+    companion_user_id INT NOT NULL,
+    added_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY uniq_companion (trip_id, companion_user_id),
+    FOREIGN KEY (trip_id) REFERENCES trips(id) ON DELETE CASCADE,
+    FOREIGN KEY (companion_user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
