@@ -3,7 +3,7 @@ require_once 'config.php';
 
 $method  = $_SERVER['REQUEST_METHOD'];
 $dest_id = isset($_GET['destination_id']) ? intval($_GET['destination_id']) : 0;
-
+ 
 // ── LIST ACCOMMODATIONS ────────────────────────────────
 if ($method === 'GET') {
     if ($dest_id === 0) {
