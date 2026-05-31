@@ -12,7 +12,18 @@ if (!isset($data['destination_id']) || !isset($data['client_name'])) {
 mysqli_begin_transaction($conn);
 
 try {
-    $user_id      = isset($data['user_id'])         ? intval($data['user_id'])         : 2;
+    $user_id      = isset($data['user_id']) && $data['user_id'] ? intval($data['user_id']) : 0;
+    if ($user_id <= 0) {
+        throw new Exception("Utilisateur non identifié. Veuillez vous connecter.");
+    }
+    // Vérifier que l'utilisateur existe réellement
+    $u_check = mysqli_prepare($conn, "SELECT id FROM users WHERE id=?");
+    mysqli_stmt_bind_param($u_check, "i", $user_id);
+    mysqli_stmt_execute($u_check);
+    mysqli_stmt_store_result($u_check);
+    if (mysqli_stmt_num_rows($u_check) === 0) {
+        throw new Exception("Compte utilisateur introuvable (id={$user_id}). Reconnectez-vous.");
+    }
     $dest_id      = intval($data['destination_id']);
     // Use NULL or valid int for nullable FK columns
     $trans_id     = (!empty($data['transport_id']))     ? intval($data['transport_id'])     : null;
