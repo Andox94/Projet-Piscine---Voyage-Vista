@@ -11,9 +11,6 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
     <style>
-/* ═══════════════════════════════════════════════════════════
-   DESIGN SYSTEM — VoyageVista
-═══════════════════════════════════════════════════════════ */
 :root {
     --navy: #0f1b2d;
     --navy-mid: #1a2d47;
@@ -64,18 +61,16 @@ header{background:var(--navy);color:#fff;position:sticky;top:0;z-index:200;box-s
 .user-chip{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;padding:.35rem .75rem;border-radius:8px;cursor:pointer;font-size:.8rem;font-weight:500;transition:.2s;white-space:nowrap;}
 .user-chip:hover{background:rgba(255,255,255,.2);}
 
-/* ── MAIN LAYOUT ── */
+/* ── MAIN ── */
 main{max-width:1300px;margin:0 auto;padding:2rem 1.5rem;min-height:calc(100vh - 128px);}
-
-/* ── SECTION TITLES ── */
 .section-head{margin-bottom:2rem;}
 .section-head h2{font-family:'Playfair Display',serif;font-size:2rem;color:var(--navy);margin-bottom:.3rem;}
 [data-theme="dark"] .section-head h2{color:var(--gold-light);}
 .section-head p{color:var(--text-muted);font-size:.95rem;}
 
-/* ── CARDS GRID ── */
+/* ── CARDS ── */
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:1.5rem;}
-.card{background:var(--white);border-radius:var(--radius);overflow:hidden;box-shadow:var(--card-shadow);border:2px solid transparent;transition:transform .2s,border-color .2s,box-shadow .2s;display:flex;flex-direction:column;cursor:default;}
+.card{background:var(--white);border-radius:var(--radius);overflow:hidden;box-shadow:var(--card-shadow);border:2px solid transparent;transition:transform .2s,border-color .2s,box-shadow .2s;display:flex;flex-direction:column;}
 .card:hover{transform:translateY(-4px);box-shadow:0 8px 30px rgba(15,27,45,.15);}
 .card.selected{border-color:var(--gold);box-shadow:0 0 0 4px rgba(201,168,76,.15);}
 .card-img{width:100%;height:195px;object-fit:cover;}
@@ -99,11 +94,12 @@ main{max-width:1300px;margin:0 auto;padding:2rem 1.5rem;min-height:calc(100vh - 
 .btn-success{background:var(--success);color:#fff;}
 .btn-danger{background:var(--danger);color:#fff;}
 .btn-danger:hover{opacity:.85;}
+.btn-warn{background:#fff3cd;color:#856404;border:1px solid #ffeeba;}
 .btn-sm{padding:.35rem .75rem;font-size:.8rem;}
 .btn:disabled{opacity:.5;cursor:not-allowed;}
 .btn-full{width:100%;justify-content:center;padding:.75rem;}
 
-/* ── LIST ITEMS (transports) ── */
+/* ── LIST ITEMS ── */
 .list-item{background:var(--white);border:2px solid var(--ivory-mid);border-radius:var(--radius);padding:1.25rem;margin-bottom:.85rem;display:flex;justify-content:space-between;align-items:center;gap:1rem;transition:.2s;}
 .list-item:hover{border-color:var(--gold-light);}
 .list-item.selected{border-color:var(--gold);background:rgba(201,168,76,.05);}
@@ -129,14 +125,11 @@ main{max-width:1300px;margin:0 auto;padding:2rem 1.5rem;min-height:calc(100vh - 
 select.form-control{cursor:pointer;}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
 
-/* ── SEARCH / FILTERS BAR ── */
+/* ── SEARCH / FILTERS ── */
 .search-bar{background:var(--white);border-radius:var(--radius);padding:1.25rem;box-shadow:var(--card-shadow);margin-bottom:1.75rem;display:flex;gap:.75rem;flex-wrap:wrap;align-items:flex-end;}
 .search-bar .form-group{margin:0;flex:1;min-width:150px;}
-.filter-row{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-bottom:1.5rem;}
-.filter-chip{background:var(--ivory-mid);border:1.5px solid transparent;color:var(--text-muted);padding:.35rem .85rem;border-radius:20px;cursor:pointer;font-size:.8rem;font-weight:500;transition:.2s;}
-.filter-chip:hover,.filter-chip.active{background:var(--navy);color:#fff;border-color:var(--navy);}
 
-/* ── CART / CHECKOUT ── */
+/* ── CART ── */
 .cart-layout{display:grid;grid-template-columns:1.6fr 1fr;gap:2rem;}
 @media(max-width:820px){.cart-layout{grid-template-columns:1fr;}}
 .cart-summary{background:var(--white);border-radius:var(--radius);padding:1.5rem;box-shadow:var(--card-shadow);}
@@ -152,9 +145,10 @@ select.form-control{cursor:pointer;}
 .cc-number{font-size:1.1rem;letter-spacing:2px;margin:.5rem 0;}
 .cc-meta{display:flex;justify-content:space-between;font-size:.8rem;opacity:.7;margin-top:.5rem;}
 
-/* ── AUTH MODAL ── */
+/* ── MODAL ── */
 .modal-overlay{position:fixed;inset:0;background:rgba(15,27,45,.7);backdrop-filter:blur(4px);z-index:500;display:flex;align-items:center;justify-content:center;padding:1rem;}
-.modal{background:var(--white);border-radius:var(--radius);padding:2rem;width:100%;max-width:440px;box-shadow:0 20px 60px rgba(0,0,0,.3);animation:slideUp .25s ease;}
+.modal{background:var(--white);border-radius:var(--radius);padding:2rem;width:100%;max-width:440px;box-shadow:0 20px 60px rgba(0,0,0,.3);animation:slideUp .25s ease;max-height:90vh;overflow-y:auto;}
+.modal-wide{max-width:700px;}
 @keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 .modal h2{font-family:'Playfair Display',serif;font-size:1.6rem;margin-bottom:1.5rem;color:var(--navy);}
 [data-theme="dark"] .modal h2{color:var(--gold-light);}
@@ -168,7 +162,7 @@ select.form-control{cursor:pointer;}
 .avatar{width:72px;height:72px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:1.8rem;font-weight:700;color:var(--navy);flex-shrink:0;}
 .role-badge{display:inline-block;background:var(--gold);color:var(--navy);padding:.25rem .75rem;border-radius:20px;font-size:.75rem;font-weight:700;text-transform:uppercase;margin-top:.4rem;}
 
-/* ── NOTIFICATIONS PANEL ── */
+/* ── NOTIF PANEL ── */
 .notif-panel{position:fixed;top:64px;right:1rem;width:360px;background:var(--white);border-radius:var(--radius);box-shadow:0 8px 30px rgba(0,0,0,.2);z-index:300;max-height:70vh;overflow-y:auto;animation:slideDown .2s ease;}
 @keyframes slideDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
 .notif-header{padding:1rem 1.25rem;border-bottom:1px solid var(--ivory-mid);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:var(--white);}
@@ -181,7 +175,7 @@ select.form-control{cursor:pointer;}
 .notif-content strong{font-size:.88rem;color:var(--text);}
 .notif-time{font-size:.72rem;color:var(--text-muted);margin-top:.2rem;}
 
-/* ── ADMIN PANEL ── */
+/* ── ADMIN ── */
 .admin-grid{display:grid;grid-template-columns:200px 1fr;gap:2rem;}
 @media(max-width:700px){.admin-grid{grid-template-columns:1fr;}}
 .admin-sidebar{background:var(--white);border-radius:var(--radius);padding:1rem;box-shadow:var(--card-shadow);height:fit-content;}
@@ -194,7 +188,7 @@ select.form-control{cursor:pointer;}
 .data-table td{padding:.7rem 1rem;border-bottom:1px solid var(--ivory-mid);}
 .data-table tr:hover td{background:var(--ivory);}
 
-/* ── TRIPS HISTORY ── */
+/* ── TRIPS ── */
 .trip-card{background:var(--white);border-radius:var(--radius);padding:1.25rem;box-shadow:var(--card-shadow);margin-bottom:1rem;display:flex;gap:1.25rem;align-items:flex-start;}
 .trip-img{width:90px;height:70px;border-radius:8px;object-fit:cover;flex-shrink:0;}
 .status-pill{display:inline-block;padding:.2rem .6rem;border-radius:10px;font-size:.72rem;font-weight:700;text-transform:uppercase;}
@@ -208,7 +202,7 @@ select.form-control{cursor:pointer;}
 .dest-hero-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(15,27,45,.8) 0%,transparent 60%);padding:1.5rem;display:flex;flex-direction:column;justify-content:flex-end;color:#fff;}
 .stars{color:var(--gold);}
 
-/* ── SUCCESS SCREEN ── */
+/* ── SUCCESS ── */
 .success-screen{text-align:center;padding:3rem 1rem;}
 .success-icon{font-size:4rem;margin-bottom:1rem;}
 .success-screen h2{font-family:'Playfair Display',serif;font-size:2rem;color:var(--navy);margin-bottom:.75rem;}
@@ -221,17 +215,27 @@ select.form-control{cursor:pointer;}
 .spinner{width:40px;height:40px;border:3px solid var(--ivory-mid);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg)}}
 
+/* ── ITINERARY STEPS ── */
+.itinerary-steps{display:flex;gap:.5rem;margin-bottom:1.5rem;overflow-x:auto;padding-bottom:.5rem;}
+.step-btn{padding:.5rem 1.1rem;border:2px solid var(--ivory-mid);border-radius:20px;cursor:pointer;font-size:.85rem;font-weight:600;background:var(--white);color:var(--text-muted);white-space:nowrap;transition:.2s;}
+.step-btn:hover{border-color:var(--gold-light);}
+.step-btn.active{border-color:var(--gold);background:var(--gold);color:var(--navy);}
+.step-btn.done{border-color:var(--success);background:rgba(45,158,107,.1);color:var(--success);}
+.step-connector{display:flex;align-items:center;color:var(--text-muted);font-size:.9rem;}
+.itinerary-card{background:var(--white);border:2px solid var(--ivory-mid);border-radius:var(--radius);padding:1.25rem;margin-bottom:1rem;position:relative;}
+.itinerary-card.has-content{border-color:var(--success);}
+.itinerary-step-num{position:absolute;top:-12px;left:1rem;background:var(--gold);color:var(--navy);width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;}
+
 /* ── MISC ── */
 .divider{border:none;border-top:1px solid var(--ivory-mid);margin:1.25rem 0;}
-.flex{display:flex;} .items-center{align-items:center;} .justify-between{justify-content:space-between;}
-.gap-sm{gap:.5rem;} .gap-md{gap:1rem;}
+.flex{display:flex;}.items-center{align-items:center;}.justify-between{justify-content:space-between;}
+.gap-sm{gap:.5rem;}.gap-md{gap:1rem;}
 .text-muted{color:var(--text-muted);}
 .text-sm{font-size:.85rem;}
-.mt-1{margin-top:.5rem;} .mt-2{margin-top:1rem;}
+.mt-1{margin-top:.5rem;}.mt-2{margin-top:1rem;}
 footer{background:var(--navy);color:rgba(255,255,255,.6);text-align:center;padding:1.5rem;font-size:.85rem;}
 footer strong{color:var(--gold);}
 
-/* ── RESPONSIVE ── */
 @media(max-width:640px){
   .nav-main{display:none;}
   .header-inner{gap:.5rem;}
@@ -246,22 +250,17 @@ footer strong{color:var(--gold);}
 <script type="text/babel">
 const { useState, useEffect, useCallback, createContext, useContext, useRef } = React;
 
-/* ═══════════════════════════════════════════════════════════
-   CONTEXT & STATE
-═══════════════════════════════════════════════════════════ */
+/* ═══ CONTEXT ═══════════════════════════════════════════ */
 const AppCtx = createContext();
 
 function AppProvider({ children }) {
-    // Auth
     const [user, setUser]         = useState(() => {
         try { return JSON.parse(localStorage.getItem('vv_user') || 'null'); } catch { return null; }
     });
-    // Cart
     const [cart, setCart]         = useState({
         destination: null, transport: null, accommodation: null, activities: [],
         nights: 3, travelers: 1, departure_date: '', return_date: ''
     });
-    // UI
     const [tab, setTab]           = useState('destinations');
     const [darkMode, setDarkMode] = useState(() => localStorage.getItem('vv_dark') === '1');
     const [notifOpen, setNotifOpen] = useState(false);
@@ -285,7 +284,7 @@ function AppProvider({ children }) {
 
     const logout = () => {
         setUser(null);
-        setCart({ destination: null, transport: null, accommodation: null, activities: [], nights: 3, travelers: 1, departure_date: '', return_date: '' });
+        setCart({ destination:null, transport:null, accommodation:null, activities:[], nights:3, travelers:1, departure_date:'', return_date:'' });
         setTab('destinations');
     };
 
@@ -320,18 +319,16 @@ function AppProvider({ children }) {
 }
 const useApp = () => useContext(AppCtx);
 
-/* ═══════════════════════════════════════════════════════════
-   HELPERS
-═══════════════════════════════════════════════════════════ */
+/* ═══ HELPERS ════════════════════════════════════════════ */
 function Stars({ n }) {
     return <span className="stars">{'★'.repeat(Math.round(n))}{'☆'.repeat(5 - Math.round(n))}</span>;
 }
 
 function AvailBadge({ left, total }) {
-    if (!total) return null;
-    const pct = (left / total) * 100;
+    if (total == null) return null;
+    const pct = total > 0 ? (left / total) * 100 : 0;
     const cls = pct > 50 ? 'avail-high' : pct > 20 ? 'avail-mid' : 'avail-low';
-    const label = left === 0 ? 'Complet' : left <= 3 ? `${left} restant(s)` : `${left} dispo.`;
+    const label = left <= 0 ? 'Complet' : left <= 3 ? `${left} restant(s)` : `${left} dispo.`;
     return <span className={`avail-badge ${cls}`}>{label}</span>;
 }
 
@@ -344,30 +341,31 @@ function apiFetch(url, opts = {}) {
         .then(r => r.json());
 }
 
-/* ═══════════════════════════════════════════════════════════
-   AUTH MODAL
-═══════════════════════════════════════════════════════════ */
+function todayStr() {
+    return new Date().toISOString().split('T')[0];
+}
+
+/* ═══ AUTH MODAL ═════════════════════════════════════════ */
 function AuthModal({ onClose }) {
     const { setUser, fetchNotifications } = useApp();
     const [mode, setMode]   = useState('login');
-    const [form, setForm]   = useState({ name: '', email: '', password: '', phone: '' });
+    const [form, setForm]   = useState({ name:'', email:'', password:'', phone:'' });
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
     const handle = (e) => {
         e.preventDefault(); setError(''); setLoading(true);
-        apiFetch(`api/auth.php?action=${mode}`, { method: 'POST', body: JSON.stringify(form) })
+        apiFetch(`api/auth.php?action=${mode}`, { method:'POST', body:JSON.stringify(form) })
             .then(d => {
                 if (d.status === 'success') {
                     if (mode === 'login') { setUser(d.user); fetchNotifications(); onClose(); }
-                    else { setMode('login'); setError(''); alert('Compte créé ! Connectez-vous.'); }
+                    else { setMode('login'); alert('Compte créé ! Connectez-vous.'); }
                 } else { setError(d.message); }
             })
             .catch(() => setError('Erreur réseau.'))
             .finally(() => setLoading(false));
     };
-
-    const set = (k, v) => setForm(p => ({ ...p, [k]: v }));
+    const set = (k,v) => setForm(p => ({ ...p, [k]:v }));
 
     return (
         <div className="modal-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
@@ -383,30 +381,30 @@ function AuthModal({ onClose }) {
                     {mode === 'register' && (
                         <div className="form-group">
                             <label className="form-label">Prénom et Nom</label>
-                            <input className="form-control" value={form.name} onChange={e => set('name', e.target.value)} required placeholder="Marie Dupont" />
+                            <input className="form-control" value={form.name} onChange={e => set('name',e.target.value)} required placeholder="Marie Dupont" />
                         </div>
                     )}
                     <div className="form-group">
                         <label className="form-label">Email</label>
-                        <input type="email" className="form-control" value={form.email} onChange={e => set('email', e.target.value)} required placeholder="vous@email.com" />
+                        <input type="email" className="form-control" value={form.email} onChange={e => set('email',e.target.value)} required placeholder="vous@email.com" />
                     </div>
                     <div className="form-group">
                         <label className="form-label">Mot de passe</label>
-                        <input type="password" className="form-control" value={form.password} onChange={e => set('password', e.target.value)} required placeholder="••••••••" />
+                        <input type="password" className="form-control" value={form.password} onChange={e => set('password',e.target.value)} required placeholder="••••••••" />
                     </div>
                     {mode === 'register' && (
                         <div className="form-group">
                             <label className="form-label">Téléphone (optionnel)</label>
-                            <input className="form-control" value={form.phone} onChange={e => set('phone', e.target.value)} placeholder="+33 6 00 00 00 00" />
+                            <input className="form-control" value={form.phone} onChange={e => set('phone',e.target.value)} placeholder="+33 6 00 00 00 00" />
                         </div>
                     )}
                     <button type="submit" className="btn btn-gold btn-full" disabled={loading}>
-                        {loading ? 'Chargement…' : mode === 'login' ? 'Se connecter' : "Créer mon compte"}
+                        {loading ? 'Chargement…' : mode === 'login' ? 'Se connecter' : 'Créer mon compte'}
                     </button>
                 </form>
                 {mode === 'login' && (
                     <p className="text-muted text-sm" style={{marginTop:'1rem',textAlign:'center'}}>
-                        Démo — admin@voyagevista.fr / marie@example.com — mot de passe: <strong>password</strong>
+                        Démo — <strong>admin@voyagevista.fr</strong> / <strong>marie@example.com</strong> — mdp: <strong>password</strong>
                     </p>
                 )}
             </div>
@@ -414,35 +412,27 @@ function AuthModal({ onClose }) {
     );
 }
 
-/* ═══════════════════════════════════════════════════════════
-   NOTIFICATIONS PANEL
-═══════════════════════════════════════════════════════════ */
+/* ═══ NOTIFICATIONS ══════════════════════════════════════ */
 function NotifPanel() {
-    const { user, notifications, setNotifications, fetchNotifications, setNotifOpen } = useApp();
+    const { user, notifications, setNotifications, setNotifOpen } = useApp();
     const unread = notifications.filter(n => !n.is_read).length;
 
     const markRead = (id) => {
-        apiFetch('api/notifications.php', { method: 'POST', body: JSON.stringify({ action: 'mark_read', id, user_id: user.id }) })
-            .then(() => {
-                setNotifications(prev => prev.map(n => n.id === id ? { ...n, is_read: 1 } : n));
-            });
+        apiFetch('api/notifications.php', { method:'POST', body:JSON.stringify({ action:'mark_read', id, user_id:user.id }) })
+            .then(() => setNotifications(prev => prev.map(n => n.id === id ? { ...n, is_read:1 } : n)));
     };
-
     const markAll = () => {
-        apiFetch('api/notifications.php', { method: 'POST', body: JSON.stringify({ action: 'mark_all_read', user_id: user.id }) })
-            .then(() => { setNotifications(prev => prev.map(n => ({ ...n, is_read: 1 }))); });
+        apiFetch('api/notifications.php', { method:'POST', body:JSON.stringify({ action:'mark_all_read', user_id:user.id }) })
+            .then(() => setNotifications(prev => prev.map(n => ({ ...n, is_read:1 }))));
     };
-
     const del = (id) => {
-        apiFetch('api/notifications.php', { method: 'POST', body: JSON.stringify({ action: 'delete', id, user_id: user.id }) })
+        apiFetch('api/notifications.php', { method:'POST', body:JSON.stringify({ action:'delete', id, user_id:user.id }) })
             .then(() => setNotifications(prev => prev.filter(n => n.id !== id)));
     };
 
-    const typeIcon = { reservation: '✈️', transport: '🚌', hebergement: '🏨', activite: '🎯', promotion: '🏷️', systeme: '⚙️', annulation: '❌', modification: '✏️' };
-
+    const typeIcon = { reservation:'✈️', transport:'🚌', hebergement:'🏨', activite:'🎯', promotion:'🏷️', systeme:'⚙️', annulation:'❌', modification:'✏️' };
     const formatDate = (d) => {
-        const dt = new Date(d);
-        const now = new Date();
+        const dt = new Date(d), now = new Date();
         const diff = Math.floor((now - dt) / 1000);
         if (diff < 60) return 'À l\'instant';
         if (diff < 3600) return `Il y a ${Math.floor(diff/60)} min`;
@@ -462,10 +452,10 @@ function NotifPanel() {
             {notifications.length === 0 ? (
                 <div style={{padding:'2rem',textAlign:'center',color:'var(--text-muted)'}}>Aucune notification</div>
             ) : notifications.map(n => (
-                <div key={n.id} className={`notif-item ${!n.is_read ? 'unread' : ''}`} onClick={() => markRead(n.id)}>
-                    <div className={`notif-dot ${n.is_read ? 'read' : ''}`}></div>
+                <div key={n.id} className={`notif-item ${!n.is_read?'unread':''}`} onClick={() => markRead(n.id)}>
+                    <div className={`notif-dot ${n.is_read?'read':''}`}></div>
                     <div className="notif-content" style={{flex:1}}>
-                        <strong>{typeIcon[n.type] || '📢'} {n.title}</strong>
+                        <strong>{typeIcon[n.type]||'📢'} {n.title}</strong>
                         <p>{n.message}</p>
                         <div className="notif-time">{formatDate(n.created_at)}</div>
                     </div>
@@ -477,40 +467,36 @@ function NotifPanel() {
     );
 }
 
-/* ═══════════════════════════════════════════════════════════
-   HEADER
-═══════════════════════════════════════════════════════════ */
+/* ═══ HEADER ═════════════════════════════════════════════ */
 function Header() {
     const { user, logout, tab, setTab, darkMode, setDarkMode, notifOpen, setNotifOpen, cartCount, unreadCount } = useApp();
     const [showAuth, setShowAuth] = useState(false);
 
     const navItems = [
-        { key: 'destinations', label: '🌍 Destinations' },
-        { key: 'transports',   label: '✈️ Transports' },
-        { key: 'accommodations', label: '🏨 Hébergements' },
-        { key: 'activities',   label: '🎯 Activités' },
-        ...(user ? [{ key: 'trips', label: '🗺️ Mes voyages' }] : []),
-        ...(user?.role === 'admin' ? [{ key: 'admin', label: '⚙️ Admin' }] : []),
+        { key:'destinations',  label:'🌍 Destinations' },
+        { key:'transports',    label:'✈️ Transports' },
+        { key:'accommodations',label:'🏨 Hébergements' },
+        { key:'activities',    label:'🎯 Activités' },
+        { key:'itinerary',     label:'🗺️ Itinéraire' },
+        ...(user ? [{ key:'trips', label:'📋 Mes voyages' }] : []),
+        ...(user?.role === 'admin' ? [{ key:'admin', label:'⚙️ Admin' }] : []),
     ];
 
     return (
         <>
             <header>
                 <div className="header-inner">
-                    <div className="logo" onClick={() => setTab('destinations')}>
-                        Voyage<span>Vista</span>
-                    </div>
+                    <div className="logo" onClick={() => setTab('destinations')}>Voyage<span>Vista</span></div>
                     <nav className="nav-main">
                         {navItems.map(({ key, label }) => (
-                            <button key={key} className={`nav-btn ${tab === key ? 'active' : ''}`} onClick={() => setTab(key)}>{label}</button>
+                            <button key={key} className={`nav-btn ${tab===key?'active':''}`} onClick={() => setTab(key)}>{label}</button>
                         ))}
                     </nav>
                     <div className="header-actions">
-                        <button className="icon-btn" onClick={() => setDarkMode(d => !d)} title="Mode sombre">{darkMode ? '☀️' : '🌙'}</button>
+                        <button className="icon-btn" onClick={() => setDarkMode(d => !d)} title="Mode sombre">{darkMode?'☀️':'🌙'}</button>
                         {user && (
                             <button className="icon-btn" onClick={() => setNotifOpen(o => !o)} title="Notifications">
-                                🔔
-                                {unreadCount > 0 && <span className="badge">{unreadCount}</span>}
+                                🔔 {unreadCount > 0 && <span className="badge">{unreadCount}</span>}
                             </button>
                         )}
                         <button className="cart-btn" onClick={() => setTab('cart')}>
@@ -533,9 +519,7 @@ function Header() {
     );
 }
 
-/* ═══════════════════════════════════════════════════════════
-   DESTINATIONS VIEW
-═══════════════════════════════════════════════════════════ */
+/* ═══ DESTINATIONS VIEW ══════════════════════════════════ */
 function DestinationsView() {
     const { selectDestination, cart, setTab } = useApp();
     const [destinations, setDestinations] = useState([]);
@@ -546,7 +530,7 @@ function DestinationsView() {
     const [maxPrice, setMaxPrice]         = useState('');
     const [detail, setDetail]             = useState(null);
 
-    const tags = ['Culture', 'Romantique', 'Nature', 'Aventure', 'City Break'];
+    const tags = ['Culture','Romantique','Nature','Aventure','City Break'];
 
     const load = useCallback(() => {
         setLoading(true);
@@ -568,14 +552,12 @@ function DestinationsView() {
         <div>
             <div className="section-head">
                 <h2>Nos Destinations</h2>
-                <p>Découvrez {destinations.length} destination{destinations.length > 1 ? 's' : ''} d'exception dans le monde entier.</p>
+                <p>Découvrez {destinations.length} destination{destinations.length !== 1 ? 's' : ''} d'exception dans le monde entier.</p>
             </div>
-
             <div className="search-bar">
                 <div className="form-group" style={{flex:2}}>
                     <label className="form-label">🔍 Recherche</label>
-                    <input className="form-control" placeholder="Pays, ville, ambiance…" value={search}
-                        onChange={e => setSearch(e.target.value)} />
+                    <input className="form-control" placeholder="Pays, ville, ambiance…" value={search} onChange={e => setSearch(e.target.value)} />
                 </div>
                 <div className="form-group">
                     <label className="form-label">Catégorie</label>
@@ -586,8 +568,7 @@ function DestinationsView() {
                 </div>
                 <div className="form-group">
                     <label className="form-label">Budget max (€)</label>
-                    <input type="number" className="form-control" placeholder="Illimité" value={maxPrice}
-                        onChange={e => setMaxPrice(e.target.value)} min="0" />
+                    <input type="number" className="form-control" placeholder="Illimité" value={maxPrice} onChange={e => setMaxPrice(e.target.value)} min="0" />
                 </div>
                 <div className="form-group">
                     <label className="form-label">Trier par</label>
@@ -600,7 +581,6 @@ function DestinationsView() {
                     </select>
                 </div>
             </div>
-
             {loading ? <Loading /> : destinations.length === 0 ? (
                 <div className="alert alert-warn">Aucune destination trouvée pour ces critères.</div>
             ) : (
@@ -618,9 +598,7 @@ function DestinationsView() {
                                     {d.continent && <span>🌐 {d.continent}</span>}
                                 </div>
                                 <div className="card-footer">
-                                    <div>
-                                        <div className="price">à partir de {d.price} €</div>
-                                    </div>
+                                    <div className="price">à partir de {d.price} € <small>/pers.</small></div>
                                     <div style={{display:'flex',gap:'.4rem'}}>
                                         <button className="btn btn-outline btn-sm" onClick={() => setDetail(d)}>Détails</button>
                                         <button className={`btn btn-sm ${cart.destination?.id === d.id ? 'btn-success' : 'btn-gold'}`}
@@ -638,26 +616,28 @@ function DestinationsView() {
     );
 }
 
-/* ═══════════════════════════════════════════════════════════
-   DESTINATION DETAIL
-═══════════════════════════════════════════════════════════ */
+/* ═══ DESTINATION DETAIL ════════════════════════════════ */
 function DestinationDetail({ dest, onBack }) {
     const { selectDestination, cart, setTab } = useApp();
     const [transports, setTransports]         = useState([]);
     const [accommodations, setAccommodations] = useState([]);
     const [activities, setActivities]         = useState([]);
+    const [loading, setLoading]               = useState(true);
 
     useEffect(() => {
+        setLoading(true);
         Promise.all([
             fetch(`api/transports.php?destination_id=${dest.id}`).then(r => r.json()),
             fetch(`api/accommodations.php?destination_id=${dest.id}`).then(r => r.json()),
             fetch(`api/activities.php?destination_id=${dest.id}`).then(r => r.json()),
-        ]).then(([t, a, ac]) => { setTransports(t); setAccommodations(a); setActivities(ac); });
+        ]).then(([t, a, ac]) => { setTransports(t); setAccommodations(a); setActivities(ac); setLoading(false); })
+          .catch(() => setLoading(false));
     }, [dest.id]);
 
-    const minPrice = dest.price
-        + (transports.length ? Math.min(...transports.map(t => t.price)) : 0)
-        + (accommodations.length ? Math.min(...accommodations.map(a => a.price_per_night * 3)) : 0);
+    // Fixed price calculation: destination base + min transport + min accom (3 nights)
+    const minTransport = transports.length > 0 ? Math.min(...transports.map(t => Number(t.price))) : 0;
+    const minAccom     = accommodations.length > 0 ? Math.min(...accommodations.map(a => Number(a.price_per_night))) * 3 : 0;
+    const minTotal     = Number(dest.price) + minTransport + minAccom;
 
     return (
         <div>
@@ -682,8 +662,12 @@ function DestinationDetail({ dest, onBack }) {
                 </div>
                 <div style={{background:'var(--ivory)',borderRadius:'var(--radius)',padding:'1.25rem'}}>
                     <p className="text-muted text-sm" style={{marginBottom:'.5rem'}}>Séjour à partir de</p>
-                    <p style={{fontSize:'2rem',fontWeight:700,color:'var(--navy)',fontFamily:'Playfair Display,serif'}}>{minPrice} €</p>
-                    <p className="text-muted text-sm">vols + hébergement 3 nuits inclus</p>
+                    {loading ? <div className="spinner" style={{width:24,height:24,borderWidth:2}}></div> : (
+                        <>
+                            <p style={{fontSize:'2rem',fontWeight:700,color:'var(--navy)',fontFamily:'Playfair Display,serif'}}>{minTotal} €</p>
+                            <p className="text-muted text-sm">base + vol + hébergement 3 nuits</p>
+                        </>
+                    )}
                     <hr className="divider" />
                     <p style={{marginBottom:'.5rem',fontSize:'.85rem'}}><strong>{transports.length}</strong> options de transport</p>
                     <p style={{marginBottom:'.5rem',fontSize:'.85rem'}}><strong>{accommodations.length}</strong> hébergements disponibles</p>
@@ -713,27 +697,29 @@ function DestinationDetail({ dest, onBack }) {
     );
 }
 
-/* ═══════════════════════════════════════════════════════════
-   TRANSPORTS VIEW
-═══════════════════════════════════════════════════════════ */
+/* ═══ TRANSPORTS VIEW ════════════════════════════════════ */
 function TransportsView() {
     const { cart, setCart } = useApp();
     const [transports, setTransports] = useState([]);
     const [loading, setLoading]       = useState(true);
     const [filterClass, setFilterClass] = useState('');
     const [sortBy, setSortBy]           = useState('');
+    const [maxPrice, setMaxPrice]       = useState('');
 
-    useEffect(() => {
+    const load = useCallback(() => {
         if (!cart.destination) return;
         setLoading(true);
         const p = new URLSearchParams({ destination_id: cart.destination.id });
         if (filterClass) p.append('class', filterClass);
         if (sortBy)      p.append('sort', sortBy);
+        if (maxPrice)    p.append('max_price', maxPrice);
         p.append('travelers', cart.travelers);
         fetch(`api/transports.php?${p}`)
             .then(r => r.json()).then(d => { setTransports(d); setLoading(false); })
             .catch(() => setLoading(false));
-    }, [cart.destination, filterClass, sortBy, cart.travelers]);
+    }, [cart.destination, filterClass, sortBy, maxPrice, cart.travelers]);
+
+    useEffect(() => { load(); }, [load]);
 
     if (!cart.destination) return <div className="alert alert-warn">⚠️ Veuillez d'abord choisir une destination.</div>;
 
@@ -741,15 +727,24 @@ function TransportsView() {
         <div>
             <div className="section-head">
                 <h2>Transports vers {cart.destination.name}</h2>
-                <p>Vols et trajets disponibles au départ de Paris.</p>
+                <p>Vols et trajets disponibles — {cart.travelers} voyageur(s) sélectionné(s).</p>
             </div>
             <div className="search-bar">
+                <div className="form-group">
+                    <label className="form-label">Voyageurs</label>
+                    <input type="number" className="form-control" min="1" max="20" value={cart.travelers}
+                        onChange={e => setCart(p => ({ ...p, travelers: parseInt(e.target.value)||1 }))} />
+                </div>
                 <div className="form-group">
                     <label className="form-label">Classe</label>
                     <select className="form-control" value={filterClass} onChange={e => setFilterClass(e.target.value)}>
                         <option value="">Toutes</option>
                         <option>Économique</option><option>Affaires</option><option>Standard</option>
                     </select>
+                </div>
+                <div className="form-group">
+                    <label className="form-label">Prix max (€)</label>
+                    <input type="number" className="form-control" placeholder="Illimité" value={maxPrice} onChange={e => setMaxPrice(e.target.value)} min="0" />
                 </div>
                 <div className="form-group">
                     <label className="form-label">Trier par</label>
@@ -761,6 +756,30 @@ function TransportsView() {
                     </select>
                 </div>
             </div>
+
+            {/* Date selector for departure/return */}
+            <div className="search-bar" style={{marginTop:'-1rem'}}>
+                <div className="form-group">
+                    <label className="form-label">📅 Date de départ</label>
+                    <input type="date" className="form-control" value={cart.departure_date}
+                        min={todayStr()}
+                        onChange={e => setCart(p => ({ ...p, departure_date: e.target.value }))} />
+                </div>
+                <div className="form-group">
+                    <label className="form-label">📅 Date de retour</label>
+                    <input type="date" className="form-control" value={cart.return_date}
+                        min={cart.departure_date || todayStr()}
+                        onChange={e => setCart(p => ({ ...p, return_date: e.target.value }))} />
+                </div>
+                {cart.departure_date && cart.return_date && (
+                    <div className="form-group" style={{display:'flex',alignItems:'flex-end'}}>
+                        <div className="alert alert-info" style={{margin:0,padding:'.5rem 1rem'}}>
+                            📅 {Math.ceil((new Date(cart.return_date) - new Date(cart.departure_date)) / 86400000)} nuit(s)
+                        </div>
+                    </div>
+                )}
+            </div>
+
             {loading ? <Loading /> : transports.length === 0 ? (
                 <div className="alert alert-warn">Aucun transport disponible pour ces critères.</div>
             ) : transports.map(t => (
@@ -772,38 +791,43 @@ function TransportsView() {
                             {t.stops > 0 && ` · ${t.stops} escale(s)`} · 💺 {t.class}
                         </div>
                         <div style={{marginTop:'.4rem',display:'flex',gap:'.5rem',alignItems:'center'}}>
-                            <AvailBadge left={t.seats_left} total={t.seats_total} />
-                            {t.seats_left === 0 && <span style={{fontSize:'.75rem',color:'var(--danger)'}}>Complet</span>}
+                            <AvailBadge left={parseInt(t.seats_left)} total={parseInt(t.seats_total)} />
                         </div>
                     </div>
-                    <div style={{textAlign:'right',minWidth:120}}>
-                        <div className="price" style={{marginBottom:'.4rem'}}>{t.price} €</div>
+                    <div style={{textAlign:'right',minWidth:130}}>
+                        <div className="price" style={{marginBottom:'.25rem'}}>{t.price} € <small>/pers.</small></div>
+                        <div className="text-muted text-sm" style={{marginBottom:'.4rem'}}>Total : {t.price * cart.travelers} €</div>
                         <button
-                            disabled={t.seats_left < cart.travelers}
+                            disabled={parseInt(t.seats_left) < cart.travelers}
                             className={`btn btn-sm ${cart.transport?.id === t.id ? 'btn-success' : 'btn-gold'}`}
                             onClick={() => setCart(p => ({ ...p, transport: t }))}>
-                            {t.seats_left < cart.travelers ? 'Indisponible' : cart.transport?.id === t.id ? '✓ Choisi' : 'Sélectionner'}
+                            {parseInt(t.seats_left) < cart.travelers ? 'Indisponible' : cart.transport?.id === t.id ? '✓ Choisi' : 'Sélectionner'}
                         </button>
                     </div>
                 </div>
             ))}
+
+            {cart.transport && (
+                <div className="alert alert-success" style={{marginTop:'1rem'}}>
+                    ✅ Transport sélectionné : <strong>{cart.transport.company} — {cart.transport.type}</strong> à {cart.transport.price * cart.travelers} € (×{cart.travelers})
+                    <button className="btn btn-sm btn-outline" style={{marginLeft:'1rem'}} onClick={() => setCart(p => ({ ...p, transport:null }))}>Changer</button>
+                </div>
+            )}
         </div>
     );
 }
 
-/* ═══════════════════════════════════════════════════════════
-   ACCOMMODATIONS VIEW
-═══════════════════════════════════════════════════════════ */
+/* ═══ ACCOMMODATIONS VIEW ════════════════════════════════ */
 function AccommodationsView() {
     const { cart, setCart } = useApp();
-    const [hotels, setHotels] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [hotels, setHotels]           = useState([]);
+    const [loading, setLoading]         = useState(true);
     const [filterType, setFilterType]   = useState('');
     const [minStars, setMinStars]       = useState('');
     const [sortBy, setSortBy]           = useState('');
     const [availOnly, setAvailOnly]     = useState(false);
 
-    useEffect(() => {
+    const load = useCallback(() => {
         if (!cart.destination) return;
         setLoading(true);
         const p = new URLSearchParams({ destination_id: cart.destination.id });
@@ -816,12 +840,15 @@ function AccommodationsView() {
             .catch(() => setLoading(false));
     }, [cart.destination, filterType, minStars, sortBy, availOnly]);
 
+    useEffect(() => { load(); }, [load]);
+
     if (!cart.destination) return <div className="alert alert-warn">⚠️ Veuillez d'abord choisir une destination.</div>;
 
     return (
         <div>
             <div className="section-head">
                 <h2>Hébergements à {cart.destination.name}</h2>
+                <p>Nuits sélectionnées : <strong>{cart.nights}</strong> — modifiez dans le panier.</p>
             </div>
             <div className="search-bar">
                 <div className="form-group">
@@ -868,17 +895,20 @@ function AccommodationsView() {
                                     <span className="tag" style={{marginBottom:'.5rem'}}>{h.type}</span><br />
                                     {h.amenities}
                                 </p>
-                                <div style={{display:'flex',gap:'.5rem',marginBottom:'.5rem',alignItems:'center'}}>
-                                    <AvailBadge left={h.rooms_left} total={h.rooms_total} />
-                                    {h.free_cancellation ? <span style={{fontSize:'.75rem',color:'var(--success)'}}>✓ Annulation gratuite</span> : null}
+                                <div style={{display:'flex',gap:'.5rem',marginBottom:'.5rem',alignItems:'center',flexWrap:'wrap'}}>
+                                    <AvailBadge left={parseInt(h.rooms_left)} total={parseInt(h.rooms_total)} />
+                                    {parseInt(h.free_cancellation) === 1 ? <span style={{fontSize:'.75rem',color:'var(--success)'}}>✓ Annulation gratuite</span> : null}
                                 </div>
                                 <div className="card-footer">
-                                    <div className="price">{h.price_per_night} € <small>/nuit</small></div>
+                                    <div>
+                                        <div className="price">{h.price_per_night} € <small>/nuit</small></div>
+                                        <div className="text-muted text-sm">≈ {h.price_per_night * cart.nights} € pour {cart.nights} nuits</div>
+                                    </div>
                                     <button
-                                        disabled={h.rooms_left === 0}
-                                        className={`btn btn-sm ${cart.accommodation?.id === h.id ? 'btn-success' : h.rooms_left === 0 ? 'btn-outline' : 'btn-gold'}`}
+                                        disabled={parseInt(h.rooms_left) <= 0}
+                                        className={`btn btn-sm ${cart.accommodation?.id === h.id ? 'btn-success' : parseInt(h.rooms_left) <= 0 ? 'btn-outline' : 'btn-gold'}`}
                                         onClick={() => setCart(p => ({ ...p, accommodation: h }))}>
-                                        {h.rooms_left === 0 ? 'Complet' : cart.accommodation?.id === h.id ? '✓ Choisi' : 'Réserver'}
+                                        {parseInt(h.rooms_left) <= 0 ? 'Complet' : cart.accommodation?.id === h.id ? '✓ Choisi' : 'Réserver'}
                                     </button>
                                 </div>
                             </div>
@@ -886,13 +916,17 @@ function AccommodationsView() {
                     ))}
                 </div>
             )}
+            {cart.accommodation && (
+                <div className="alert alert-success" style={{marginTop:'1rem'}}>
+                    ✅ Hébergement : <strong>{cart.accommodation.name}</strong> — {cart.accommodation.price_per_night * cart.nights} € ({cart.nights} nuits)
+                    <button className="btn btn-sm btn-outline" style={{marginLeft:'1rem'}} onClick={() => setCart(p => ({ ...p, accommodation:null }))}>Changer</button>
+                </div>
+            )}
         </div>
     );
 }
 
-/* ═══════════════════════════════════════════════════════════
-   ACTIVITIES VIEW
-═══════════════════════════════════════════════════════════ */
+/* ═══ ACTIVITIES VIEW ════════════════════════════════════ */
 function ActivitiesView() {
     const { cart, toggleActivity } = useApp();
     const [activities, setActivities] = useState([]);
@@ -914,13 +948,13 @@ function ActivitiesView() {
     if (!cart.destination) return <div className="alert alert-warn">⚠️ Veuillez d'abord choisir une destination.</div>;
 
     const cats  = [...new Set(activities.map(a => a.category))];
-    const diffs = ['Facile', 'Modéré', 'Difficile'];
+    const diffs = ['Facile','Modéré','Difficile'];
 
     return (
         <div>
             <div className="section-head">
                 <h2>Activités à {cart.destination.name}</h2>
-                <p>{cart.activities.length} activité(s) sélectionnée(s).</p>
+                <p>{cart.activities.length} activité(s) sélectionnée(s) pour {cart.travelers} voyageur(s).</p>
             </div>
             <div className="search-bar">
                 <div className="form-group">
@@ -957,7 +991,10 @@ function ActivitiesView() {
                                         {a.includes && <span>✓ {a.includes}</span>}
                                     </div>
                                     <div className="card-footer">
-                                        <span className="price">{a.price_per_person} € <small>/pers.</small></span>
+                                        <div>
+                                            <span className="price">{a.price_per_person} € <small>/pers.</small></span>
+                                            <div className="text-muted text-sm">≈ {a.price_per_person * cart.travelers} € (×{cart.travelers})</div>
+                                        </div>
                                         <button
                                             disabled={a.is_full && !sel}
                                             className={`btn btn-sm ${sel ? 'btn-danger' : a.is_full ? 'btn-outline' : 'btn-gold'}`}
@@ -975,11 +1012,353 @@ function ActivitiesView() {
     );
 }
 
-/* ═══════════════════════════════════════════════════════════
-   CART & CHECKOUT VIEW
-═══════════════════════════════════════════════════════════ */
+/* ═══ ITINERARY VIEW (Multi-step trip builder) ══════════ */
+function ItineraryView() {
+    const { cart, setCart, setTab, user } = useApp();
+    const [steps, setSteps] = useState([
+        { id: Date.now(), label: 'Étape 1', destination: null, transport: null, accommodation: null, activities: [], nights: 3, departure_date: '', return_date: '', notes: '' }
+    ]);
+    const [activeStep, setActiveStep] = useState(0);
+    const [allDestinations, setAllDestinations] = useState([]);
+    const [stepTransports, setStepTransports]   = useState({});
+    const [stepAccoms, setStepAccoms]           = useState({});
+    const [stepActs, setStepActs]               = useState({});
+    const [loadingData, setLoadingData]         = useState({});
+    const [travelers, setTravelers]             = useState(cart.travelers || 1);
+    const [clientName, setClientName]           = useState(user?.name || '');
+    const [clientEmail, setClientEmail]         = useState(user?.email || '');
+    const [saving, setSaving]                   = useState(false);
+    const [results, setResults]                 = useState([]);
+    const [itinError, setItinError]             = useState('');
+
+    useEffect(() => {
+        fetch('api/destinations.php').then(r => r.json()).then(setAllDestinations).catch(() => {});
+    }, []);
+
+    const loadStepData = (stepId, destId) => {
+        setLoadingData(prev => ({ ...prev, [stepId]: true }));
+        Promise.all([
+            fetch(`api/transports.php?destination_id=${destId}&travelers=${travelers}`).then(r => r.json()),
+            fetch(`api/accommodations.php?destination_id=${destId}`).then(r => r.json()),
+            fetch(`api/activities.php?destination_id=${destId}&travelers=${travelers}`).then(r => r.json()),
+        ]).then(([t, a, ac]) => {
+            setStepTransports(prev => ({ ...prev, [stepId]: t }));
+            setStepAccoms(prev => ({ ...prev, [stepId]: a }));
+            setStepActs(prev => ({ ...prev, [stepId]: ac }));
+            setLoadingData(prev => ({ ...prev, [stepId]: false }));
+        }).catch(() => setLoadingData(prev => ({ ...prev, [stepId]: false })));
+    };
+
+    const updateStep = (idx, field, value) => {
+        setSteps(prev => prev.map((s, i) => i === idx ? { ...s, [field]: value } : s));
+    };
+
+    const addStep = () => {
+        const newStep = { id: Date.now(), label: `Étape ${steps.length + 1}`, destination: null, transport: null, accommodation: null, activities: [], nights: 3, departure_date: '', return_date: '', notes: '' };
+        setSteps(prev => [...prev, newStep]);
+        setActiveStep(steps.length);
+    };
+
+    const removeStep = (idx) => {
+        if (steps.length <= 1) return;
+        setSteps(prev => prev.filter((_, i) => i !== idx));
+        setActiveStep(Math.min(activeStep, steps.length - 2));
+    };
+
+    const toggleStepActivity = (stepIdx, act) => {
+        setSteps(prev => prev.map((s, i) => {
+            if (i !== stepIdx) return s;
+            const exists = s.activities.some(a => a.id === act.id);
+            return { ...s, activities: exists ? s.activities.filter(a => a.id !== act.id) : (act.is_full ? s.activities : [...s.activities, act]) };
+        }));
+    };
+
+    const calcStepTotal = (s) => {
+        const base = s.destination ? Number(s.destination.price) : 0;
+        const trans = s.transport ? Number(s.transport.price) * travelers : 0;
+        const accom = s.accommodation ? Number(s.accommodation.price_per_night) * s.nights : 0;
+        const acts  = s.activities.reduce((sum, a) => sum + Number(a.price_per_person) * travelers, 0);
+        return base + trans + accom + acts;
+    };
+
+    const grandTotal = steps.reduce((sum, s) => sum + calcStepTotal(s), 0);
+
+    const saveItinerary = async () => {
+        setItinError('');
+        if (!clientName || !clientEmail) { setItinError('Nom et email requis.'); return; }
+        const validSteps = steps.filter(s => s.destination);
+        if (validSteps.length === 0) { setItinError('Ajoutez au moins une destination.'); return; }
+
+        setSaving(true);
+        const saved = [];
+        for (const step of validSteps) {
+            try {
+                const d = await apiFetch('api/save_trip.php', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        user_id: user?.id || 2,
+                        destination_id: step.destination.id,
+                        transport_id: step.transport?.id || null,
+                        accommodation_id: step.accommodation?.id || null,
+                        activities: step.activities.map(a => a.id),
+                        client_name: clientName,
+                        client_email: clientEmail,
+                        total_price: calcStepTotal(step),
+                        nights: step.nights,
+                        travelers,
+                        departure_date: step.departure_date || null,
+                        return_date: step.return_date || null,
+                        payment_method: 'carte',
+                        notes: step.notes || `Itinéraire multi-étapes — ${step.label}`,
+                    })
+                });
+                saved.push({ step, result: d });
+            } catch (e) {
+                saved.push({ step, result: { status: 'error', message: String(e) } });
+            }
+        }
+        setSaving(false);
+        setResults(saved);
+    };
+
+    const s = steps[activeStep];
+
+    if (results.length > 0) {
+        const allOk = results.every(r => r.result.status === 'success');
+        return (
+            <div className="success-screen">
+                <div className="success-icon">{allOk ? '🎉' : '⚠️'}</div>
+                <h2>{allOk ? 'Itinéraire confirmé !' : 'Itinéraire partiellement enregistré'}</h2>
+                <p className="text-muted" style={{marginBottom:'1.5rem'}}>
+                    {results.filter(r => r.result.status === 'success').length} / {results.length} étape(s) enregistrée(s)
+                </p>
+                {results.map((r, i) => (
+                    <div key={i} style={{background:r.result.status==='success'?'#d4edda':'#f8d7da',border:`1px solid ${r.result.status==='success'?'#c3e6cb':'#f5c6cb'}`,borderRadius:'8px',padding:'.75rem 1rem',marginBottom:'.5rem',textAlign:'left',maxWidth:500,margin:'0 auto .5rem'}}>
+                        <strong>{r.step.label} — {r.step.destination?.name}</strong>
+                        {r.result.status === 'success'
+                            ? <span style={{float:'right',color:'#155724'}}>✅ Réf : {r.result.ref_code}</span>
+                            : <span style={{float:'right',color:'#721c24'}}>❌ {r.result.message}</span>
+                        }
+                    </div>
+                ))}
+                <div style={{marginTop:'1.5rem',display:'flex',gap:'1rem',justifyContent:'center'}}>
+                    <button className="btn btn-gold" onClick={() => { setResults([]); setSteps([{ id: Date.now(), label:'Étape 1', destination:null, transport:null, accommodation:null, activities:[], nights:3, departure_date:'', return_date:'', notes:'' }]); setActiveStep(0); }}>
+                        ← Nouvel itinéraire
+                    </button>
+                    {user && <button className="btn btn-outline" onClick={() => setTab('trips')}>📋 Mes voyages</button>}
+                </div>
+            </div>
+        );
+    }
+
+    return (
+        <div>
+            <div className="section-head">
+                <h2>🗺️ Composer un Itinéraire</h2>
+                <p>Créez un voyage multi-étapes en combinant plusieurs destinations.</p>
+            </div>
+
+            {/* Steps navigation */}
+            <div style={{display:'flex',gap:'.5rem',marginBottom:'1.5rem',flexWrap:'wrap',alignItems:'center'}}>
+                {steps.map((step, idx) => (
+                    <React.Fragment key={step.id}>
+                        <button
+                            className={`step-btn ${activeStep === idx ? 'active' : step.destination ? 'done' : ''}`}
+                            onClick={() => setActiveStep(idx)}>
+                            {step.destination ? '✓ ' : ''}{step.label}
+                            {step.destination ? ` — ${step.destination.name}` : ''}
+                        </button>
+                        {idx < steps.length - 1 && <span className="step-connector">→</span>}
+                    </React.Fragment>
+                ))}
+                <button className="btn btn-outline btn-sm" onClick={addStep}>+ Étape</button>
+            </div>
+
+            <div style={{display:'grid',gridTemplateColumns:'1fr 320px',gap:'2rem'}}>
+                {/* Step editor */}
+                <div>
+                    <div className="itinerary-card" style={{border:'2px solid var(--gold)'}}>
+                        <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'1rem'}}>
+                            <h3 style={{fontFamily:'Playfair Display,serif'}}>{s.label}</h3>
+                            <div style={{display:'flex',gap:'.5rem'}}>
+                                <input className="form-control" style={{width:'140px',padding:'.35rem .6rem',fontSize:'.85rem'}}
+                                    value={s.label} onChange={e => updateStep(activeStep, 'label', e.target.value)} />
+                                {steps.length > 1 && <button className="btn btn-danger btn-sm" onClick={() => removeStep(activeStep)}>🗑</button>}
+                            </div>
+                        </div>
+
+                        {/* Destination */}
+                        <div className="form-group">
+                            <label className="form-label">Destination *</label>
+                            <select className="form-control" value={s.destination?.id || ''}
+                                onChange={e => {
+                                    const dest = allDestinations.find(d => d.id === parseInt(e.target.value));
+                                    updateStep(activeStep, 'destination', dest || null);
+                                    updateStep(activeStep, 'transport', null);
+                                    updateStep(activeStep, 'accommodation', null);
+                                    updateStep(activeStep, 'activities', []);
+                                    if (dest) loadStepData(s.id, dest.id);
+                                }}>
+                                <option value="">— Choisir une destination —</option>
+                                {allDestinations.map(d => <option key={d.id} value={d.id}>{d.name}, {d.country}</option>)}
+                            </select>
+                        </div>
+
+                        {/* Dates & nights */}
+                        <div className="form-row">
+                            <div className="form-group">
+                                <label className="form-label">Date de départ</label>
+                                <input type="date" className="form-control" value={s.departure_date}
+                                    min={todayStr()}
+                                    onChange={e => updateStep(activeStep, 'departure_date', e.target.value)} />
+                            </div>
+                            <div className="form-group">
+                                <label className="form-label">Date de retour</label>
+                                <input type="date" className="form-control" value={s.return_date}
+                                    min={s.departure_date || todayStr()}
+                                    onChange={e => updateStep(activeStep, 'return_date', e.target.value)} />
+                            </div>
+                        </div>
+                        <div className="form-row">
+                            <div className="form-group">
+                                <label className="form-label">Nuits</label>
+                                <input type="number" className="form-control" min="1" max="30" value={s.nights}
+                                    onChange={e => updateStep(activeStep, 'nights', parseInt(e.target.value)||1)} />
+                            </div>
+                            <div className="form-group">
+                                <label className="form-label">Notes (optionnel)</label>
+                                <input className="form-control" value={s.notes}
+                                    onChange={e => updateStep(activeStep, 'notes', e.target.value)} placeholder="Ex: Hôtel confirmé, arrivée le soir…" />
+                            </div>
+                        </div>
+
+                        {s.destination && (
+                            <>
+                                {loadingData[s.id] ? <Loading /> : (
+                                    <>
+                                        {/* Transport */}
+                                        <hr className="divider" />
+                                        <h4 style={{marginBottom:'.75rem'}}>✈️ Transport</h4>
+                                        {(stepTransports[s.id] || []).length === 0 ? <p className="text-muted text-sm">Aucun transport disponible.</p> : (
+                                            stepTransports[s.id].map(t => (
+                                                <div key={t.id} className={`list-item ${s.transport?.id === t.id ? 'selected' : ''}`} style={{padding:'.85rem'}}>
+                                                    <div style={{flex:1}}>
+                                                        <div style={{fontWeight:600,fontSize:'.9rem'}}>{t.type} · {t.company}</div>
+                                                        <div className="meta">{t.departure_time} → {t.arrival_time} · {t.duration} · {t.class}</div>
+                                                        <AvailBadge left={parseInt(t.seats_left)} total={parseInt(t.seats_total)} />
+                                                    </div>
+                                                    <div style={{textAlign:'right'}}>
+                                                        <div style={{fontWeight:700}}>{t.price} €/pers.</div>
+                                                        <button className={`btn btn-sm ${s.transport?.id === t.id ? 'btn-success' : 'btn-gold'}`}
+                                                            onClick={() => updateStep(activeStep, 'transport', s.transport?.id === t.id ? null : t)}>
+                                                            {s.transport?.id === t.id ? '✓' : 'Choisir'}
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            ))
+                                        )}
+
+                                        {/* Accommodation */}
+                                        <hr className="divider" />
+                                        <h4 style={{marginBottom:'.75rem'}}>🏨 Hébergement</h4>
+                                        {(stepAccoms[s.id] || []).length === 0 ? <p className="text-muted text-sm">Aucun hébergement disponible.</p> : (
+                                            <div className="grid" style={{gridTemplateColumns:'repeat(auto-fill,minmax(220px,1fr))'}}>
+                                                {stepAccoms[s.id].map(h => (
+                                                    <div key={h.id} className={`card ${s.accommodation?.id === h.id ? 'selected' : ''}`} style={{cursor:'pointer'}} onClick={() => updateStep(activeStep, 'accommodation', s.accommodation?.id === h.id ? null : h)}>
+                                                        <div className="card-body" style={{padding:'1rem'}}>
+                                                            <h4 style={{fontSize:'.9rem'}}>{h.name} {'⭐'.repeat(parseInt(h.stars))}</h4>
+                                                            <p className="text-muted text-sm">{h.type} · <AvailBadge left={parseInt(h.rooms_left)} total={parseInt(h.rooms_total)} /></p>
+                                                            <div style={{fontWeight:700,color:'var(--gold)',marginTop:'.5rem'}}>{h.price_per_night} €/nuit</div>
+                                                            {s.accommodation?.id === h.id && <div style={{color:'var(--success)',fontWeight:600,fontSize:'.8rem'}}>✓ Sélectionné</div>}
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+
+                                        {/* Activities */}
+                                        <hr className="divider" />
+                                        <h4 style={{marginBottom:'.75rem'}}>🎯 Activités ({s.activities.length} sélectionnée(s))</h4>
+                                        {(stepActs[s.id] || []).length === 0 ? <p className="text-muted text-sm">Aucune activité disponible.</p> : (
+                                            <div className="grid" style={{gridTemplateColumns:'repeat(auto-fill,minmax(220px,1fr))'}}>
+                                                {stepActs[s.id].map(a => {
+                                                    const sel = s.activities.some(x => x.id === a.id);
+                                                    return (
+                                                        <div key={a.id} className={`card ${sel?'selected':''}`}>
+                                                            <div className="card-body" style={{padding:'1rem'}}>
+                                                                <span className="tag" style={{fontSize:'.65rem'}}>{a.category}</span>
+                                                                <h4 style={{fontSize:'.9rem',margin:'.4rem 0'}}>{a.name}</h4>
+                                                                <p className="text-muted text-sm">{a.duration} · {a.difficulty}</p>
+                                                                <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginTop:'.5rem'}}>
+                                                                    <span style={{fontWeight:700,color:'var(--gold)'}}>{a.price_per_person} €</span>
+                                                                    <button
+                                                                        disabled={a.is_full && !sel}
+                                                                        className={`btn btn-sm ${sel?'btn-danger':a.is_full?'btn-outline':'btn-gold'}`}
+                                                                        onClick={() => toggleStepActivity(activeStep, a)}>
+                                                                        {sel ? '✕' : a.is_full ? 'Complet' : '+'}
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        )}
+                                    </>
+                                )}
+                            </>
+                        )}
+                    </div>
+                </div>
+
+                {/* Summary panel */}
+                <div>
+                    <div className="checkout-panel">
+                        <h3>Récapitulatif</h3>
+                        <div className="form-group">
+                            <label className="form-label">Voyageurs</label>
+                            <input type="number" className="form-control" min="1" max="20" value={travelers}
+                                onChange={e => setTravelers(parseInt(e.target.value)||1)} />
+                        </div>
+                        <div className="form-group">
+                            <label className="form-label">Votre nom *</label>
+                            <input className="form-control" value={clientName} onChange={e => setClientName(e.target.value)} placeholder="Marie Dupont" />
+                        </div>
+                        <div className="form-group">
+                            <label className="form-label">Email *</label>
+                            <input type="email" className="form-control" value={clientEmail} onChange={e => setClientEmail(e.target.value)} placeholder="vous@email.com" />
+                        </div>
+                        <hr className="divider" />
+                        {steps.map((step, idx) => (
+                            step.destination && (
+                                <div key={step.id} className="cart-row" style={{flexDirection:'column',alignItems:'flex-start',gap:'.25rem'}}>
+                                    <strong>{step.label} — {step.destination.name}</strong>
+                                    {step.transport && <span className="text-muted text-sm">✈️ {step.transport.company}</span>}
+                                    {step.accommodation && <span className="text-muted text-sm">🏨 {step.accommodation.name}</span>}
+                                    {step.activities.length > 0 && <span className="text-muted text-sm">🎯 {step.activities.length} activité(s)</span>}
+                                    <span style={{fontWeight:700,color:'var(--gold)'}}>{calcStepTotal(step)} €</span>
+                                </div>
+                            )
+                        ))}
+                        <div style={{display:'flex',justifyContent:'space-between',fontWeight:700,fontSize:'1.2rem',marginTop:'.75rem',padding:'.5rem 0',borderTop:'2px solid var(--ivory-mid)'}}>
+                            <span>Total itinéraire</span><span style={{color:'var(--navy)'}}>{grandTotal} €</span>
+                        </div>
+                        {itinError && <div className="alert alert-danger" style={{marginTop:'.5rem'}}>{itinError}</div>}
+                        <button className="btn btn-gold btn-full" style={{marginTop:'1rem'}} onClick={saveItinerary} disabled={saving || !user}>
+                            {saving ? '⏳ Enregistrement…' : user ? `✓ Valider l'itinéraire (${grandTotal} €)` : '🔒 Connexion requise'}
+                        </button>
+                        {!user && <p className="text-muted text-sm" style={{marginTop:'.5rem',textAlign:'center'}}>Connectez-vous pour enregistrer.</p>}
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+
+/* ═══ CART VIEW ══════════════════════════════════════════ */
 function CartView() {
-    const { cart, setCart, user } = useApp();
+    const { cart, setCart, user, fetchNotifications } = useApp();
     const [clientName,  setClientName]  = useState(user?.name  || '');
     const [clientEmail, setClientEmail] = useState(user?.email || '');
     const [travelers,   setTravelers]   = useState(cart.travelers || 1);
@@ -991,10 +1370,18 @@ function CartView() {
     const [cardExp,     setCardExp]     = useState('');
     const [cardCvv,     setCardCvv]     = useState('');
     const [cardName,    setCardName]    = useState('');
-    const [step,        setStep]        = useState(1); // 1=recap, 2=paiement
+    const [step,        setStep]        = useState(1);
     const [success,     setSuccess]     = useState(null);
     const [error,       setError]       = useState('');
     const [loading,     setLoading]     = useState(false);
+
+    // Sync nights from date delta
+    useEffect(() => {
+        if (depDate && retDate) {
+            const diff = Math.ceil((new Date(retDate) - new Date(depDate)) / 86400000);
+            if (diff > 0) setNights(diff);
+        }
+    }, [depDate, retDate]);
 
     const total = Number(cart.destination?.price || 0)
         + (Number(cart.transport?.price || 0) * travelers)
@@ -1011,9 +1398,9 @@ function CartView() {
     };
 
     const removeItem = (type) => {
-        if (type === 'transport')      setCart(p => ({ ...p, transport: null }));
-        if (type === 'accommodation')  setCart(p => ({ ...p, accommodation: null }));
-        if (type === 'destination')    setCart(p => ({ ...p, destination: null, transport: null, accommodation: null, activities: [] }));
+        if (type === 'transport')     setCart(p => ({ ...p, transport: null }));
+        if (type === 'accommodation') setCart(p => ({ ...p, accommodation: null }));
+        if (type === 'destination')   setCart(p => ({ ...p, destination: null, transport: null, accommodation: null, activities: [] }));
     };
     const removeActivity = (id) => setCart(p => ({ ...p, activities: p.activities.filter(a => a.id !== id) }));
 
@@ -1024,9 +1411,12 @@ function CartView() {
         const de = dateError();
         if (de) { setError(de); return; }
         if (!cart.destination) { setError('Aucune destination sélectionnée.'); return; }
-        if (payMethod === 'carte' && (cardNum.replace(/\s/g,'').length < 16 || !cardExp || !cardCvv)) {
-            setError('Informations de carte incomplètes.');
-            return;
+        if (!clientName || !clientEmail) { setError('Nom et email requis.'); return; }
+        if (payMethod === 'carte') {
+            const clean = cardNum.replace(/\s/g,'');
+            if (clean.length < 16) { setError('Numéro de carte invalide (16 chiffres minimum).'); return; }
+            if (!cardExp || cardExp.length < 5) { setError('Date d\'expiration invalide.'); return; }
+            if (!cardCvv || cardCvv.length < 3) { setError('CVV invalide.'); return; }
         }
         setError(''); setLoading(true);
         apiFetch('api/save_trip.php', {
@@ -1042,14 +1432,16 @@ function CartView() {
                 total_price:      total,
                 nights,
                 travelers,
-                departure_date:   depDate,
-                return_date:      retDate,
+                departure_date:   depDate || null,
+                return_date:      retDate || null,
                 payment_method:   payMethod,
+                notes:            null,
             })
         }).then(d => {
             if (d.status === 'success') {
                 setSuccess(d);
                 setCart({ destination:null, transport:null, accommodation:null, activities:[], nights:3, travelers:1, departure_date:'', return_date:'' });
+                if (user) fetchNotifications();
             } else {
                 setError(d.message);
             }
@@ -1064,9 +1456,9 @@ function CartView() {
             <p className="text-muted">Votre voyage a été enregistré avec succès.</p>
             <div className="ref-code">{success.ref_code}</div>
             <p className="text-muted text-sm">Conservez ce code de référence pour vos démarches.</p>
-            <button className="btn btn-gold" style={{marginTop:'1.5rem'}} onClick={() => setSuccess(null)}>
-                ← Planifier un nouveau voyage
-            </button>
+            <div style={{marginTop:'1.5rem',display:'flex',gap:'1rem',justifyContent:'center',flexWrap:'wrap'}}>
+                <button className="btn btn-gold" onClick={() => setSuccess(null)}>← Planifier un nouveau voyage</button>
+            </div>
         </div>
     );
 
@@ -1082,12 +1474,21 @@ function CartView() {
 
     return (
         <div>
-            <div className="section-head">
-                <h2>Panier & Réservation</h2>
+            <div className="section-head"><h2>Panier & Réservation</h2></div>
+
+            {/* Steps indicator */}
+            <div style={{display:'flex',gap:'1rem',marginBottom:'1.5rem',alignItems:'center'}}>
+                {[{n:1,label:'Récapitulatif'},{n:2,label:'Paiement'}].map(({n,label}) => (
+                    <div key={n} style={{display:'flex',alignItems:'center',gap:'.5rem',opacity:step>=n?1:.4}}>
+                        <div style={{width:28,height:28,borderRadius:'50%',background:step>=n?'var(--gold)':'var(--ivory-mid)',color:step>=n?'var(--navy)':'var(--text-muted)',display:'flex',alignItems:'center',justifyContent:'center',fontWeight:700,fontSize:'.85rem'}}>{n}</div>
+                        <span style={{fontWeight:step===n?600:400,fontSize:'.9rem'}}>{label}</span>
+                        {n < 2 && <span style={{color:'var(--text-muted)'}}>→</span>}
+                    </div>
+                ))}
             </div>
+
             {step === 1 && (
                 <div className="cart-layout">
-                    {/* ── RECAP ── */}
                     <div>
                         <div className="cart-summary">
                             <h3 style={{marginBottom:'1rem',fontFamily:'Playfair Display,serif'}}>Récapitulatif</h3>
@@ -1095,7 +1496,7 @@ function CartView() {
                             <div className="cart-row">
                                 <div>
                                     <strong>🌍 {cart.destination.name}, {cart.destination.country}</strong>
-                                    <div className="text-muted text-sm">{cart.destination.tag}</div>
+                                    <div className="text-muted text-sm">{cart.destination.tag} · Prix de base</div>
                                 </div>
                                 <div style={{display:'flex',gap:'.5rem',alignItems:'center'}}>
                                     <span>{cart.destination.price} €</span>
@@ -1107,7 +1508,7 @@ function CartView() {
                                 <div className="cart-row">
                                     <div>
                                         <strong>✈️ {cart.transport.type} — {cart.transport.company}</strong>
-                                        <div className="text-muted text-sm">{cart.transport.class} · {travelers} pers.</div>
+                                        <div className="text-muted text-sm">{cart.transport.class} · {travelers} pers. × {cart.transport.price} €</div>
                                     </div>
                                     <div style={{display:'flex',gap:'.5rem',alignItems:'center'}}>
                                         <span>{cart.transport.price * travelers} €</span>
@@ -1120,7 +1521,7 @@ function CartView() {
                                 <div className="cart-row">
                                     <div>
                                         <strong>🏨 {cart.accommodation.name}</strong>
-                                        <div className="text-muted text-sm">{nights} nuits · {cart.accommodation.type}</div>
+                                        <div className="text-muted text-sm">{nights} nuits × {cart.accommodation.price_per_night} €</div>
                                     </div>
                                     <div style={{display:'flex',gap:'.5rem',alignItems:'center'}}>
                                         <span>{cart.accommodation.price_per_night * nights} €</span>
@@ -1148,48 +1549,46 @@ function CartView() {
                             </div>
                         </div>
 
-                        {/* Paramètres du séjour */}
                         <div className="cart-summary" style={{marginTop:'1rem'}}>
                             <h4 style={{marginBottom:'1rem'}}>Paramètres du séjour</h4>
                             <div className="form-row">
                                 <div className="form-group">
                                     <label className="form-label">Voyageurs</label>
                                     <input type="number" className="form-control" min="1" max="20" value={travelers}
-                                        onChange={e => { setTravelers(parseInt(e.target.value)||1); setCart(p => ({...p, travelers: parseInt(e.target.value)||1})); }} />
+                                        onChange={e => { const v = parseInt(e.target.value)||1; setTravelers(v); setCart(p => ({...p, travelers:v})); }} />
                                 </div>
                                 <div className="form-group">
                                     <label className="form-label">Nuits</label>
                                     <input type="number" className="form-control" min="1" max="30" value={nights}
-                                        onChange={e => { setNights(parseInt(e.target.value)||1); setCart(p => ({...p, nights: parseInt(e.target.value)||1})); }} />
+                                        onChange={e => { const v = parseInt(e.target.value)||1; setNights(v); setCart(p => ({...p, nights:v})); }} />
                                 </div>
                             </div>
                             <div className="form-row">
                                 <div className="form-group">
-                                    <label className="form-label">Départ</label>
+                                    <label className="form-label">📅 Date de départ</label>
                                     <input type="date" className="form-control" value={depDate}
-                                        min={new Date().toISOString().split('T')[0]}
-                                        onChange={e => { setDepDate(e.target.value); setCart(p => ({...p, departure_date: e.target.value})); }} />
+                                        min={todayStr()}
+                                        onChange={e => { setDepDate(e.target.value); setCart(p => ({...p, departure_date:e.target.value})); }} />
                                 </div>
                                 <div className="form-group">
-                                    <label className="form-label">Retour</label>
+                                    <label className="form-label">📅 Date de retour</label>
                                     <input type="date" className="form-control" value={retDate}
-                                        min={depDate || new Date().toISOString().split('T')[0]}
-                                        onChange={e => { setRetDate(e.target.value); setCart(p => ({...p, return_date: e.target.value})); }} />
+                                        min={depDate || todayStr()}
+                                        onChange={e => { setRetDate(e.target.value); setCart(p => ({...p, return_date:e.target.value})); }} />
                                 </div>
                             </div>
                             {dErr && <div className="alert alert-danger">{dErr}</div>}
                         </div>
                     </div>
 
-                    {/* ── PANNEAU LATÉRAL ── */}
                     <div className="checkout-panel">
                         <h3>Vos informations</h3>
                         <div className="form-group">
-                            <label className="form-label">Prénom et Nom</label>
+                            <label className="form-label">Prénom et Nom *</label>
                             <input className="form-control" value={clientName} onChange={e => setClientName(e.target.value)} required placeholder="Marie Dupont" />
                         </div>
                         <div className="form-group">
-                            <label className="form-label">Email</label>
+                            <label className="form-label">Email *</label>
                             <input type="email" className="form-control" value={clientEmail} onChange={e => setClientEmail(e.target.value)} required placeholder="vous@email.com" />
                         </div>
                         <hr className="divider" />
@@ -1199,7 +1598,7 @@ function CartView() {
                         {error && <div className="alert alert-danger" style={{marginBottom:'1rem'}}>{error}</div>}
                         <button className="btn btn-gold btn-full"
                             disabled={!clientName || !clientEmail || !!dErr}
-                            onClick={() => setStep(2)}>
+                            onClick={() => { setError(''); setStep(2); }}>
                             Procéder au paiement →
                         </button>
                     </div>
@@ -1225,15 +1624,18 @@ function CartView() {
                             {payMethod === 'carte' && (
                                 <>
                                     <div className="payment-card-preview">
-                                        <div style={{fontSize:'.75rem',opacity:.7,marginBottom:'.25rem'}}>CARTE BANCAIRE</div>
+                                        <div style={{fontSize:'.75rem',opacity:.7,marginBottom:'.25rem'}}>CARTE BANCAIRE SIMULÉE</div>
                                         <div className="cc-number">{cardNum || '•••• •••• •••• ••••'}</div>
                                         <div className="cc-meta">
                                             <span>{cardName || 'VOTRE NOM'}</span>
                                             <span>{cardExp || 'MM/YY'}</span>
                                         </div>
                                     </div>
+                                    <div className="alert alert-info" style={{marginBottom:'1rem',fontSize:'.8rem'}}>
+                                        💡 <strong>Mode démo</strong> — Utilisez : <code>1234 5678 9012 3456</code> · Exp: <code>12/28</code> · CVV: <code>123</code>
+                                    </div>
                                     <div className="form-group">
-                                        <label className="form-label">Numéro de carte</label>
+                                        <label className="form-label">Numéro de carte *</label>
                                         <input className="form-control" value={cardNum} maxLength={19}
                                             onChange={e => setCardNum(formatCard(e.target.value))} placeholder="1234 5678 9012 3456" />
                                     </div>
@@ -1244,7 +1646,7 @@ function CartView() {
                                     </div>
                                     <div className="form-row">
                                         <div className="form-group">
-                                            <label className="form-label">Expiration</label>
+                                            <label className="form-label">Expiration *</label>
                                             <input className="form-control" value={cardExp} maxLength={5}
                                                 onChange={e => {
                                                     let v = e.target.value.replace(/\D/g,'');
@@ -1253,7 +1655,7 @@ function CartView() {
                                                 }} placeholder="MM/YY" />
                                         </div>
                                         <div className="form-group">
-                                            <label className="form-label">CVV</label>
+                                            <label className="form-label">CVV *</label>
                                             <input className="form-control" value={cardCvv} maxLength={3}
                                                 onChange={e => setCardCvv(e.target.value.replace(/\D/g,'').slice(0,3))} placeholder="123" type="password" />
                                         </div>
@@ -1264,8 +1666,8 @@ function CartView() {
                             {payMethod === 'paypal' && (
                                 <div className="alert alert-info" style={{textAlign:'center',padding:'2rem'}}>
                                     <p style={{fontSize:'1.5rem'}}>🅿️</p>
-                                    <p style={{fontWeight:600,marginTop:'.5rem'}}>Vous serez redirigé vers PayPal</p>
-                                    <p className="text-muted text-sm">pour finaliser le paiement de {total} €.</p>
+                                    <p style={{fontWeight:600,marginTop:'.5rem'}}>Simulation PayPal</p>
+                                    <p className="text-muted text-sm">Paiement simulé de {total} €.</p>
                                 </div>
                             )}
 
@@ -1277,7 +1679,7 @@ function CartView() {
                                 </div>
                             )}
 
-                            {error && <div className="alert alert-danger">{error}</div>}
+                            {error && <div className="alert alert-danger" style={{marginTop:'1rem'}}>{error}</div>}
                         </div>
                     </div>
 
@@ -1285,10 +1687,11 @@ function CartView() {
                         <h3>Récapitulatif</h3>
                         <div style={{fontSize:'.85rem',color:'var(--text-muted)',marginBottom:'1rem',lineHeight:1.8}}>
                             <div>🌍 {cart.destination.name}</div>
-                            {cart.transport      && <div>✈️ {cart.transport.company}</div>}
-                            {cart.accommodation  && <div>🏨 {cart.accommodation.name}</div>}
+                            {cart.transport     && <div>✈️ {cart.transport.company} (×{travelers})</div>}
+                            {cart.accommodation && <div>🏨 {cart.accommodation.name} ({nights} nuits)</div>}
                             {cart.activities.length > 0 && <div>🎯 {cart.activities.length} activité(s)</div>}
                             <div>👥 {travelers} voyageur(s) · 🌙 {nights} nuits</div>
+                            {depDate && <div>📅 {depDate} → {retDate || '?'}</div>}
                         </div>
                         <hr className="divider" />
                         <div style={{display:'flex',justifyContent:'space-between',fontWeight:700,fontSize:'1.3rem',marginBottom:'1.5rem',color:'var(--navy)'}}>
@@ -1310,17 +1713,15 @@ function CartView() {
     );
 }
 
-/* ═══════════════════════════════════════════════════════════
-   MY TRIPS VIEW
-═══════════════════════════════════════════════════════════ */
+/* ═══ TRIPS VIEW ═════════════════════════════════════════ */
 function TripsView() {
-    const { user } = useApp();
-    const [trips, setTrips]   = useState([]);
+    const { user, fetchNotifications } = useApp();
+    const [trips, setTrips]     = useState([]);
     const [loading, setLoading] = useState(true);
     const [editing, setEditing] = useState(null);
-    const [editTravelers, setEditTravelers] = useState(1);
-    const [editNotes, setEditNotes]         = useState('');
-    const [msg, setMsg]       = useState('');
+    const [editForm, setEditForm] = useState({ travelers:1, nights:3, departure_date:'', return_date:'', notes:'' });
+    const [msg, setMsg]         = useState('');
+    const [msgType, setMsgType] = useState('success');
 
     const load = () => {
         setLoading(true);
@@ -1328,27 +1729,61 @@ function TripsView() {
             .then(r => r.json()).then(d => { setTrips(d); setLoading(false); })
             .catch(() => setLoading(false));
     };
+    useEffect(() => { if (user) load(); }, []);
 
-    useEffect(() => { load(); }, []);
+    const showMsg = (m, type='success') => { setMsg(m); setMsgType(type); setTimeout(() => setMsg(''), 4000); };
 
     const cancel = (trip_id) => {
-        if (!confirm('Annuler ce voyage ?')) return;
-        apiFetch('api/trips.php', { method: 'POST', body: JSON.stringify({ action: 'cancel', trip_id, user_id: user.id }) })
-            .then(d => { setMsg(d.message); load(); });
+        if (!confirm('Annuler ce voyage ? Les disponibilités seront restaurées.')) return;
+        apiFetch('api/trips.php', { method:'POST', body:JSON.stringify({ action:'cancel', trip_id, user_id:user.id }) })
+            .then(d => {
+                if (d.status === 'success') { showMsg(d.message); load(); if (fetchNotifications) fetchNotifications(); }
+                else showMsg(d.message, 'danger');
+            })
+            .catch(() => showMsg('Erreur réseau.', 'danger'));
+    };
+
+    const startEdit = (t) => {
+        setEditing(t.id);
+        setEditForm({
+            travelers: t.travelers,
+            nights: t.nights,
+            departure_date: t.departure_date || '',
+            return_date: t.return_date || '',
+            notes: t.notes || '',
+        });
     };
 
     const saveEdit = (trip_id) => {
-        apiFetch('api/trips.php', { method: 'POST', body: JSON.stringify({ action: 'update', trip_id, user_id: user.id, travelers: editTravelers, notes: editNotes }) })
-            .then(d => { setMsg(d.message); setEditing(null); load(); });
+        const dep = editForm.departure_date, ret = editForm.return_date;
+        if (dep && ret && new Date(ret) <= new Date(dep)) {
+            showMsg('La date de retour doit être après le départ.', 'danger'); return;
+        }
+        // Compute nights from dates if both provided
+        let nights = editForm.nights;
+        if (dep && ret) {
+            const diff = Math.ceil((new Date(ret) - new Date(dep)) / 86400000);
+            if (diff > 0) nights = diff;
+        }
+        apiFetch('api/trips.php', {
+            method: 'POST',
+            body: JSON.stringify({ action:'update', trip_id, user_id:user.id, ...editForm, nights })
+        }).then(d => {
+            if (d.status === 'success') { showMsg(d.message); setEditing(null); load(); if (fetchNotifications) fetchNotifications(); }
+            else showMsg(d.message, 'danger');
+        }).catch(() => showMsg('Erreur réseau.', 'danger'));
     };
 
     const del = (trip_id) => {
         if (!confirm('Supprimer définitivement cet itinéraire ?')) return;
-        apiFetch('api/trips.php', { method: 'POST', body: JSON.stringify({ action: 'delete', trip_id, user_id: user.id }) })
-            .then(d => { setMsg(d.message); load(); });
+        apiFetch('api/trips.php', { method:'POST', body:JSON.stringify({ action:'delete', trip_id, user_id:user.id }) })
+            .then(d => { showMsg(d.message); load(); })
+            .catch(() => showMsg('Erreur réseau.', 'danger'));
     };
 
     if (!user) return <div className="alert alert-warn">Connectez-vous pour voir vos voyages.</div>;
+
+    const statusLabel = { confirmed:'Confirmé', cancelled:'Annulé', pending:'En attente' };
 
     return (
         <div>
@@ -1356,7 +1791,7 @@ function TripsView() {
                 <h2>Mes Voyages</h2>
                 <p>Historique et gestion de vos réservations.</p>
             </div>
-            {msg && <div className="alert alert-success">{msg} <button style={{float:'right',background:'none',border:'none',cursor:'pointer'}} onClick={() => setMsg('')}>✕</button></div>}
+            {msg && <div className={`alert alert-${msgType}`} style={{marginBottom:'1rem'}}>{msg}</div>}
             {loading ? <Loading /> : trips.length === 0 ? (
                 <div style={{textAlign:'center',padding:'3rem',color:'var(--text-muted)'}}>
                     <p style={{fontSize:'2rem'}}>🗺️</p>
@@ -1372,30 +1807,53 @@ function TripsView() {
                                 <div className="text-muted text-sm">
                                     Réf. <strong>{t.reference_code}</strong> · {t.travelers} voyageur(s) · {t.nights} nuit(s)
                                 </div>
-                                {t.departure_date && <div className="text-muted text-sm">📅 {t.departure_date} → {t.return_date}</div>}
+                                {t.departure_date && <div className="text-muted text-sm">📅 {t.departure_date} → {t.return_date || '?'}</div>}
                                 {t.transport_type && <div className="text-sm" style={{marginTop:'.2rem'}}>✈️ {t.transport_type} — {t.transport_company}</div>}
                                 {t.accommodation_name && <div className="text-sm">🏨 {t.accommodation_name}</div>}
-                                {t.activities.length > 0 && (
+                                {t.activities && t.activities.length > 0 && (
                                     <div className="text-sm text-muted">🎯 {t.activities.map(a => a.name).join(', ')}</div>
                                 )}
+                                {t.notes && <div className="text-sm text-muted" style={{fontStyle:'italic'}}>💬 {t.notes}</div>}
                             </div>
                             <div style={{textAlign:'right'}}>
-                                <span className={`status-pill status-${t.status}`}>{t.status === 'confirmed' ? 'Confirmé' : t.status === 'cancelled' ? 'Annulé' : 'En attente'}</span>
+                                <span className={`status-pill status-${t.status}`}>{statusLabel[t.status] || t.status}</span>
                                 <div className="price" style={{marginTop:'.4rem',fontSize:'1.1rem'}}>{t.total_price} €</div>
+                                <div className="text-muted text-sm">{new Date(t.created_at).toLocaleDateString('fr-FR')}</div>
                             </div>
                         </div>
 
                         {editing === t.id ? (
-                            <div style={{marginTop:'1rem',background:'var(--ivory)',padding:'1rem',borderRadius:'8px'}}>
+                            <div style={{marginTop:'1rem',background:'var(--ivory)',padding:'1rem',borderRadius:'8px',border:'1px solid var(--ivory-mid)'}}>
+                                <h5 style={{marginBottom:'.75rem'}}>✏️ Modifier la réservation</h5>
                                 <div className="form-row">
                                     <div className="form-group">
                                         <label className="form-label">Voyageurs</label>
-                                        <input type="number" className="form-control" min="1" max="20" value={editTravelers} onChange={e => setEditTravelers(parseInt(e.target.value)||1)} />
+                                        <input type="number" className="form-control" min="1" max="20" value={editForm.travelers}
+                                            onChange={e => setEditForm(p => ({...p, travelers:parseInt(e.target.value)||1}))} />
                                     </div>
                                     <div className="form-group">
-                                        <label className="form-label">Notes</label>
-                                        <input className="form-control" value={editNotes} onChange={e => setEditNotes(e.target.value)} placeholder="Notes optionnelles…" />
+                                        <label className="form-label">Nuits</label>
+                                        <input type="number" className="form-control" min="1" max="30" value={editForm.nights}
+                                            onChange={e => setEditForm(p => ({...p, nights:parseInt(e.target.value)||1}))} />
                                     </div>
+                                </div>
+                                <div className="form-row">
+                                    <div className="form-group">
+                                        <label className="form-label">Date de départ</label>
+                                        <input type="date" className="form-control" value={editForm.departure_date}
+                                            onChange={e => setEditForm(p => ({...p, departure_date:e.target.value}))} />
+                                    </div>
+                                    <div className="form-group">
+                                        <label className="form-label">Date de retour</label>
+                                        <input type="date" className="form-control" value={editForm.return_date}
+                                            min={editForm.departure_date}
+                                            onChange={e => setEditForm(p => ({...p, return_date:e.target.value}))} />
+                                    </div>
+                                </div>
+                                <div className="form-group">
+                                    <label className="form-label">Notes</label>
+                                    <input className="form-control" value={editForm.notes}
+                                        onChange={e => setEditForm(p => ({...p, notes:e.target.value}))} placeholder="Notes optionnelles…" />
                                 </div>
                                 <div style={{display:'flex',gap:'.5rem'}}>
                                     <button className="btn btn-gold btn-sm" onClick={() => saveEdit(t.id)}>✓ Sauvegarder</button>
@@ -1406,9 +1864,12 @@ function TripsView() {
                             <div style={{display:'flex',gap:'.5rem',marginTop:'.75rem',flexWrap:'wrap'}}>
                                 {t.status === 'confirmed' && (
                                     <>
-                                        <button className="btn btn-outline btn-sm" onClick={() => { setEditing(t.id); setEditTravelers(t.travelers); setEditNotes(t.notes||''); }}>✏️ Modifier</button>
-                                        <button className="btn btn-sm" style={{background:'#fff3cd',color:'#856404'}} onClick={() => cancel(t.id)}>✕ Annuler</button>
+                                        <button className="btn btn-outline btn-sm" onClick={() => startEdit(t)}>✏️ Modifier</button>
+                                        <button className="btn btn-warn btn-sm" onClick={() => cancel(t.id)}>✕ Annuler la réservation</button>
                                     </>
+                                )}
+                                {t.status === 'cancelled' && (
+                                    <span className="text-muted text-sm" style={{padding:'.35rem 0'}}>Réservation annulée</span>
                                 )}
                                 <button className="btn btn-danger btn-sm" onClick={() => del(t.id)}>🗑 Supprimer</button>
                             </div>
@@ -1420,21 +1881,19 @@ function TripsView() {
     );
 }
 
-/* ═══════════════════════════════════════════════════════════
-   PROFILE VIEW
-═══════════════════════════════════════════════════════════ */
+/* ═══ PROFILE VIEW ═══════════════════════════════════════ */
 function ProfileView() {
     const { user, setUser } = useApp();
-    const [form, setForm]   = useState({ name: user?.name||'', phone: user?.phone||'', bio: user?.bio||'', password: '' });
+    const [form, setForm]   = useState({ name:user?.name||'', phone:user?.phone||'', bio:user?.bio||'', password:'' });
     const [msg, setMsg]     = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const set = (k, v) => setForm(p => ({ ...p, [k]: v }));
+    const set = (k,v) => setForm(p => ({ ...p, [k]:v }));
 
     const save = (e) => {
         e.preventDefault(); setError(''); setLoading(true);
-        apiFetch(`api/auth.php?action=update`, { method: 'POST', body: JSON.stringify({ ...form, id: user.id }) })
+        apiFetch('api/auth.php?action=update', { method:'POST', body:JSON.stringify({ ...form, id:user.id }) })
             .then(d => {
                 if (d.status === 'success') { setUser(d.user); setMsg('Profil mis à jour !'); }
                 else setError(d.message);
@@ -1443,7 +1902,6 @@ function ProfileView() {
     };
 
     if (!user) return <div className="alert alert-warn">Connectez-vous pour accéder à votre profil.</div>;
-
     const initials = user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0,2);
 
     return (
@@ -1456,35 +1914,33 @@ function ProfileView() {
                     <div className="role-badge">{user.role}</div>
                 </div>
             </div>
-
             <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'1.5rem'}}>
                 <div style={{background:'var(--white)',borderRadius:'var(--radius)',padding:'1.5rem',boxShadow:'var(--card-shadow)'}}>
                     <h3 style={{marginBottom:'1.25rem',fontFamily:'Playfair Display,serif'}}>Modifier mon profil</h3>
-                    {msg && <div className="alert alert-success" style={{marginBottom:'1rem'}}>{msg}</div>}
-                    {error && <div className="alert alert-danger" style={{marginBottom:'1rem'}}>{error}</div>}
+                    {msg && <div className="alert alert-success">{msg}</div>}
+                    {error && <div className="alert alert-danger">{error}</div>}
                     <form onSubmit={save}>
                         <div className="form-group">
                             <label className="form-label">Nom complet</label>
-                            <input className="form-control" value={form.name} onChange={e => set('name', e.target.value)} required />
+                            <input className="form-control" value={form.name} onChange={e => set('name',e.target.value)} required />
                         </div>
                         <div className="form-group">
                             <label className="form-label">Téléphone</label>
-                            <input className="form-control" value={form.phone} onChange={e => set('phone', e.target.value)} placeholder="+33 6 …" />
+                            <input className="form-control" value={form.phone} onChange={e => set('phone',e.target.value)} placeholder="+33 6 …" />
                         </div>
                         <div className="form-group">
                             <label className="form-label">Bio</label>
-                            <textarea className="form-control" rows={3} value={form.bio} onChange={e => set('bio', e.target.value)} placeholder="Quelques mots sur vous…" />
+                            <textarea className="form-control" rows={3} value={form.bio} onChange={e => set('bio',e.target.value)} placeholder="Quelques mots sur vous…" />
                         </div>
                         <div className="form-group">
                             <label className="form-label">Nouveau mot de passe (laisser vide pour ne pas changer)</label>
-                            <input type="password" className="form-control" value={form.password} onChange={e => set('password', e.target.value)} placeholder="••••••••" />
+                            <input type="password" className="form-control" value={form.password} onChange={e => set('password',e.target.value)} placeholder="••••••••" />
                         </div>
                         <button type="submit" className="btn btn-gold btn-full" disabled={loading}>
                             {loading ? 'Enregistrement…' : '✓ Sauvegarder'}
                         </button>
                     </form>
                 </div>
-
                 <div style={{background:'var(--white)',borderRadius:'var(--radius)',padding:'1.5rem',boxShadow:'var(--card-shadow)'}}>
                     <h3 style={{marginBottom:'1rem',fontFamily:'Playfair Display,serif'}}>Informations du compte</h3>
                     <div style={{lineHeight:2.2,color:'var(--text-muted)',fontSize:'.9rem'}}>
@@ -1501,18 +1957,17 @@ function ProfileView() {
     );
 }
 
-/* ═══════════════════════════════════════════════════════════
-   ADMIN PANEL
-═══════════════════════════════════════════════════════════ */
+
+/* ═══ ADMIN VIEW ═════════════════════════════════════════ */
 function AdminView() {
     const { user } = useApp();
     const [section, setSection] = useState('users');
     const [users, setUsers]     = useState([]);
     const [trips, setTrips]     = useState([]);
     const [msg, setMsg]         = useState('');
-
-    // Add destination form
     const [newDest, setNewDest] = useState({ name:'', country:'', description:'', tag:'Culture', price:'', duration_days:'7', image_url:'', continent:'', language:'', currency:'EUR', best_season:'' });
+    const [addError, setAddError] = useState('');
+    const [addLoading, setAddLoading] = useState(false);
 
     useEffect(() => {
         if (section === 'users') {
@@ -1526,33 +1981,33 @@ function AdminView() {
     const delUser = (id) => {
         if (id === user.id) { alert('Impossible de se supprimer soi-même.'); return; }
         if (!confirm('Supprimer cet utilisateur ?')) return;
-        apiFetch('api/auth.php?action=delete', { method: 'POST', body: JSON.stringify({ id }) })
+        apiFetch('api/auth.php?action=delete', { method:'POST', body:JSON.stringify({ id }) })
             .then(d => { setMsg(d.message); setUsers(prev => prev.filter(u => u.id !== id)); });
     };
 
     const updateRole = (id, role) => {
-        apiFetch('api/auth.php?action=update_role', { method: 'POST', body: JSON.stringify({ id, role }) })
+        apiFetch('api/auth.php?action=update_role', { method:'POST', body:JSON.stringify({ id, role }) })
             .then(d => { setMsg(d.message); setUsers(prev => prev.map(u => u.id === id ? { ...u, role } : u)); });
     };
 
     const addDest = (e) => {
-        e.preventDefault();
-        apiFetch('api/destinations.php', { method: 'POST', body: JSON.stringify({ ...newDest, price: parseInt(newDest.price), duration_days: parseInt(newDest.duration_days), created_by: user.id }) })
+        e.preventDefault(); setAddError(''); setAddLoading(true);
+        apiFetch('api/destinations.php', { method:'POST', body:JSON.stringify({ ...newDest, price:parseInt(newDest.price), duration_days:parseInt(newDest.duration_days), created_by:user.id }) })
             .then(d => {
-                if (d.status === 'success') { setMsg('Destination ajoutée !'); setNewDest({ name:'', country:'', description:'', tag:'Culture', price:'', duration_days:'7', image_url:'', continent:'', language:'', currency:'EUR', best_season:'' }); }
-                else setMsg(d.message);
-            });
-    };
-
-    const delDest = (id) => {
-        if (!confirm('Supprimer cette destination ?')) return;
-        fetch(`api/destinations.php?id=${id}`, { method: 'DELETE' })
-            .then(r => r.json()).then(d => setMsg(d.message));
+                if (d.status === 'success') {
+                    setMsg('✅ Destination ajoutée avec succès !');
+                    setNewDest({ name:'', country:'', description:'', tag:'Culture', price:'', duration_days:'7', image_url:'', continent:'', language:'', currency:'EUR', best_season:'' });
+                } else {
+                    setAddError(d.message || 'Erreur lors de l\'ajout.');
+                }
+            })
+            .catch(() => setAddError('Erreur réseau.'))
+            .finally(() => setAddLoading(false));
     };
 
     const delTrip = (trip_id) => {
         if (!confirm('Supprimer cet itinéraire ?')) return;
-        apiFetch('api/trips.php', { method: 'POST', body: JSON.stringify({ action: 'delete', trip_id }) })
+        apiFetch('api/trips.php', { method:'POST', body:JSON.stringify({ action:'delete', trip_id }) })
             .then(d => { setMsg(d.message); setTrips(prev => prev.filter(t => t.id !== trip_id)); });
     };
 
@@ -1561,10 +2016,10 @@ function AdminView() {
     );
 
     const navItems = [
-        { key: 'users',        label: '👥 Utilisateurs' },
-        { key: 'trips',        label: '✈️ Réservations' },
-        { key: 'add_dest',     label: '➕ Ajouter destination' },
-        { key: 'del_dest',     label: '🗑 Supprimer offre' },
+        { key:'users',    label:'👥 Utilisateurs' },
+        { key:'trips',    label:'✈️ Réservations' },
+        { key:'add_dest', label:'➕ Ajouter destination' },
+        { key:'del_dest', label:'🗑 Supprimer offre' },
     ];
 
     return (
@@ -1577,12 +2032,11 @@ function AdminView() {
             <div className="admin-grid">
                 <div className="admin-sidebar">
                     {navItems.map(({ key, label }) => (
-                        <div key={key} className={`admin-nav-item ${section === key ? 'active' : ''}`} onClick={() => setSection(key)}>{label}</div>
+                        <div key={key} className={`admin-nav-item ${section===key?'active':''}`} onClick={() => setSection(key)}>{label}</div>
                     ))}
                 </div>
-
                 <div className="admin-content">
-                    {/* ── USERS ── */}
+
                     {section === 'users' && (
                         <div>
                             <h3 style={{marginBottom:'1rem'}}>Gestion des utilisateurs ({users.length})</h3>
@@ -1617,7 +2071,6 @@ function AdminView() {
                         </div>
                     )}
 
-                    {/* ── TRIPS ── */}
                     {section === 'trips' && (
                         <div>
                             <h3 style={{marginBottom:'1rem'}}>Toutes les réservations ({trips.length})</h3>
@@ -1642,45 +2095,45 @@ function AdminView() {
                         </div>
                     )}
 
-                    {/* ── ADD DESTINATION ── */}
                     {section === 'add_dest' && (
                         <div>
                             <h3 style={{marginBottom:'1.25rem'}}>Ajouter une destination</h3>
+                            {addError && <div className="alert alert-danger">{addError}</div>}
                             <form onSubmit={addDest}>
                                 <div className="form-row">
                                     <div className="form-group">
                                         <label className="form-label">Nom *</label>
-                                        <input className="form-control" value={newDest.name} onChange={e => setNewDest(p => ({...p, name: e.target.value}))} required placeholder="Ex: Tokyo" />
+                                        <input className="form-control" value={newDest.name} onChange={e => setNewDest(p => ({...p, name:e.target.value}))} required placeholder="Ex: Tokyo" />
                                     </div>
                                     <div className="form-group">
                                         <label className="form-label">Pays *</label>
-                                        <input className="form-control" value={newDest.country} onChange={e => setNewDest(p => ({...p, country: e.target.value}))} required placeholder="Ex: Japon" />
+                                        <input className="form-control" value={newDest.country} onChange={e => setNewDest(p => ({...p, country:e.target.value}))} required placeholder="Ex: Japon" />
                                     </div>
                                 </div>
                                 <div className="form-group">
                                     <label className="form-label">Description</label>
-                                    <textarea className="form-control" rows={3} value={newDest.description} onChange={e => setNewDest(p => ({...p, description: e.target.value}))} />
+                                    <textarea className="form-control" rows={3} value={newDest.description} onChange={e => setNewDest(p => ({...p, description:e.target.value}))} />
                                 </div>
                                 <div className="form-row">
                                     <div className="form-group">
                                         <label className="form-label">Catégorie</label>
-                                        <select className="form-control" value={newDest.tag} onChange={e => setNewDest(p => ({...p, tag: e.target.value}))}>
+                                        <select className="form-control" value={newDest.tag} onChange={e => setNewDest(p => ({...p, tag:e.target.value}))}>
                                             {['Culture','Romantique','Nature','Aventure','City Break','Autre'].map(t => <option key={t}>{t}</option>)}
                                         </select>
                                     </div>
                                     <div className="form-group">
                                         <label className="form-label">Prix de base (€) *</label>
-                                        <input type="number" className="form-control" value={newDest.price} onChange={e => setNewDest(p => ({...p, price: e.target.value}))} required min="0" />
+                                        <input type="number" className="form-control" value={newDest.price} onChange={e => setNewDest(p => ({...p, price:e.target.value}))} required min="0" />
                                     </div>
                                 </div>
                                 <div className="form-row">
                                     <div className="form-group">
                                         <label className="form-label">Durée (jours)</label>
-                                        <input type="number" className="form-control" value={newDest.duration_days} onChange={e => setNewDest(p => ({...p, duration_days: e.target.value}))} min="1" />
+                                        <input type="number" className="form-control" value={newDest.duration_days} onChange={e => setNewDest(p => ({...p, duration_days:e.target.value}))} min="1" />
                                     </div>
                                     <div className="form-group">
                                         <label className="form-label">Continent</label>
-                                        <select className="form-control" value={newDest.continent} onChange={e => setNewDest(p => ({...p, continent: e.target.value}))}>
+                                        <select className="form-control" value={newDest.continent} onChange={e => setNewDest(p => ({...p, continent:e.target.value}))}>
                                             <option value="">Sélectionner</option>
                                             {['Europe','Asie','Amérique','Afrique','Océanie'].map(c => <option key={c}>{c}</option>)}
                                         </select>
@@ -1689,27 +2142,28 @@ function AdminView() {
                                 <div className="form-row">
                                     <div className="form-group">
                                         <label className="form-label">Langue</label>
-                                        <input className="form-control" value={newDest.language} onChange={e => setNewDest(p => ({...p, language: e.target.value}))} placeholder="Ex: Japonais" />
+                                        <input className="form-control" value={newDest.language} onChange={e => setNewDest(p => ({...p, language:e.target.value}))} placeholder="Ex: Japonais" />
                                     </div>
                                     <div className="form-group">
                                         <label className="form-label">Devise</label>
-                                        <input className="form-control" value={newDest.currency} onChange={e => setNewDest(p => ({...p, currency: e.target.value}))} placeholder="EUR" />
+                                        <input className="form-control" value={newDest.currency} onChange={e => setNewDest(p => ({...p, currency:e.target.value}))} placeholder="EUR" />
                                     </div>
                                 </div>
                                 <div className="form-group">
                                     <label className="form-label">URL de l'image</label>
-                                    <input className="form-control" value={newDest.image_url} onChange={e => setNewDest(p => ({...p, image_url: e.target.value}))} placeholder="https://images.unsplash.com/…" />
+                                    <input className="form-control" value={newDest.image_url} onChange={e => setNewDest(p => ({...p, image_url:e.target.value}))} placeholder="https://images.unsplash.com/…" />
                                 </div>
                                 <div className="form-group">
                                     <label className="form-label">Meilleure saison</label>
-                                    <input className="form-control" value={newDest.best_season} onChange={e => setNewDest(p => ({...p, best_season: e.target.value}))} placeholder="Ex: Avril - Octobre" />
+                                    <input className="form-control" value={newDest.best_season} onChange={e => setNewDest(p => ({...p, best_season:e.target.value}))} placeholder="Ex: Avril - Octobre" />
                                 </div>
-                                <button type="submit" className="btn btn-gold">➕ Ajouter la destination</button>
+                                <button type="submit" className="btn btn-gold" disabled={addLoading}>
+                                    {addLoading ? '⏳ Ajout en cours…' : '➕ Ajouter la destination'}
+                                </button>
                             </form>
                         </div>
                     )}
 
-                    {/* ── DELETE DESTINATION ── */}
                     {section === 'del_dest' && <AdminDeleteDest onMsg={setMsg} />}
                 </div>
             </div>
@@ -1719,14 +2173,13 @@ function AdminView() {
 
 function AdminDeleteDest({ onMsg }) {
     const [destinations, setDestinations] = useState([]);
-
     useEffect(() => {
         fetch('api/destinations.php').then(r => r.json()).then(setDestinations);
     }, []);
 
     const del = (id) => {
         if (!confirm('Supprimer cette offre touristique ?')) return;
-        fetch(`api/destinations.php?id=${id}`, { method: 'DELETE' })
+        fetch(`api/destinations.php?id=${id}`, { method:'DELETE' })
             .then(r => r.json())
             .then(d => { onMsg(d.message); setDestinations(prev => prev.filter(x => x.id !== id)); });
     };
@@ -1753,24 +2206,22 @@ function AdminDeleteDest({ onMsg }) {
     );
 }
 
-/* ═══════════════════════════════════════════════════════════
-   APP ROOT
-═══════════════════════════════════════════════════════════ */
+/* ═══ APP ROOT ════════════════════════════════════════════ */
 function App() {
     const { tab } = useApp();
-
     return (
         <React.Fragment>
             <Header />
             <main>
-                {tab === 'destinations'  && <DestinationsView />}
-                {tab === 'transports'    && <TransportsView />}
+                {tab === 'destinations'   && <DestinationsView />}
+                {tab === 'transports'     && <TransportsView />}
                 {tab === 'accommodations' && <AccommodationsView />}
-                {tab === 'activities'    && <ActivitiesView />}
-                {tab === 'cart'          && <CartView />}
-                {tab === 'trips'         && <TripsView />}
-                {tab === 'profile'       && <ProfileView />}
-                {tab === 'admin'         && <AdminView />}
+                {tab === 'activities'     && <ActivitiesView />}
+                {tab === 'itinerary'      && <ItineraryView />}
+                {tab === 'cart'           && <CartView />}
+                {tab === 'trips'          && <TripsView />}
+                {tab === 'profile'        && <ProfileView />}
+                {tab === 'admin'          && <AdminView />}
             </main>
             <footer>
                 <p>© 2026 <strong>VoyageVista</strong> — Plateforme de réservation de voyages · Connecté à MySQL</p>
