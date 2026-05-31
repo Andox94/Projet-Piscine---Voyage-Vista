@@ -80,7 +80,7 @@ try {
              travelers, departure_date, return_date, nights, total_price, reference_code, payment_method, notes, status, payment_status)
              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'confirmed', 'paid')";
     $stmt = mysqli_prepare($conn, $sql);
-    mysqli_stmt_bind_param($stmt, "iiiisssissisis",
+    mysqli_stmt_bind_param($stmt, "iiiississiisss",
         $user_id, $dest_id, $trans_id, $accom_id, $name, $email,
         $travelers, $dep_date, $ret_date, $nights, $total, $ref_code, $payment_meth, $notes
     );
