@@ -232,7 +232,7 @@ if ($method === 'GET' && !isset($_GET['action'])) {
             "UPDATE trips SET travelers=?, notes=?, departure_date=?, return_date=?, nights=?, total_price=?, updated_at=NOW()
              WHERE id=? AND user_id=? AND status='confirmed'"
         );
-        mysqli_stmt_bind_param($upd, "isssiiiii", $travelers, $notes, $dep_date, $ret_date, $nights, $new_total, $trip_id, $uid);
+        mysqli_stmt_bind_param($upd, "isssiiii", $travelers, $notes, $dep_date, $ret_date, $nights, $new_total, $trip_id, $uid);
 
         if (mysqli_stmt_execute($upd)) {
             $sel  = mysqli_prepare($conn, "SELECT t.reference_code, d.name AS dest FROM trips t JOIN destinations d ON t.destination_id=d.id WHERE t.id=?");
