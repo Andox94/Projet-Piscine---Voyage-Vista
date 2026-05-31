@@ -338,7 +338,13 @@ function Loading() {
 
 function apiFetch(url, opts = {}) {
     return fetch(url, { headers: { 'Content-Type': 'application/json' }, ...opts })
-        .then(r => r.json());
+        .then(r => {
+            const ct = r.headers.get('content-type') || '';
+            if (!ct.includes('json')) {
+                return r.text().then(t => { throw new Error(t || 'Réponse serveur invalide'); });
+            }
+            return r.json();
+        });
 }
 
 function todayStr() {
@@ -787,7 +793,11 @@ function TransportsView() {
                     <div style={{flex:1}}>
                         <h4>{t.type} · <span style={{color:'var(--text-muted)'}}>{t.company}</span></h4>
                         <div className="meta">
-                            🕐 Départ {t.departure_time} → Arrivée {t.arrival_time} · ⏱ {t.duration}
+                            {t.departure_city && t.arrival_city
+                                ? <span style={{fontWeight:500,color:'var(--text)'}}>📍 {t.departure_city} → {t.arrival_city}</span>
+                                : null
+                            }<br/>
+                            🕐 {t.departure_time} → {t.arrival_time} · ⏱ {t.duration}
                             {t.stops > 0 && ` · ${t.stops} escale(s)`} · 💺 {t.class}
                         </div>
                         <div style={{marginTop:'.4rem',display:'flex',gap:'.5rem',alignItems:'center'}}>
@@ -1035,10 +1045,21 @@ function ItineraryView() {
         fetch('api/destinations.php').then(r => r.json()).then(setAllDestinations).catch(() => {});
     }, []);
 
-    const loadStepData = (stepId, destId) => {
+    // Get departure city for a given step index (previous step's arrival city, or 'Paris' for step 0)
+    const getStepDepartureCity = (idx) => {
+        if (idx === 0) return 'Paris';
+        const prevStep = steps[idx - 1];
+        // arrival city = first transport's arrival_city, or destination name as fallback
+        const prevTransport = prevStep.transport;
+        if (prevTransport && prevTransport.arrival_city) return prevTransport.arrival_city;
+        return prevStep.destination?.name || 'Paris';
+    };
+
+    const loadStepData = (stepId, destId, depCity) => {
         setLoadingData(prev => ({ ...prev, [stepId]: true }));
+        const dc = depCity ? `&departure_city=${encodeURIComponent(depCity)}` : '';
         Promise.all([
-            fetch(`api/transports.php?destination_id=${destId}&travelers=${travelers}`).then(r => r.json()),
+            fetch(`api/transports.php?destination_id=${destId}&travelers=${travelers}${dc}`).then(r => r.json()),
             fetch(`api/accommodations.php?destination_id=${destId}`).then(r => r.json()),
             fetch(`api/activities.php?destination_id=${destId}&travelers=${travelers}`).then(r => r.json()),
         ]).then(([t, a, ac]) => {
@@ -1050,7 +1071,20 @@ function ItineraryView() {
     };
 
     const updateStep = (idx, field, value) => {
-        setSteps(prev => prev.map((s, i) => i === idx ? { ...s, [field]: value } : s));
+        setSteps(prev => prev.map((s, i) => {
+            if (i !== idx) return s;
+            const updated = { ...s, [field]: value };
+            // Auto-compute nights when dates change
+            if ((field === 'departure_date' || field === 'return_date')) {
+                const dep = field === 'departure_date' ? value : s.departure_date;
+                const ret = field === 'return_date'   ? value : s.return_date;
+                if (dep && ret) {
+                    const diff = Math.ceil((new Date(ret) - new Date(dep)) / 86400000);
+                    if (diff > 0) updated.nights = diff;
+                }
+            }
+            return updated;
+        }));
     };
 
     const addStep = () => {
@@ -1108,6 +1142,7 @@ function ItineraryView() {
                         travelers,
                         departure_date: step.departure_date || null,
                         return_date: step.return_date || null,
+                        origin_city: step.transport?.departure_city || 'Paris',
                         payment_method: 'carte',
                         notes: step.notes || `Itinéraire multi-étapes — ${step.label}`,
                     })
@@ -1187,6 +1222,15 @@ function ItineraryView() {
                             </div>
                         </div>
 
+                        {/* Departure city info */}
+                        {activeStep > 0 && (
+                            <div className="alert alert-info" style={{padding:'.5rem 1rem',marginBottom:'1rem',fontSize:'.85rem'}}>
+                                📍 <strong>Départ depuis :</strong> {getStepDepartureCity(activeStep)}
+                                {steps[activeStep-1]?.destination && <span> (arrivée de l'étape précédente : {steps[activeStep-1].destination.name})</span>}
+                                <br/><span className="text-muted" style={{fontSize:'.78rem'}}>Seuls les transports au départ de cette ville sont affichés.</span>
+                            </div>
+                        )}
+
                         {/* Destination */}
                         <div className="form-group">
                             <label className="form-label">Destination *</label>
@@ -1200,11 +1244,12 @@ function ItineraryView() {
                                     const dest = allDestinations.find(d => String(d.id) === String(val));
                                     if (!dest) return;
                                     const stepId = s.id;
+                                    const depCity = getStepDepartureCity(activeStep);
                                     setSteps(prev => prev.map((st, i) => i === activeStep
                                         ? { ...st, destination: dest, transport: null, accommodation: null, activities: [] }
                                         : st
                                     ));
-                                    loadStepData(stepId, dest.id);
+                                    loadStepData(stepId, dest.id, depCity);
                                 }}>
                                 <option value="">— Choisir une destination —</option>
                                 {allDestinations.map(d => <option key={d.id} value={d.id}>{d.name}, {d.country}</option>)}
@@ -1251,7 +1296,12 @@ function ItineraryView() {
                                                 <div key={t.id} className={`list-item ${s.transport?.id === t.id ? 'selected' : ''}`} style={{padding:'.85rem'}}>
                                                     <div style={{flex:1}}>
                                                         <div style={{fontWeight:600,fontSize:'.9rem'}}>{t.type} · {t.company}</div>
-                                                        <div className="meta">{t.departure_time} → {t.arrival_time} · {t.duration} · {t.class}</div>
+                                                        <div className="meta">
+                                                {t.departure_city && t.arrival_city
+                                                    ? <span>{t.departure_city} → {t.arrival_city}<br/></span>
+                                                    : null}
+                                                {t.departure_time} → {t.arrival_time} · {t.duration} · {t.class}
+                                            </div>
                                                         <AvailBadge left={parseInt(t.seats_left)} total={parseInt(t.seats_total)} />
                                                     </div>
                                                     <div style={{textAlign:'right'}}>
@@ -1442,6 +1492,7 @@ function CartView() {
                 departure_date:   depDate || null,
                 return_date:      retDate || null,
                 payment_method:   payMethod,
+                origin_city:      cart.transport?.departure_city || 'Paris',
                 notes:            null,
             })
         }).then(d => {
