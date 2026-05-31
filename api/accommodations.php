@@ -10,7 +10,7 @@ if ($method === 'GET') {
         echo json_encode([]);
         exit();
     }
-  
+   
     $conditions = ["destination_id = ?", "is_active = 1"];
     $params     = [$dest_id];
     $types      = "i";
